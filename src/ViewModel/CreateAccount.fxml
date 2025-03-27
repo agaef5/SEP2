@@ -62,12 +62,7 @@
             <Font name="Castellar" size="48.0" />
          </font>
       </Text>
-      <Button fx:id="proceed" layoutX="480.0" layoutY="414.0" mnemonicParsing="false" text="Ready Cowboy?">
-         <font>
-            <Font name="Castellar" size="27.0" />
-         </font>
-      </Button>
-      <Button fx:id="cancel" layoutX="54.0" layoutY="414.0" mnemonicParsing="false" text="Too scared?">
+      <Button fx:id="confirm" layoutX="291.0" layoutY="414.0" mnemonicParsing="false" text="Ready Cowboy?">
          <font>
             <Font name="Castellar" size="27.0" />
          </font>

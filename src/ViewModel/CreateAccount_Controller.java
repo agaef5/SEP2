@@ -14,9 +14,7 @@ public class CreateAccount_Controller
   @FXML
   private TextField confirmPassword;
   @FXML
-  private Button cancel;
-  @FXML
-  private Button proceed;
+  private Button confirm;
 
   public CreateAccount_Controller()
   {

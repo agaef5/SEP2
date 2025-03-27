@@ -13,9 +13,7 @@ public class LoginAccount_Controller
   @FXML
   private TextField password;
   @FXML
-  private Button cancel;
-  @FXML
-  private Button proceed;
+  private Button confirm;
 
   public LoginAccount_Controller()
   {
