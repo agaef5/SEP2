@@ -28,29 +28,23 @@
             <Font name="Castellar" size="48.0" />
          </font>
       </Text>
-      <Text layoutX="110.0" layoutY="283.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Come on in!" wrappingWidth="313.5609130859375">
+      <Text layoutX="109.0" layoutY="283.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Come on in!" wrappingWidth="313.5609130859375">
          <font>
             <Font name="Castellar" size="24.0" />
          </font>
       </Text>
-      <Text layoutX="114.0" layoutY="329.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Name:" wrappingWidth="112.76094055175781" AnchorPane.bottomAnchor="186.0859375">
+      <Text layoutX="113.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User Name:" wrappingWidth="112.76094055175781" AnchorPane.bottomAnchor="188.0859375">
          <font>
             <Font name="Centaur" size="24.0" />
          </font>
       </Text>
-      <Text layoutX="432.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" wrappingWidth="92.76100158691406" AnchorPane.bottomAnchor="172.0">
+      <Text layoutX="431.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" wrappingWidth="92.76100158691406" AnchorPane.bottomAnchor="188.0859375">
          <font>
             <Font name="Centaur" size="24.0" />
          </font>
       </Text>
-      <Text layoutX="114.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" text="E-mail:" wrappingWidth="70.36097717285156" AnchorPane.bottomAnchor="154.0">
-         <font>
-            <Font name="Centaur" size="24.0" />
-         </font>
-      </Text>
-      <TextField fx:id="password" layoutX="536.0" layoutY="322.0" promptText="Words only you know" />
-      <TextField fx:id="username" layoutX="246.0" layoutY="310.0" promptText="Cool Name here" />
-      <TextField fx:id="email" layoutX="246.0" layoutY="340.0" promptText="Fancy mailbox" />
+      <TextField fx:id="password" layoutX="536.0" layoutY="310.0" promptText="Words only you know" />
+      <TextField fx:id="username" layoutX="245.0" layoutY="310.0" promptText="Cool Name here" />
       <Text layoutX="63.0" layoutY="428.0" strokeType="OUTSIDE" strokeWidth="0.0">
          <font>
             <Font name="Castellar" size="48.0" />

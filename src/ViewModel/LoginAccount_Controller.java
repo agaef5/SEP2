@@ -9,8 +9,6 @@ public class LoginAccount_Controller
   @FXML
   private TextField username;
   @FXML
-  private TextField email;
-  @FXML
   private TextField password;
   @FXML
   private Button confirm;
