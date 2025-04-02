@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="522.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ViewModel.LoginAccount_Controller">
+<AnchorPane prefHeight="522.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewModel.loginAccount.LoginAccount_Controller">
    <children>
       <Text layoutX="291.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome Back!" textAlignment="CENTER" wrappingWidth="236.0">
          <font>
@@ -50,10 +50,20 @@
             <Font name="Castellar" size="48.0" />
          </font>
       </Text>
-      <Button fx:id="confirm" layoutX="264.0" layoutY="413.0" mnemonicParsing="false" text="Beware Hayburners!">
+      <Button fx:id="confirm" layoutX="263.0" layoutY="378.0" mnemonicParsing="false" text="Beware Hayburners!">
          <font>
             <Font name="Castellar" size="24.0" />
          </font>
       </Button>
+      <Button fx:id="createAccount" layoutX="336.0" layoutY="463.0" mnemonicParsing="false" text="Become One Of Us!">
+         <font>
+            <Font name="Castellar" size="14.0" />
+         </font>
+      </Button>
+      <Text layoutX="356.0" layoutY="452.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Not one of us? No worries!" wrappingWidth="133.5609893798828">
+         <font>
+            <Font name="Centaur" size="13.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

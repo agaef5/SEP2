@@ -1,4 +1,4 @@
-package ViewModel;
+package viewModel.createAccount;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -19,5 +19,21 @@ public class CreateAccount_Controller
   public CreateAccount_Controller()
   {
 
+  }
+  public void createUsername(){
+  
+  }
+  public void createPassword(){
+  
+  }
+  public void confirmPassword (){
+  
+  }
+  public void createEmail(){
+  
+  }
+  
+  public void confirmCreateAccountButton(){
+  
   }
 }
