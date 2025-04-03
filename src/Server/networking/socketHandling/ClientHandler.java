@@ -30,6 +30,7 @@ public class ClientHandler implements Runnable
   {
     try
     {
+      //iniciate the streams
       in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       out = new PrintWriter(socket.getOutputStream());
       System.out.println("Client connected: " + socket.getInetAddress());
@@ -42,7 +43,7 @@ public class ClientHandler implements Runnable
         String receivedMessage = in.readLine(); // Receive JSON string from client
         if (receivedMessage != null)
         {
-          handleClientRequest(receivedMessage);
+          handleClientRequest(receivedMessage); // call method to handle the message
         }
       }
     }

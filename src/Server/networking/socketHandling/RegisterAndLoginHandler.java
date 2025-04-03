@@ -1,7 +1,6 @@
 package Server.networking.socketHandling;
 
 import Server.services.authentication.AuthServiceImpl;
-import Server.services.authentication.AuthentificationService;
 import Shared.LoginRequest;
 import Shared.LoginRespond;
 import Shared.RegisterRequest;
@@ -13,16 +12,14 @@ public class RegisterAndLoginHandler
   private final Gson gson = new Gson();
   private AuthServiceImpl authService;
 
-  public Object handle(String action, Object payload)
+  public Object handle(String action, Object payload) // check what action the user wants (login or register) and than call appropriate methods in "Model"
   {
     switch (action)
     {
       case "login":
-        return handleLogin(
-            gson.fromJson(gson.toJson(payload), LoginRequest.class));
+        return handleLogin((LoginRequest) payload);
       case "register":
-        return handleRegister(
-            gson.fromJson(gson.toJson(payload), RegisterRequest.class));
+        return handleRegister((RegisterRequest) payload);
       default:
         throw new IllegalArgumentException("Invalid action: " + action);
     }
