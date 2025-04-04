@@ -9,7 +9,11 @@ public class LoginAccount_Controller
   @FXML
   private TextField username;
   @FXML
+  private TextField errorMessage_username;
+  @FXML
   private TextField password;
+  @FXML
+  private TextField errorMessage_password;
   @FXML
   private Button confirmLoginB;
   @FXML
@@ -22,23 +26,25 @@ public class LoginAccount_Controller
     this.loginAccount_vm = loginAccount_vm;
   }
   public void initialize(){
-    username.textProperty ().bindBidirectional (loginAccount_vm.username ());
-    password.textProperty ().bindBidirectional (loginAccount_vm.password ());
-    confirmLoginB.disableProperty ().bind(loginAccount_vm.confirmLogin());
-    createNewAccountB.disableProperty ().bind(loginAccount_vm.createNewAccountButton ());
+    username.textProperty ().bindBidirectional (loginAccount_vm.getUsername());
+    errorMessage_username.textProperty().bindBidirectional(loginAccount_vm.getErrorMessage_username());
+    password.textProperty ().bindBidirectional (loginAccount_vm.getPassword());
+    errorMessage_password.textProperty().bindBidirectional(loginAccount_vm.getErrorMessage_password());
+    confirmLoginB.disableProperty ().bind(loginAccount_vm.getConfirmLogin());
+    createNewAccountB.disableProperty ().bind(loginAccount_vm.getCreateNewAccount());
   }
 
   public void loginUsername(){
-    loginAccount_vm.username();
+    loginAccount_vm.getUsername();
   }
   public void loginPassword(){
-    loginAccount_vm.password();
+    loginAccount_vm.getPassword();
   }
   public void confirmButton(){
-    loginAccount_vm.confirmLogin();
+    loginAccount_vm.getConfirmLogin();
   }
   public void createAccountButton(){
-    loginAccount_vm.createNewAccountButton();
+    loginAccount_vm.getCreateNewAccount();
   }
   
 }
