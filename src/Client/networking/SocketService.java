@@ -2,7 +2,6 @@ package Client.networking;
 
 import Client.ui.MessageListener;
 import Shared.Request;
-import Shared.Respond;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -12,7 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class SocketService implements SoketSubject
+public class SocketService implements SocketSubject
 {
 
 
@@ -33,7 +32,7 @@ public class SocketService implements SoketSubject
   }
 
 
-  private void sendRequest (Request request)
+  public void sendRequest (Request request)
   {
     String jsonRequest = gson.toJson(request);
     out.println(jsonRequest);
