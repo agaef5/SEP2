@@ -1,6 +1,6 @@
-package model.user;
+package Server.model.user;
 
-import model.balance.Balance;
+import Server.model.balance.Balance;
 
 public class Player implements User
 {

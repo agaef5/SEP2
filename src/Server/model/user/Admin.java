@@ -1,4 +1,4 @@
-package model.user;
+package Server.model.user;
 
 public class Admin implements User
 {

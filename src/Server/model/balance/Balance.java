@@ -1,4 +1,4 @@
-package model.balance;
+package Server.model.balance;
 
 public class Balance
 {
