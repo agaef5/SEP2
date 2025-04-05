@@ -32,7 +32,7 @@ public class ClientHandler implements Runnable
     {
       //iniciate the streams
       in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      out = new PrintWriter(socket.getOutputStream());
+      out = new PrintWriter(socket.getOutputStream(), true);
       System.out.println("Client connected: " + socket.getInetAddress());
 
       out.println("Server connected. Please login or register.");
@@ -70,6 +70,10 @@ public class ClientHandler implements Runnable
         String respond = gson.toJson(result);
         out.println(respond);
     }
+  public void send(String message) {
+    out.println(message);
+  }
+
 }
 
 
