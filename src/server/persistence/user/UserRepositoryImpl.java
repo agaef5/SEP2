@@ -7,10 +7,17 @@ import server.model.user.User;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class UserRepositoryImpl implements UserRepository
 {
-  private final static ArrayList<User> users = new ArrayList<>(Arrays.asList(
+  private static UserRepositoryImpl instance;
+  private static final Lock lock = new ReentrantLock();
+  private ArrayList<User> users;
+
+  private UserRepositoryImpl(){
+    users = new ArrayList<>(Arrays.asList(
       new Player("user1","trmo@via.dk", "1234"),
       new Player("user2","jaja@gmail.com", "1234"),
       new Player("user3","pepe@gmail.com", "1234"),
@@ -19,19 +26,29 @@ public class UserRepositoryImpl implements UserRepository
       new Player("user6","anan@gmail.com", "1234"),
       new Admin("admin", "admin@gamil.com", "1234")
   ));
+  }
 
   @Override public void add(User user)
   {
-
+    users.add(user);
   }
 
-  @Override public User getSingle(String email)
+  @Override public User getSingle(String string)
   {
-    User user = new Player("username", "email", "password");
-    return user;
+    UserRepository userRepository = UserRepositoryImpl.getInstance();
+    if(userRepository == null) return null;
+    ArrayList<User> userArrayList = userRepository.getMany(Integer.MAX_VALUE, Integer.MAX_VALUE, null);
+
+    if(string.contains("@")){
+      for(User user : userArrayList){
+        if(user.getEmail().equals(string)) return user;
+        else if(user.getUsername().equals(string))return user;
+      }
+    }
+    return null;
   }
 
-  @Override public void delete(String email)
+  @Override public void delete(User user)
   {
 
   }
@@ -57,5 +74,18 @@ public class UserRepositoryImpl implements UserRepository
         }
         return result;
   }
+
+  public static UserRepository getInstance()
+  {
+    if(instance == null){
+      synchronized (lock){
+        if(instance == null){
+          instance = new UserRepositoryImpl();
+        }
+      }
+    }
+    return instance;
+  }
+
 }
 
