@@ -9,11 +9,11 @@ public class AuthServiceImpl implements AuthentificationService
 {
   @Override public RegisterRespond registerUser(RegisterRequest request)
   {
-
+return new RegisterRespond("success", "yess success");
   }
 
   @Override public LoginRespond loginUser(LoginRequest request)
   {
-
+    return new LoginRespond("success", "yess success");
   }
 }

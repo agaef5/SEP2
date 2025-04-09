@@ -40,7 +40,6 @@ public class ClientHandler implements Runnable
       out = new PrintWriter(socket.getOutputStream(), true);
       System.out.println("Client connected: " + socket.getInetAddress());
 
-      out.println("Server connected. Please login or register.");
 
       // Loop to keep listening for login/register requests
       while (true)
@@ -60,26 +59,26 @@ public class ClientHandler implements Runnable
 
     private void handleClientRequest(String jsonMessage) throws IOException
     {
-      try
-      {
-        requestDecoder.decode(jsonMessage);
-      }
-      catch (InvalidMessageException e)
-      {
-        // log the error
-        System.err.println("Invalid message received: " + e.getMessage());
-        System.err.println("Received message: " + jsonMessage);
-      }
+//      try
+//      {
+//        requestDecoder.decode(jsonMessage);
+//      }
+//      catch (InvalidMessageException e)
+//      {
+//        // log the error
+//        System.err.println("Invalid message received: " + e.getMessage());
+//        System.err.println("Received message: " + jsonMessage);
+//      }
 
       Request request = gson.fromJson(jsonMessage, Request.class);
 
       Object result;
 
-      switch (request.handler())
+      switch (request.getHandler())
       {
-        case "auth" -> result = requestHandler.handle(request.action() , request.payload());
+        case "auth" -> result = requestHandler.handle(request.getAction() , request.getPayload());
         // Future handlers can be added here
-        default -> throw new IllegalStateException("Unexpected handler: " + request.handler());
+        default -> throw new IllegalStateException("Unexpected handler: " + request.getHandler());
       }
 
       //here will be respond from result

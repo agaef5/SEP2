@@ -41,6 +41,7 @@ public class SocketService implements SocketSubject
 
   public void receive (String message)
   {
+    System.out.println("Server>> " + message);
     notifyListener(message);
   }
 

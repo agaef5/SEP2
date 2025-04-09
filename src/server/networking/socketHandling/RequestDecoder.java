@@ -6,32 +6,32 @@ import shared.*;
 
 public class RequestDecoder
 {
-  private final Gson gson = new Gson();
+  private Gson gson = new Gson();
 
 
   public void decode(String jsonRespond) throws InvalidMessageException
   {
     try
     {
-    Request request = gson.fromJson(jsonRespond,Request.class);
+    Request request =  gson.fromJson(jsonRespond,Request.class);
 
 
-    if (request.handler()==null|| request.handler().isEmpty())
+    if (request.getHandler()==null|| request.getHandler().isEmpty())
     {
       throw new InvalidMessageException("Invalid message: 'handler' is missing.");
     }
 
-    if (request.action() == null||request.action().isEmpty())
+    if (request.getAction() == null||request.getAction().isEmpty())
     {
       throw new InvalidMessageException("Invalid message: 'action' is missing");
     }
 
-    if (request.payload()==null)
+    if (request.getPayload()==null)
     {
       throw new InvalidMessageException("Invalid 'payload' type, payload is null");
     }
 
-    if (!(request.payload() instanceof LoginRequest || request.payload() instanceof RegisterRequest))
+    if (!(request.getPayload() instanceof LoginRequest || request.getPayload() instanceof RegisterRequest))
     {
       throw new InvalidMessageException("Invalid payload type: must be LoginRequest or RegisterRequest.");
     }

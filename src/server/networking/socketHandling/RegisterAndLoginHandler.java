@@ -13,14 +13,21 @@ public class RegisterAndLoginHandler implements RequestHandler
   private final Gson gson = new Gson();
   private AuthentificationService authService;
 
+  public RegisterAndLoginHandler()
+  {
+    this.authService= new AuthServiceImpl();
+  }
+
   public Object handle(String action, Object payload) // check what action the user wants (login or register) and than call appropriate methods in "Model"
   {
     switch (action)
     {
       case "login":
-        return handleLogin((LoginRequest) payload);
+        LoginRequest loginRequest = gson.fromJson(gson.toJson(payload), LoginRequest.class);
+        return handleLogin(loginRequest);
       case "register":
-        return handleRegister((RegisterRequest) payload);
+        RegisterRequest registerRequest = gson.fromJson(gson.toJson(payload), RegisterRequest.class);
+        return handleRegister(registerRequest);
       default:
         throw new IllegalArgumentException("Invalid action: " + action);
     }
