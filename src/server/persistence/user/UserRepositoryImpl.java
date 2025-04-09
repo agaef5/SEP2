@@ -56,6 +56,6 @@ public class UserRepositoryImpl implements UserRepository
             }
         }
         return result;
-    }
   }
 }
+
