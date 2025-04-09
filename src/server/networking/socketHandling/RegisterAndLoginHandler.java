@@ -1,16 +1,17 @@
 package server.networking.socketHandling;
 
 import server.services.authentication.AuthServiceImpl;
+import server.services.authentication.AuthentificationService;
 import shared.LoginRequest;
 import shared.LoginRespond;
 import shared.RegisterRequest;
 import shared.RegisterRespond;
 import com.google.gson.Gson;
 
-public class RegisterAndLoginHandler
+public class RegisterAndLoginHandler implements RequestHandler
 {
   private final Gson gson = new Gson();
-  private AuthServiceImpl authService;
+  private AuthentificationService authService;
 
   public Object handle(String action, Object payload) // check what action the user wants (login or register) and than call appropriate methods in "Model"
   {

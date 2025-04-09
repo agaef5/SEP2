@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+
+import client.networking.exceptions.InvalidMessageException;
 import com.google.gson.Gson;
 import shared.Request;
 
@@ -16,14 +18,17 @@ public class ClientHandler implements Runnable
   private BufferedReader in;
   private PrintWriter out;
   private Gson gson;
-  private final RegisterAndLoginHandler registerAndLoginHandler;
+  private final RequestHandler requestHandler;
+  private RequestDecoder requestDecoder;
 
 
   public ClientHandler(Socket socket)
   {
     this.socket = socket;
     this.gson = new Gson();
-   this.registerAndLoginHandler = new RegisterAndLoginHandler();
+   this.requestHandler = new RegisterAndLoginHandler();
+   this.requestDecoder = new RequestDecoder();
+
   }
 
   @Override public void run()
@@ -55,13 +60,24 @@ public class ClientHandler implements Runnable
 
     private void handleClientRequest(String jsonMessage) throws IOException
     {
+      try
+      {
+        requestDecoder.decode(jsonMessage);
+      }
+      catch (InvalidMessageException e)
+      {
+        // log the error
+        System.err.println("Invalid message received: " + e.getMessage());
+        System.err.println("Received message: " + jsonMessage);
+      }
+
       Request request = gson.fromJson(jsonMessage, Request.class);
 
       Object result;
 
       switch (request.handler())
       {
-        case "auth" -> result = registerAndLoginHandler.handle(request.action() , request.payload());
+        case "auth" -> result = requestHandler.handle(request.action() , request.payload());
         // Future handlers can be added here
         default -> throw new IllegalStateException("Unexpected handler: " + request.handler());
       }

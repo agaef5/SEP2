@@ -4,5 +4,5 @@ import shared.Request;
 
 public interface RequestHandler
 {
-  String handle(Request request);
+  Object handle(String action, Object payload);
 }
