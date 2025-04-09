@@ -1,4 +1,4 @@
-package Server.services.authentication;
+package server.services.authentication;
 
 import Shared.LoginRequest;
 import Shared.LoginRespond;
