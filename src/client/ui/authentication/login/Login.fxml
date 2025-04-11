@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="522.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewModel.loginAccount.LoginAccount_Controller">
+<AnchorPane prefHeight="522.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.authentication.login.LoginController">
    <children>
       <Text layoutX="291.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome Back!" textAlignment="CENTER" wrappingWidth="236.0">
          <font>
@@ -43,14 +43,14 @@
             <Font name="Centaur" size="24.0" />
          </font>
       </Text>
-      <TextField fx:id="password" layoutX="536.0" layoutY="310.0" promptText="Words only you know" />
-      <TextField fx:id="username" layoutX="245.0" layoutY="310.0" promptText="Cool Name here" />
+      <TextField fx:id="passwordInput" layoutX="536.0" layoutY="310.0" promptText="Words only you know" />
+      <TextField fx:id="usernameNameInput" layoutX="245.0" layoutY="310.0" promptText="Cool Name here" />
       <Text layoutX="63.0" layoutY="428.0" strokeType="OUTSIDE" strokeWidth="0.0">
          <font>
             <Font name="Castellar" size="48.0" />
          </font>
       </Text>
-      <Button fx:id="confirmLoginB" layoutX="263.0" layoutY="378.0" mnemonicParsing="false" text="Beware Hayburners!">
+      <Button fx:id="buttonLogin" layoutX="263.0" layoutY="378.0" mnemonicParsing="false" text="Beware Hayburners!">
          <font>
             <Font name="Castellar" size="24.0" />
          </font>
@@ -65,12 +65,7 @@
             <Font name="Centaur" size="13.0" />
          </font>
       </Text>
-      <Text fx:id="errorMessage_password" fill="#a90101" layoutX="431.0" layoutY="351.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="255.9610137939453">
-         <font>
-            <Font name="Centaur" size="18.0" />
-         </font>
-      </Text>
-      <Text fx:id="errorMessage_username" fill="#a90101" layoutX="109.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="255.9610137939453">
+      <Text fx:id="messageLabel" fill="#a90101" layoutX="115.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="571.9610137939453">
          <font>
             <Font name="Centaur" size="18.0" />
          </font>

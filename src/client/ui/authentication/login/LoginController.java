@@ -1,38 +1,48 @@
 package client.ui.authentication.login;
 
+import client.ui.common.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-public class LoginController
+public class LoginController implements Controller
 {
-  @FXML
-  private TextField usernameNameInput;
-  @FXML
-  private TextField passwordInput;
-  @FXML
-  private Label messageLabel;
-  @FXML
-  private Button buttonLogin;
+  @FXML private TextField usernameNameInput;
+  @FXML private TextField passwordInput;
+  @FXML private Label messageLabel;
+  @FXML private Button buttonLogin;
   
   private LoginVM viewModel;
   
-  public LoginController (LoginVM loginAccount_vm)
+  public LoginController ( LoginVM loginAccount_vm )
   {
     this.viewModel = loginAccount_vm;
   }
   
-  public void initialize(){
-    usernameNameInput.textProperty ().bindBidirectional (viewModel.userNamePropriety());
-    messageLabel.textProperty().bindBidirectional(viewModel.userNamePropriety());
-    passwordInput.textProperty ().bindBidirectional (viewModel.passwordPropriety());
-    buttonLogin.disableProperty ().bind(viewModel.disableLoginButtonPropriety());
+  public void initialize ()
+  {
+    usernameNameInput.textProperty()
+        .bindBidirectional(viewModel.userNamePropriety());
+    messageLabel.textProperty()
+        .bindBidirectional(viewModel.userNamePropriety());
+    passwordInput.textProperty()
+        .bindBidirectional(viewModel.passwordPropriety());
+    buttonLogin.disableProperty().bind(viewModel.disableLoginButtonPropriety());
   }
-  public void onLogin(){
+  
+  public void onLogin ()
+  {
   
   }
-  public void onBack(){
+  
+  public void onBack ()
+  {
+  
+  }
+  
+  @Override public void changePage ( Controller page )
+  {
   
   }
 }
