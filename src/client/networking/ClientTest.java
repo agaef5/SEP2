@@ -14,7 +14,7 @@ public class ClientTest
     SocketService socketservice = new SocketService("localhost",2910 );
     SocketAuthenticationClient socketauth = new SocketAuthenticationClient(socketservice);
     System.out.println("sending regRequest");
-    RegisterRequest regReq = new RegisterRequest("samojak","123456789","123456789","SAMO@GMAIL.COM");
+    RegisterRequest regReq = new RegisterRequest("samojak","123456789","SAMO@GMAIL.COM");
     socketauth.registerUser(regReq);
     System.out.println("sending logRequest");
     LoginRequest logReq = new LoginRequest("Samojak", "123456789");

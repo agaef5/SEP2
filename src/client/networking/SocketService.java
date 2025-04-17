@@ -2,65 +2,54 @@ package client.networking;
 
 import client.ui.MessageListener;
 import shared.Request;
-import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class SocketService implements SocketSubject
-{
-
-
-  private PrintWriter out;
+public class SocketService implements SocketSubject {
+  private ObjectOutputStream out;
   private ArrayList<MessageListener> listeners = new ArrayList<>();
-  private Gson gson;
 
+  public SocketService(String host, int port) throws IOException {
+    Socket socket = new Socket(host, port);
 
-  public SocketService(String host, int port) throws IOException
-  {
-    Socket socket=new Socket(host,port);
-    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    this.out = new PrintWriter(socket.getOutputStream(),true);
-    this.gson = new Gson();
+    // Important: create ObjectOutputStream before ObjectInputStream
+    this.out = new ObjectOutputStream(socket.getOutputStream());
+    ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-// iniciate SocketServiceReceive for receiving messages from server
-    new Thread(new SocketServiceReceive(this,in)).start();
+    // Start receiving thread
+    new Thread(new SocketServiceReceive(this, in)).start();
   }
 
-
-  public void sendRequest (Request request)
-  {
-    String jsonRequest = gson.toJson(request);
-    out.println(jsonRequest);
+  public void sendRequest(Request request) {
+    try {
+      out.writeObject(request);
+      out.flush();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
-
-  public void receive (String message)
-  {
-    System.out.println("Server>> " + message);
-    notifyListener(message);
+  public void receive(Object response) {
+    System.out.println("Server>> " + response);
+    notifyListener(response);
   }
 
-  @Override public void notifyListener(String message)
-  {
-  for (MessageListener listener : listeners)
-  {
-    listener.update(message);
-  }
+  @Override
+  public void notifyListener(Object message) {
+    for (MessageListener listener : listeners) {
+      listener.update(message);
+    }
   }
 
-  @Override public void addListener(MessageListener listener)
-  {
+  @Override
+  public void addListener(MessageListener listener) {
     listeners.add(listener);
-
   }
 
-  @Override public void removeListener(MessageListener listener)
-  {
+  @Override
+  public void removeListener(MessageListener listener) {
     listeners.remove(listener);
   }
 }
