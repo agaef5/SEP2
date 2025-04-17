@@ -1,4 +1,4 @@
-package server.model.repository;
+package server.model;
 
 public class PlayerRepository
 {
