@@ -47,13 +47,13 @@ public class Horse implements Racer
     return position;
   }
 
-  public void move()
+  public void move() // give random number between speedMin and speedMax and increase position by this number
   {
     int step = (int)(Math.random() * (speedMax - speedMin + 1)) + speedMin;
     position += step;
   }
 
-  public void reset()
+  public void reset() // reset the position to 0
   {
     position=0;
   }
