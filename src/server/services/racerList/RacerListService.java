@@ -3,7 +3,9 @@ package server.services.racerList;
 import server.model.RacerList;
 import shared.HorseListRequest;
 import shared.HorseListResponse;
+import shared.RacerResponse;
 
 public interface RacerListService {
-  public HorseListResponse getHorsesList();
+  HorseListResponse getHorsesList();
+  RacerResponse getRacer(String type, int id);
 }
