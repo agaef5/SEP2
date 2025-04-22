@@ -11,7 +11,7 @@ public class RegisterAndLoginHandler implements RequestHandler {
   private final AuthentificationService authService;
 
   public RegisterAndLoginHandler() {
-    this.authService = new AuthServiceImpl();
+    this.authService =  new AuthServiceImpl();
   }
 
   public Object handle(String action, Object payload) {
