@@ -6,6 +6,6 @@ import shared.HorseListResponse;
 import shared.RacerResponse;
 
 public interface RacerListService {
-  HorseListResponse getHorsesList();
+  HorseListResponse getRacerList();
   RacerResponse getRacer(String type, int id);
 }

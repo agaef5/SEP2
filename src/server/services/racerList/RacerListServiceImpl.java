@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class RacerListServiceImpl implements RacerListService
 {
-  @Override public HorseListResponse getHorsesList()
+  @Override public HorseListResponse getRacerList()
   {
     try{
       RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
@@ -40,6 +40,4 @@ public class RacerListServiceImpl implements RacerListService
       return new RacerResponse("Error. Problems with SQL Server", null);
     }
   }
-
-  ;
 }

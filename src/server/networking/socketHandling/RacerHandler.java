@@ -11,7 +11,7 @@ public class RacerHandler implements RequestHandler
 {
   private final RacerListService racerListService;
 
-  public RaceHandler(){
+  public RacerHandler(){
     this.racerListService = new RacerListServiceImpl();
   }
 
@@ -19,7 +19,7 @@ public class RacerHandler implements RequestHandler
     switch (action) {
       case "getRacerList" -> {
         if (payload instanceof HorseListRequest horseListRequest) {
-          return handleHorseListRequest();
+          return handleRacerListRequest();
         } else {
           throw new IllegalArgumentException("Invalid payload for horse list request");
         }
@@ -36,11 +36,11 @@ public class RacerHandler implements RequestHandler
     }
   }
 
-  public HorseListResponse handleHorseListRequest(){
-    return racerListService.getHorsesList();
+  private HorseListResponse handleRacerListRequest(){
+    return racerListService.getRacerList();
   }
 
-  public RacerResponse handleGetRacerRequest(RacerRequest racerRequest){
+  private RacerResponse handleGetRacerRequest(RacerRequest racerRequest){
     return racerListService.getRacer(racerRequest.racerType(), racerRequest.id());
   }
 }
