@@ -75,7 +75,7 @@ public class RacerRepositoryImpl implements RacerRepository
       ArrayList<Horse> horseArrayList = new ArrayList<>();
       PreparedStatement statement = connection.prepareStatement("SELECT * FROM Horse");
       ResultSet resultSet = statement.executeQuery();
-      if ( resultSet.next() ){
+      while ( resultSet.next() ){
         String name = resultSet.getString("name");
         int speedMin = resultSet.getInt("speedMin"); // speed is int/float?
         int speedMax = resultSet.getInt("speedMax");
