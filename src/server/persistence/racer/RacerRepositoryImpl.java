@@ -1,24 +1,24 @@
-package server.model.dao;
-
+package server.persistence.racer;
 import server.model.Horse;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class HorseDAOImpl implements HorseDAO
+public class RacerRepositoryImpl implements RacerRepository
 {
-  private static HorseDAOImpl instance;
+  private static RacerRepositoryImpl instance;
   
-  public HorseDAOImpl () throws SQLException
+  public RacerRepositoryImpl() throws SQLException
   {
     DriverManager.registerDriver(new org.postgresql.Driver());
   }
   
-  public static synchronized HorseDAOImpl getInstance () throws SQLException
+  public static synchronized RacerRepositoryImpl getInstance() throws SQLException
   {
     if ( instance == null )
     {
-      instance = new HorseDAOImpl();
+      instance = new RacerRepositoryImpl();
     }
     return instance;
   }
@@ -42,7 +42,8 @@ public class HorseDAOImpl implements HorseDAO
       ResultSet keys = statement.getGeneratedKeys();
       if ( keys.next() )
       {
-        return new Horse(keys.getInt(1), name) // constructor in horse class is kinda wrong. public Horse (Int id, String name,int speedMin, int speedMax)
+        //TODO: constructor in horse class is kinda wrong. public Horse (Int id, String name,int speedMin, int speedMax)
+        return new Horse( name, 1, 10);
       }else {
         throw new SQLException("No keys generated");
       }
@@ -65,11 +66,28 @@ public class HorseDAOImpl implements HorseDAO
         return null;
       }
     }
-  }
+  };
+
+  @Override public ArrayList<Horse> readAll() throws SQLException
+  {
+    try(Connection connection = getConnection())
+    {
+      ArrayList<Horse> horseArrayList = new ArrayList<>();
+      PreparedStatement statement = connection.prepareStatement("SELECT * FROM Horse");
+      ResultSet resultSet = statement.executeQuery();
+      if ( resultSet.next() ){
+        String name = resultSet.getString("name");
+        int speedMin = resultSet.getInt("speedMin"); // speed is int/float?
+        int speedMax = resultSet.getInt("speedMax");
+        horseArrayList.add(new Horse(name, speedMin, speedMax));
+      }
+      return horseArrayList;
+    }
+  };
   
   @Override public Horse readBySpeed_min ( float speedMin ) throws SQLException
   {
-  
+    return null;
   }
   
   @Override public Horse readBySpeed_max ( float speedMax ) throws SQLException

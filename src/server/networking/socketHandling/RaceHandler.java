@@ -1,19 +1,16 @@
 package server.networking.socketHandling;
 
-import server.services.authentication.AuthentificationService;
-import server.services.racerList.RacerListImplementation;
+import server.services.racerList.RacerListServiceImpl;
 import server.services.racerList.RacerListService;
 import shared.HorseListRequest;
 import shared.HorseListResponse;
-import shared.LoginRequest;
-import shared.RegisterRequest;
 
 public class RaceHandler implements RequestHandler
 {
   private final RacerListService racerListService;
 
   public RaceHandler(){
-    this.racerListService = new RacerListImplementation();
+    this.racerListService = new RacerListServiceImpl();
   }
 
   @Override public Object handle(String action, Object payload){
@@ -29,8 +26,7 @@ public class RaceHandler implements RequestHandler
     }
   }
 
-
   public HorseListResponse handleHorseListRequest(){
-    return ;
+    return racerListService.getHorsesList();
   }
 }

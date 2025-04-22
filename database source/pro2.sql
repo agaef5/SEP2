@@ -19,6 +19,6 @@ create table sep2.admin
 create table sep2.horse(
     id  serial primary key,
     name varchar,
-    speedMin float,
-    speedMax float
+    speedMin int,
+    speedMax int
 )
