@@ -6,6 +6,8 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import server.model.Horse;
+import shared.HorseListResponse;
+import shared.Respond;
 
 import java.util.List;
 
@@ -29,8 +31,15 @@ public class HorseListVM implements MessageListener
     return horses;
   }
 
-  @Override public void update(Object message)
-  {
 
+  @Override
+  public void update(Object message) {
+    if (message instanceof Respond respond && "horseList".equals(respond.type())) {
+      Object payload = respond.payload();
+      if (payload instanceof HorseListResponse horseListResponse) {
+        Platform.runLater(() -> horses.setAll(horseListResponse.horseList()));
+      }
+    }
   }
+
 }

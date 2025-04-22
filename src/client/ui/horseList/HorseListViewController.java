@@ -19,13 +19,15 @@ public class HorseListViewController
 
   private HorseListVM horseListVM;
 
+  public HorseListViewController(HorseListVM horseListVM){
+    this.horseListVM=horseListVM;
+  }
+
   public void initialize(){
     horseId.setCellValueFactory(new PropertyValueFactory<>("id"));
     horseName.setCellValueFactory(new PropertyValueFactory<>("name"));
     speedMin.setCellValueFactory(new PropertyValueFactory<>("speedMin"));
     speedMax.setCellValueFactory(new PropertyValueFactory<>("speedMax"));
-
-    horseListVM = new HorseListVM(new SocketRacersClient());
 
     tableView.setItems(horseListVM.getHorses());
   }
