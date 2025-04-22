@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="522.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="viewModel.createAccount.CreateAccount_Controller">
+<AnchorPane prefHeight="522.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.authentication.register.RegisterVM">
    <children>
       <Text layoutX="306.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to" textAlignment="CENTER" wrappingWidth="203.16094970703125">
          <font>
@@ -28,7 +29,7 @@
             <Font name="Castellar" size="48.0" />
          </font>
       </Text>
-      <Text layoutX="223.0" layoutY="283.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create an account:" wrappingWidth="313.5609130859375">
+      <Text layoutX="63.0" layoutY="283.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create an account:" wrappingWidth="313.5609130859375">
          <font>
             <Font name="Castellar" size="24.0" />
          </font>
@@ -53,39 +54,24 @@
             <Font name="Centaur" size="24.0" />
          </font>
       </Text>
-      <TextField fx:id="password" layoutX="612.0" layoutY="313.0" promptText="Words only you know" />
-      <TextField fx:id="username" layoutX="247.0" layoutY="315.0" promptText="Cool Name here" />
-      <TextField fx:id="confirmPassword" layoutX="613.0" layoutY="370.0" promptText="Memory check" />
-      <TextField fx:id="email" layoutX="248.0" layoutY="371.0" promptText="Fancy mailbox" />
+      <TextField fx:id="passwordInput" layoutX="612.0" layoutY="313.0" promptText="Words only you know" />
+      <TextField fx:id="userNameInput" layoutX="247.0" layoutY="315.0" promptText="Cool Name here" />
+      <TextField fx:id="repeatPasswordInput" layoutX="613.0" layoutY="370.0" promptText="Memory check" />
+      <TextField fx:id="emailInput" layoutX="248.0" layoutY="371.0" promptText="Fancy mailbox" />
       <Text layoutX="63.0" layoutY="428.0" strokeType="OUTSIDE" strokeWidth="0.0">
          <font>
             <Font name="Castellar" size="48.0" />
          </font>
       </Text>
-      <Button fx:id="confirmCreateAccountButton" layoutX="291.0" layoutY="441.0" mnemonicParsing="false" text="Ready Cowboy?">
+      <Button fx:id="buttonRegister" layoutX="289.0" layoutY="441.0" mnemonicParsing="false" text="Ready Cowboy?">
          <font>
             <Font name="Castellar" size="27.0" />
          </font>
       </Button>
-      <Text fx:id="errorMessage_passwordsDontMatch" fill="#a90101" layoutX="437.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="322.36083984375">
+      <Label fx:id="messageLabel" layoutX="412.0" layoutY="260.0" prefHeight="29.0" prefWidth="350.0" textAlignment="CENTER" textFill="#850808">
          <font>
             <Font name="Centaur" size="18.0" />
          </font>
-      </Text>
-      <Text fx:id="errorMessage_username" fill="#a90101" layoutX="133.0" layoutY="359.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="262.36090087890625">
-         <font>
-            <Font name="Centaur" size="18.0" />
-         </font>
-      </Text>
-      <Text fx:id="errorMessage_email" fill="#a90101" layoutX="137.0" layoutY="417.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="262.36090087890625">
-         <font>
-            <Font name="Centaur" size="18.0" />
-         </font>
-      </Text>
-      <Text fx:id="errorMessage_password" fill="#a90101" layoutX="437.0" layoutY="358.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="322.36083984375">
-         <font>
-            <Font name="Centaur" size="18.0" />
-         </font>
-      </Text>
+      </Label>
    </children>
 </AnchorPane>

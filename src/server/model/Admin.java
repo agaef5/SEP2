@@ -1,20 +1,10 @@
-package server.model.user;
+package server.model;
 
-import server.model.balance.Balance;
-
-public class Player implements User
+public class Admin implements User
 {
-  private Balance balance;
   private String username;
   private String email;
   private String password;
-
-  public Player(String username, String email, String password){
-    this.username = username;
-    this.email = email;
-    this.password = password;
-    balance = new Balance(1000);
-  }
 
   @Override public String getUsername()
   {
@@ -42,14 +32,5 @@ public class Player implements User
 
   public void setPassword(String password){
     this.password = password;
-  }
-
-  public Balance getBalance()
-  {
-    return balance;
-  }
-
-  public void setAdmin(){
-//    create logic for making player an admin;
   }
 }
