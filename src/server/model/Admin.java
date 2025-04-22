@@ -6,6 +6,12 @@ public class Admin implements User
   private String email;
   private String password;
 
+  public Admin(String username, String email, String password){
+    this.username = username;
+    this.email = email;
+    this.password = password;
+  }
+
   @Override public String getUsername()
   {
     return username;
