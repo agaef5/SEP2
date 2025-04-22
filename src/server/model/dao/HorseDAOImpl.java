@@ -1,4 +1,6 @@
-package server.model;
+package server.model.dao;
+
+import server.model.Horse;
 
 import java.sql.*;
 import java.util.List;
