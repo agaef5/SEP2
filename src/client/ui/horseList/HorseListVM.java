@@ -24,13 +24,13 @@ public class HorseListVM implements MessageListener
     Platform.runLater(()->horses.setAll(horseList));
   }
 
-  @Override public void update(String message)
-  {
-
-  }
-
   public ObservableList<Horse> getHorses()
   {
     return horses;
+  }
+
+  @Override public void update(Object message)
+  {
+
   }
 }
