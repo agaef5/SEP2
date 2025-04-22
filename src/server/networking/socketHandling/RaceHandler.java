@@ -28,7 +28,7 @@ public class RaceHandler implements RequestHandler
         if(payload instanceof RacerRequest racerRequest){
           return handleGetRacerRequest(racerRequest);
         }else {
-        throw new IllegalArgumentException("Invalid payload for horse list request");
+        throw new IllegalArgumentException("Invalid payload for racer request");
         }
       }
       default -> throw new IllegalArgumentException("Invalid action: " + action);
