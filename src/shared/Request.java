@@ -10,3 +10,6 @@ public record Request(String handler, String action, Object payload)implements
 
 // handler: auth
 //action : login, register
+
+//handler: racer
+//action: getRacer, getRacerList

@@ -44,6 +44,8 @@ public class ClientHandler implements Runnable {
 
     switch (request.handler()) {
       case "auth" -> result = requestHandler.handle(request.action(), request.payload());
+      case "racer" -> {RequestHandler raceRequestHandler = new RaceHandler();
+                        result = raceRequestHandler.handle(request.action(), request.payload());}
       default -> throw new IllegalStateException("Unexpected handler: " + request.handler());
     }
 
