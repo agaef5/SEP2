@@ -1,5 +1,8 @@
 package shared;
 
-public record LoginRespond(String message, Object payload)
+import java.io.Serializable;
+
+public record LoginRespond(String message, Object payload)implements
+    Serializable
 {
 }

@@ -16,7 +16,14 @@ public class Server
 
   public static void broadcast(String message) {
     for (ClientHandler client : clients) {
-      client.send(message);
+      try
+      {
+        client.send(message);
+      }
+      catch (IOException e)
+      {
+        throw new RuntimeException(e);
+      }
     }
   }
 
