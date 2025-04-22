@@ -1,5 +1,7 @@
 package shared;
 
-public record ClientDisconnected()
+import java.io.Serializable;
+
+public record ClientDisconnected() implements Serializable
 {
 }

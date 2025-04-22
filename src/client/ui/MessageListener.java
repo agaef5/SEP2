@@ -2,7 +2,7 @@ package client.ui;
 
 public interface MessageListener
 {
-  void update(String message);
+  void update(Object message);
 }
 //this is how the update method could look like
 
