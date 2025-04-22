@@ -17,7 +17,7 @@ public class HorseListViewController
   @FXML TableColumn <Horse, Integer> speedMin;
   @FXML TableColumn <Horse, Integer> speedMax;
 
-  private HorseListVM horseListVM
+  private HorseListVM horseListVM;
 
   public void initialize(){
     horseId.setCellValueFactory(new PropertyValueFactory<>("id"));
