@@ -1,5 +1,6 @@
 package client.ui.horseList;
 
+import client.networking.racers.SocketRacersClient;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -16,7 +17,7 @@ public class HorseListViewController
   @FXML TableColumn <Horse, Integer> speedMin;
   @FXML TableColumn <Horse, Integer> speedMax;
 
-  private ObservableList<Horse> horses;
+  private HorseListVM horseListVM
 
   public void initialize(){
     horseId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -24,8 +25,9 @@ public class HorseListViewController
     speedMin.setCellValueFactory(new PropertyValueFactory<>("speedMin"));
     speedMax.setCellValueFactory(new PropertyValueFactory<>("speedMax"));
 
+    horseListVM = new HorseListVM(new SocketRacersClient());
 
-    tableView.setItems(horses);
+    tableView.setItems(horseListVM.getHorses());
   }
 
 }
