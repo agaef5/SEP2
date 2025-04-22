@@ -22,9 +22,8 @@ public class HorseListVM implements MessageListener
   }
 
   private void loadHorsesFromDatabase(){
-    List<Horse> horseList = racersClient.getHorseList();
-    Platform.runLater(()->horses.setAll(horseList));
-  }
+   racersClient.getRacerList();
+     }
 
   public ObservableList<Horse> getHorses()
   {

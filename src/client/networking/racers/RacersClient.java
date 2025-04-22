@@ -8,7 +8,7 @@ import java.util.List;
 public interface RacersClient
 {
 
-  List<Horse> getHorseList();
+//  List<Horse> getHorseList();
   void getRacerList();
   void getRacer(RacerRequest racerRequest);
 }

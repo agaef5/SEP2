@@ -18,10 +18,10 @@ public class SocketRacersClient implements RacersClient
 
 //  TODO: remove this method and use "getRacerList" instead
 //  expect response from the SocketService (check out socketAuthentication)
-  @Override public List<Horse> getHorseList()
-  {
-    return List.of();
-  }
+//  @Override public List<Horse> getHorseList()
+//  {
+//    return List.of();
+//  }
 
   @Override public void getRacerList()
   {
