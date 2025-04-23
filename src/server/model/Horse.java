@@ -10,15 +10,13 @@ public class Horse implements Racer {
   private int speedMin;
   private int speedMax;
   private int position;
-  private String misc;
-  private String type;
+   private String type;
 
-  public Horse(int id, String name, int speedMin, int speedMax, String misc) {
+  public Horse(int id, String name, int speedMin, int speedMax) {
     this.id = id;
     this.name = name;
     this.speedMin = speedMin;
     this.speedMax = speedMax;
-    this.misc = misc;
     this.type = "Horse";
     this.position = 0;
   }
@@ -34,10 +32,6 @@ public class Horse implements Racer {
   @Override public int getPosition() { return position; }
 
   @Override public String getType() { return type; }
-
-  @Override public String getMisc() { return misc; }
-
-  @Override public void setMisc(String s) { this.misc = s; }
 
   @Override public void setSpeedMax(int i) { this.speedMax = i; }
 

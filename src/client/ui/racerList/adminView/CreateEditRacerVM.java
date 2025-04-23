@@ -20,7 +20,6 @@ public class CreateEditRacerVM implements MessageListener {
   private final StringProperty racerName = new SimpleStringProperty();
   private final IntegerProperty speedMin = new SimpleIntegerProperty();
   private final IntegerProperty speedMax = new SimpleIntegerProperty();
-  private final StringProperty misc = new SimpleStringProperty();
 
   private Racer selectedRacer;
 
@@ -34,7 +33,6 @@ public class CreateEditRacerVM implements MessageListener {
   public Property<String> racerNameProperty() { return racerName; }
   public IntegerProperty speedMinProperty() { return speedMin; }
   public IntegerProperty speedMaxProperty() { return speedMax; }
-  public Property<String> miscProperty() { return misc; }
 
   public ObservableList<Racer> getRacerList() {
     return racerList;
@@ -47,7 +45,7 @@ public class CreateEditRacerVM implements MessageListener {
       racerName.set(newVal.getName());
       speedMin.set(newVal.getSpeedMin());
       speedMax.set(newVal.getSpeedMax());
-      misc.set(newVal.getMisc());
+
     }
   }
   public void addRacer() {
@@ -55,8 +53,8 @@ public class CreateEditRacerVM implements MessageListener {
         -1, // tijdelijk ID
         racerName.get(),
         speedMin.get(),
-        speedMax.get(),
-        misc.get()
+        speedMax.get()
+
     );
     newRacer.setType(racerType.get());
     racersClient.createRacer(newRacer);
@@ -68,7 +66,6 @@ public class CreateEditRacerVM implements MessageListener {
       selectedRacer.setName(racerName.get());
       selectedRacer.setSpeedMin(speedMin.get());
       selectedRacer.setSpeedMax(speedMax.get());
-      selectedRacer.setMisc(misc.get());
       racersClient.updateRacer(selectedRacer);
     }
   }
