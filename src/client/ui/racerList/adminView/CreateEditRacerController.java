@@ -14,7 +14,7 @@ public class CreateEditRacerController {
   @FXML private TextField racerName;
   @FXML private TextField speedMin;
   @FXML private TextField speedMax;
-  @FXML private TextField misc;
+//  @FXML private TextField misc;
   @FXML private Button create;
   @FXML private Button edit;
   @FXML private Button remove;
@@ -38,9 +38,7 @@ public class CreateEditRacerController {
     Bindings.bindBidirectional(speedMin.textProperty(), viewModel.speedMinProperty(), new NumberStringConverter());
     Bindings.bindBidirectional(speedMax.textProperty(), viewModel.speedMaxProperty(), new NumberStringConverter());
 
-    misc.textProperty().bindBidirectional(viewModel.miscProperty());
-
-    // chain actions
+        // chain actions
     create.setOnAction(e -> viewModel.addRacer());
     edit.setOnAction(e -> viewModel.updateRacer());
     remove.setOnAction(e -> viewModel.removeRacer());
