@@ -38,6 +38,7 @@ public class RacerRepositoryImpl implements RacerRepository
     try ( Connection connection = getConnection() )
     {
       PreparedStatement statement = connection.prepareStatement(
+          //      TODO: fix this, to insert all data, not only the name
           "INSERT INTO ? (name) VALUES (?)",
           PreparedStatement.RETURN_GENERATED_KEYS);
       statement.setString(1, racerType);
@@ -169,7 +170,7 @@ public class RacerRepositoryImpl implements RacerRepository
     {
       PreparedStatement statement = connection.prepareStatement(
           "UPDATE ? SET name = ?, speedMin = ?, speedMax = ? WHERE id = ?");
-      statement.setString(1, racer.getType());
+      statement.setString(1, racer.getClass().getName().toLowerCase());
       statement.setString(2, racer.getName());
       statement.setInt(3, racer.getSpeedMin());
       statement.setInt(2, racer.getSpeedMax());
@@ -182,8 +183,9 @@ public class RacerRepositoryImpl implements RacerRepository
     try ( Connection connection = getConnection() )
     {
       PreparedStatement statement = connection.prepareStatement(
-          "DELETE FROM Horse WHERE id = ?");
-      statement.setInt(1, racer.getId());
+          "DELETE FROM ? WHERE id = ?");
+      statement.setString(1, racer.getClass().getName().toLowerCase());
+      statement.setInt(2, racer.getId());
       statement.executeUpdate();
     }
     
