@@ -68,7 +68,7 @@ public class UserRepositoryImpl implements UserRepository
       // this is an attempt at implementing paging, as seen in dbs, maybe it works, maybe it doesn't
       User user = users.get(i);
 
-      if (!string.isEmpty() && (user.getUsername().contains(string) || user.getEmail().contains(string)))  // if argument firstNameContains is not empty string, we filter by this.
+      if (string!=null && !string.isEmpty() && (user.getUsername().contains(string) || user.getEmail().contains(string)))  // if argument firstNameContains is not empty string, we filter by this.
       {
         result.add(user);
       }

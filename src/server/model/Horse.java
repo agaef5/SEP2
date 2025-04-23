@@ -41,6 +41,7 @@ public class Horse implements Racer {
 
   @Override public void setType(String s) { this.type = s; }
 
+
   @Override public void move() {
     int step = (int) (Math.random() * (speedMax - speedMin + 1)) + speedMin;
     position += step;

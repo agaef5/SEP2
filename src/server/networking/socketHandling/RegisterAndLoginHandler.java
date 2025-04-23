@@ -1,5 +1,6 @@
 package server.networking.socketHandling;
 
+import com.google.gson.Gson;
 import server.services.authentication.AuthServiceImpl;
 import server.services.authentication.AuthentificationService;
 import shared.LoginRequest;
@@ -9,26 +10,22 @@ import shared.RegisterRespond;
 
 public class RegisterAndLoginHandler implements RequestHandler {
   private final AuthentificationService authService;
+  private final Gson gson = new Gson();
 
   public RegisterAndLoginHandler() {
-    this.authService =  new AuthServiceImpl();
+    this.authService = new AuthServiceImpl();
   }
 
+  @Override
   public Object handle(String action, Object payload) {
     switch (action) {
       case "login" -> {
-        if (payload instanceof LoginRequest loginRequest) {
-          return handleLogin(loginRequest);
-        } else {
-          throw new IllegalArgumentException("Invalid payload for login");
-        }
+        LoginRequest loginRequest = gson.fromJson(gson.toJson(payload), LoginRequest.class);
+        return handleLogin(loginRequest);
       }
       case "register" -> {
-        if (payload instanceof RegisterRequest registerRequest) {
-          return handleRegister(registerRequest);
-        } else {
-          throw new IllegalArgumentException("Invalid payload for register");
-        }
+        RegisterRequest registerRequest = gson.fromJson(gson.toJson(payload), RegisterRequest.class);
+        return handleRegister(registerRequest);
       }
       default -> throw new IllegalArgumentException("Invalid action: " + action);
     }
