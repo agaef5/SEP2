@@ -3,6 +3,7 @@ package client.networking.racers;
 import client.networking.SocketService;
 import client.ui.MessageListener;
 import client.ui.racerList.adminView.CreateEditRacerVM;
+import server.model.Racer;
 import shared.RacerListRequest;
 import shared.RacerRequest;
 import shared.Request;
@@ -33,6 +34,16 @@ public class SocketRacersClient implements RacersClient
 
   public void addListener(MessageListener listener) {
     listeners.add(listener);
+  }
+
+  @Override public void deleteRacer(Racer selectedRacer)
+  {
+
+  }
+
+  @Override public void updateRacer(Racer selectedRacer)
+  {
+
   }
 
 }

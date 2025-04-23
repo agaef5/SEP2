@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import server.model.Horse;
 import server.model.Racer;
 import shared.Respond;
 import shared.RacerListResponse;
@@ -49,16 +50,15 @@ public class CreateEditRacerVM implements MessageListener {
       misc.set(newVal.getMisc());
     }
   }
-
   public void addRacer() {
-    Racer newRacer = new Racer(
-        -1,
-        racerType.get(),
+    Racer newRacer = new Horse(
+        -1, // tijdelijk ID
         racerName.get(),
         speedMin.get(),
         speedMax.get(),
         misc.get()
     );
+    newRacer.setType(racerType.get());
     racersClient.createRacer(newRacer);
   }
 

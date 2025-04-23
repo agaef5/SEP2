@@ -2,7 +2,6 @@ package server.persistence.racer;
 
 import server.model.Horse;
 
-import java.security.Key;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,7 @@ public class RacerRepositoryImpl implements RacerRepository
       if ( keys.next() )
       {
         //TODO: constructor in horse class is kinda wrong. public Horse (Int id, String name,int speedMin, int speedMax)
-        return new Horse(keys.getInt(1), name, 1, 10);
+        return new Horse(keys.getInt(1), name, 1, 10, misc.get());
       }
       else
       {
@@ -68,7 +67,7 @@ public class RacerRepositoryImpl implements RacerRepository
         String name = resultSet.getString("name");
         int speedMin = resultSet.getInt("speedMin"); // speed is int/float?
         int speedMax = resultSet.getInt("speedMax");
-        return new Horse(id, name, speedMin, speedMax);
+        return new Horse(id, name, speedMin, speedMax, misc.get());
       }
       else
       {
@@ -92,7 +91,7 @@ public class RacerRepositoryImpl implements RacerRepository
         int speedMin = resultSet.getInt("speedMin");
         int speedMax = resultSet.getInt("speedMax");
         //        horseArrayList.add(new Horse(id, name, speedMin, speedMax));
-        Horse horse = new Horse(id, name, speedMin, speedMax);
+        Horse horse = new Horse(id, name, speedMin, speedMax, misc.get());
         result.add(horse);
       }
       return result;
@@ -112,7 +111,7 @@ public class RacerRepositoryImpl implements RacerRepository
         int id = resultSet.getInt("id");
         String name = resultSet.getString("name");
         int speedMax = resultSet.getInt("speedMax");
-        return new Horse(id, name, speedMin, speedMax);
+        return new Horse(id, name, speedMin, speedMax, misc.get());
       }
       else
       {
@@ -134,7 +133,7 @@ public class RacerRepositoryImpl implements RacerRepository
         int id = resultSet.getInt("id");
         String name = resultSet.getString("name");
         int speedMin = resultSet.getInt("speedMin");
-        return new Horse(id, name, speedMin, speedMax);
+        return new Horse(id, name, speedMin, speedMax, misc.get());
       }
       else
       {
@@ -159,7 +158,7 @@ public class RacerRepositoryImpl implements RacerRepository
         String name = resultSet.getString("name");
         int speedMin = resultSet.getInt("speedMin");
         int speedMax = resultSet.getInt("speedMax");
-        Horse horse = new Horse(id, name, speedMin, speedMax);
+        Horse horse = new Horse(id, name, speedMin, speedMax, misc.get());
         result.add(horse);
       }
       return result;
