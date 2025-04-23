@@ -8,14 +8,12 @@ import java.util.List;
 
 public interface RacerRepository
 {
-  Horse create ( String name ) throws SQLException;
-  Horse readByID ( int id ) throws SQLException;
-  Horse readBySpeed_min ( int speedMin ) throws SQLException;
-  Horse readBySpeed_max ( int speedMax ) throws SQLException;
-  List<Horse> readByName ( String searchName ) throws SQLException;
-  List<Horse> readAll () throws SQLException;
-  void updateName ( Horse horse ) throws SQLException;
-  void updateSpeedMin ( Horse horse ) throws SQLException;
-  void updateSpeedMax ( Horse horse ) throws SQLException;
-  void delete ( Horse horse ) throws SQLException;
+  void create (String racerType, String name, int speedMin, int speedMax) throws SQLException;
+  Racer readByID (String racerType, int id ) throws SQLException;
+  Racer readBySpeed_min (String racerType, int speedMin ) throws SQLException;
+  Racer readBySpeed_max (String racerType, int speedMax ) throws SQLException;
+  List<Racer> readByName (String racerType, String searchName ) throws SQLException;
+  List<Racer> readAll (String racerType) throws SQLException;
+  void updateRacer(Racer racer) throws SQLException;
+  void delete ( Racer racer ) throws SQLException;
 }

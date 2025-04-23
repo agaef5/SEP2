@@ -1,5 +1,5 @@
 package shared;
 
-public record RacerListRequest()
+public record RacerListRequest(String racerType)
 {
 }

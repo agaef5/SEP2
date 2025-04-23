@@ -8,7 +8,7 @@ import shared.Respond;
 public class RespondValidate
 {
 
-  public void decode(Object object) throws InvalidMessageException {
+  public static void decode(Object object) throws InvalidMessageException {
     if (!(object instanceof Respond respond)) {
       throw new InvalidMessageException("Invalid object: Not an instance of Respond.");
     }

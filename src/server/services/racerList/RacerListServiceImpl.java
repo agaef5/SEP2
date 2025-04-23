@@ -12,12 +12,12 @@ import java.util.ArrayList;
 
 public class RacerListServiceImpl implements RacerListService
 {
-  @Override public RacerListResponse getRacerList()
+  @Override public RacerListResponse getRacerList(String racerType)
   {
     try{
       RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
-      ArrayList<Horse> horseList= new ArrayList<>(racerRepository.readAll());
-      return new RacerListResponse(horseList);
+      ArrayList<Racer> racerList = new ArrayList<>(racerRepository.readAll(racerType));
+      return new RacerListResponse(racerList);
     }catch (SQLException sqlException){
       sqlException.getMessage();
       return new RacerListResponse(null);
@@ -29,14 +29,14 @@ public class RacerListServiceImpl implements RacerListService
     try{
       RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
       if(type.equals("horse")){
-        Racer racer = racerRepository.readByID(id);
-        return new RacerResponse(racer.getClass().getName(), racerRepository.readByID(id));
+        Racer racer = racerRepository.readByID(type, id);
+        return new RacerResponse(racer.getClass().getName(), racerRepository.readByID(type, id));
       }else {
-        return new RacerResponse("Error. No such racer type found.", null);
+        return new RacerResponse("", null);
       }
     }catch (SQLException sqlException){
       sqlException.getMessage();
-      return new RacerResponse("Error. Problems with SQL Server", null);
+      return new RacerResponse("", null);
     }
   }
 }

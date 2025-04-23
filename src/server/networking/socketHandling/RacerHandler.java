@@ -18,8 +18,8 @@ public class RacerHandler implements RequestHandler
   @Override public Object handle(String action, Object payload){
     switch (action) {
       case "getRacerList" -> {
-        if (payload instanceof RacerListRequest horseListRequest) {
-          return handleRacerListRequest();
+        if (payload instanceof RacerListRequest racerListRequest) {
+          return handleRacerListRequest(racerListRequest);
         } else {
           throw new IllegalArgumentException("Invalid payload for horse list request");
         }
@@ -36,8 +36,8 @@ public class RacerHandler implements RequestHandler
     }
   }
 
-  private RacerListResponse handleRacerListRequest(){
-    return racerListService.getRacerList();
+  private RacerListResponse handleRacerListRequest(RacerListRequest racerListRequest){
+    return racerListService.getRacerList(racerListRequest.racerType());
   }
 
   private RacerResponse handleGetRacerRequest(RacerRequest racerRequest){
