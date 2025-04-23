@@ -9,11 +9,11 @@ public class Horse implements Racer
   
   private int id;
   private String name;
-  private float speedMin;
-  private float speedMax;
+  private int speedMin;
+  private int speedMax;
   private int position;
   
-  public Horse ( int id, String name, int speedMin, Integer speedMax )
+  public Horse ( int id, String name, int speedMin, int speedMax )
   {
     this.id = nextId++;
     this.name = name;
@@ -32,12 +32,12 @@ public class Horse implements Racer
     return name;
   }
   
-  public float getSpeedMin ()
+  public int getSpeedMin ()
   {
     return speedMin;
   }
   
-  public float getSpeedMax ()
+  public int getSpeedMax ()
   {
     return speedMax;
   }
