@@ -1,5 +1,6 @@
 package client.ui.racerList.adminView;
 
+import client.networking.SocketService;
 import client.networking.racers.RacersClient;
 import client.ui.MessageListener;
 import javafx.application.Platform;
@@ -14,6 +15,7 @@ import shared.RacerListResponse;
 public class CreateEditRacerVM implements MessageListener {
 
   private final RacersClient racersClient;
+  private final SocketService socketService;
   private final ObservableList<Racer> racerList = FXCollections.observableArrayList();
 
   private final StringProperty racerType = new SimpleStringProperty();
@@ -23,9 +25,10 @@ public class CreateEditRacerVM implements MessageListener {
 
   private Racer selectedRacer;
 
-  public CreateEditRacerVM(RacersClient client) {
+  public CreateEditRacerVM(RacersClient client,SocketService socketService) {
     this.racersClient = client;
-//    this.racersClient.addListener(this);
+    this.socketService = socketService;
+    this.socketService.addListener(this);
     racersClient.getRacerList();
   }
 
@@ -79,7 +82,7 @@ public class CreateEditRacerVM implements MessageListener {
   @Override
   public void update(Object message) {
     if (message instanceof Respond respond && respond.payload() instanceof RacerListResponse response) {
-      Platform.runLater(() -> racerList.setAll(response.racers()));
+      Platform.runLater(() -> racerList.setAll(response.racerList()));
     }
   }
 }

@@ -29,7 +29,7 @@ public class RacerRepositoryImpl implements RacerRepository
   private Connection getConnection() throws SQLException
   {
     return DriverManager.getConnection(
-        "jdbc:postgresql://localhost:5432/postgres?currentSchema=jdbc",
+        "jdbc:postgresql://localhost:5432/postgres?currentSchema=sep2",
         "postgres", "1234");
   }
   

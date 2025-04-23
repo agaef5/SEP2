@@ -8,6 +8,7 @@ import com.google.gson.JsonSyntaxException;
 import java.io.*;
 import java.net.Socket;
 
+import server.model.Racer;
 import shared.*;
 
 public class ClientHandler implements Runnable {
@@ -80,13 +81,17 @@ public class ClientHandler implements Runnable {
         switch (request.action()) {
           case "getRacerList" -> {
             // Deserialize HorseListRequest from payload
-            HorseListRequest listRequest = gson.fromJson(request.payload(), HorseListRequest.class);
+            RacerListRequest listRequest = gson.fromJson(request.payload(), RacerListRequest.class);
             result = racerRequestHandler.handle("getRacerList", listRequest);
           }
           case "getRacer" -> {
             // Deserialize RacerRequest from payload
             RacerRequest racerRequest = gson.fromJson(request.payload(), RacerRequest.class);
             result = racerRequestHandler.handle("getRacer", racerRequest);
+          }
+          case "createRacer"-> {
+            Racer racerRequest = gson.fromJson(request.payload(), Racer.class);
+            result = racerRequestHandler.handle("createRacer", racerRequest);
           }
         }
       }

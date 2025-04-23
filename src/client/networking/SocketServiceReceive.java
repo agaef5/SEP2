@@ -1,6 +1,7 @@
 package client.networking;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 public class SocketServiceReceive implements Runnable {
   private final BufferedReader in;
