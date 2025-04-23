@@ -1,13 +1,12 @@
 package client.networking;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.BufferedReader;
 
 public class SocketServiceReceive implements Runnable {
-  private final ObjectInputStream in;
+  private final BufferedReader in;
   private final SocketService socketService;
 
-  public SocketServiceReceive(SocketService socketService, ObjectInputStream in) {
+  public SocketServiceReceive(SocketService socketService, BufferedReader in) {
     this.socketService = socketService;
     this.in = in;
   }
@@ -15,14 +14,12 @@ public class SocketServiceReceive implements Runnable {
   @Override
   public void run() {
     try {
-      Object response;
-      while ((response = in.readObject()) != null) {
-       // System.out.println("Server says (object): " + response);
-
-        // Directly send the object to listeners
-        socketService.receive(response);
+      String jsonLine;
+      while ((jsonLine = in.readLine()) != null) {
+        // Forward the raw JSON string to the SocketService
+        socketService.receive(jsonLine);
       }
-    } catch (IOException | ClassNotFoundException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }

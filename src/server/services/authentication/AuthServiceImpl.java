@@ -80,7 +80,7 @@ public class AuthServiceImpl implements AuthentificationService
     UserRepository userRepository = fetchUserRepository();
     if(userRepository == null) return null;
     ArrayList<User> userArrayList = userRepository.getMany(Integer.MAX_VALUE, Integer.MAX_VALUE, null);
-    if(userArrayList == null || userArrayList.getFirst() == null) return null;
+    if(userArrayList == null || userArrayList.isEmpty()) return null;
 
     return userArrayList;
   }

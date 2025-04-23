@@ -2,11 +2,11 @@ package shared;
 
 import java.io.Serializable;
 
-public record Request(String handler, String action, Object payload)implements
-    Serializable
-{
+import com.google.gson.JsonElement;
 
-}
+public record Request(String handler, String action, JsonElement payload) implements  Serializable {}
+
+
 
 // handler: auth
 //action : login, register

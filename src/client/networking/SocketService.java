@@ -1,6 +1,7 @@
 package client.networking;
 
 import client.ui.MessageListener;
+import com.google.gson.Gson;
 import shared.Request;
 
 import java.io.*;
@@ -8,32 +9,34 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class SocketService implements SocketSubject {
-  private ObjectOutputStream out;
-  private ArrayList<MessageListener> listeners = new ArrayList<>();
+  private final BufferedWriter out;
+  private final Gson gson = new Gson();
+  private final ArrayList<MessageListener> listeners = new ArrayList<>();
 
   public SocketService(String host, int port) throws IOException {
     Socket socket = new Socket(host, port);
 
-    // Important: create ObjectOutputStream before ObjectInputStream
-    this.out = new ObjectOutputStream(socket.getOutputStream());
-    ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+    this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-    // Start receiving thread
     new Thread(new SocketServiceReceive(this, in)).start();
   }
 
   public void sendRequest(Request request) {
     try {
-      out.writeObject(request);
+      String json = gson.toJson(request);
+      out.write(json);
+      out.newLine(); // very important to mark the end of the JSON message
       out.flush();
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  public void receive(Object response) {
-    System.out.println("Server>> " + response);
-    notifyListener(response);
+  public void receive(String jsonResponse) {
+    System.out.println("Server>> " + jsonResponse);
+    // You could parse jsonResponse into a proper object if you know the type
+    notifyListener(jsonResponse);
   }
 
   @Override
