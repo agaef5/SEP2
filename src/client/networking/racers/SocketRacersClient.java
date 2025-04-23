@@ -2,6 +2,8 @@ package client.networking.racers;
 
 import client.networking.SocketService;
 import client.ui.MessageListener;
+import com.google.gson.JsonElement;
+import  com.google.gson.*;
 import server.model.Racer;
 import shared.*;
 
@@ -11,14 +13,19 @@ import java.util.List;
 public class SocketRacersClient implements RacersClient {
   private final SocketService socketService;
   private final List<MessageListener> listeners = new ArrayList<>();
+  private final Gson gson;
 
   public SocketRacersClient(SocketService socketService) {
     this.socketService = socketService;
+    this.gson= new Gson();
   }
 
-  @Override
-  public void getRacerList() {
-    Request request = new Request("racer", "getRacerList", new RacerListRequest());
+
+
+  public void getRacerList()
+  {
+    JsonElement payload = gson.toJsonTree(new RacerListRequest());
+    Request request = new Request("racer", "getRacerList", payload);
     socketService.sendRequest(request);
   }
 
