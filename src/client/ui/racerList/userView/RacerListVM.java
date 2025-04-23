@@ -1,4 +1,4 @@
-package client.ui.horseList;
+package client.ui.racerList.userView;
 
 import client.networking.racers.RacersClient;
 import client.ui.MessageListener;
@@ -6,17 +6,15 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import server.model.Horse;
-import shared.HorseListResponse;
+import shared.RacerListResponse;
 import shared.Respond;
 
-import java.util.List;
-
-public class HorseListVM implements MessageListener
+public class RacerListVM implements MessageListener
 {
   private RacersClient racersClient;
   private ObservableList<Horse> horses = FXCollections.observableArrayList();
 
-  public HorseListVM(RacersClient racersClient){
+  public RacerListVM(RacersClient racersClient){
     this.racersClient = racersClient;
     loadHorsesFromDatabase();
   }
@@ -33,10 +31,10 @@ public class HorseListVM implements MessageListener
 
   @Override
   public void update(Object message) {
-    if (message instanceof Respond respond && "horseList".equals(respond.type())) {
+    if (message instanceof Respond respond && "racer".equals(respond.type())) {
       Object payload = respond.payload();
-      if (payload instanceof HorseListResponse horseListResponse) {
-        Platform.runLater(() -> horses.setAll(horseListResponse.horseList()));
+      if (payload instanceof RacerListResponse racerListResponse) {
+        Platform.runLater(() -> horses.setAll(racerListResponse.horseList()));
       }
     }
   }

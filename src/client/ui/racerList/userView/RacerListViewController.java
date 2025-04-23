@@ -1,7 +1,5 @@
-package client.ui.horseList;
+package client.ui.racerList.userView;
 
-import client.networking.racers.SocketRacersClient;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -9,7 +7,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import server.model.Horse;
 
 
-public class HorseListViewController
+public class RacerListViewController
 {
   @FXML TableView<Horse> tableView;
   @FXML TableColumn <Horse, Integer> horseId;
@@ -17,10 +15,10 @@ public class HorseListViewController
   @FXML TableColumn <Horse, Integer> speedMin;
   @FXML TableColumn <Horse, Integer> speedMax;
 
-  private HorseListVM horseListVM;
+  private RacerListVM racerListVM;
 
-  public HorseListViewController(HorseListVM horseListVM){
-    this.horseListVM=horseListVM;
+  public RacerListViewController(RacerListVM racerListVM){
+    this.racerListVM = racerListVM;
   }
 
   public void initialize(){
@@ -29,7 +27,7 @@ public class HorseListViewController
     speedMin.setCellValueFactory(new PropertyValueFactory<>("speedMin"));
     speedMax.setCellValueFactory(new PropertyValueFactory<>("speedMax"));
 
-    tableView.setItems(horseListVM.getHorses());
+    tableView.setItems(racerListVM.getHorses());
   }
 
 }

@@ -1,31 +1,27 @@
 package client.networking.racers;
 
 import client.networking.SocketService;
-import server.model.Horse;
-import shared.HorseListRequest;
+import client.ui.MessageListener;
+import client.ui.racerList.adminView.CreateEditRacerVM;
+import shared.RacerListRequest;
 import shared.RacerRequest;
 import shared.Request;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SocketRacersClient implements RacersClient
 {
   private SocketService socketService;
+  private List<MessageListener> listeners = new ArrayList<>();
 
   public SocketRacersClient(SocketService socketService){
     this.socketService = socketService;
   }
 
-//  TODO: remove this method and use "getRacerList" instead
-//  expect response from the SocketService (check out socketAuthentication)
-//  @Override public List<Horse> getHorseList()
-//  {
-//    return List.of();
-//  }
-
   @Override public void getRacerList()
   {
-    Request request = new Request("racer", "getRacerList", new HorseListRequest());
+    Request request = new Request("racer", "getRacerList", new RacerListRequest());
     socketService.sendRequest(request);
   }
 
@@ -33,6 +29,10 @@ public class SocketRacersClient implements RacersClient
   {
     Request request = new Request("racer", "getRacer", racerRequest);
     socketService.sendRequest(request);
+  }
+
+  public void addListener(MessageListener listener) {
+    listeners.add(listener);
   }
 
 }
