@@ -2,7 +2,6 @@ package server.persistence.racer;
 
 import server.model.Horse;
 
-import java.security.Key;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

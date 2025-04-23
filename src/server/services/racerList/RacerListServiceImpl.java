@@ -4,24 +4,23 @@ import server.model.Horse;
 import server.model.Racer;
 import server.persistence.racer.RacerRepository;
 import server.persistence.racer.RacerRepositoryImpl;
-import shared.HorseListResponse;
+import shared.RacerListResponse;
 import shared.RacerResponse;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class RacerListServiceImpl implements RacerListService
 {
-  @Override public HorseListResponse getRacerList()
+  @Override public RacerListResponse getRacerList()
   {
     try{
       RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
       ArrayList<Horse> horseList= new ArrayList<>(racerRepository.readAll());
-      return new HorseListResponse(horseList);
+      return new RacerListResponse(horseList);
     }catch (SQLException sqlException){
       sqlException.getMessage();
-      return new HorseListResponse(null);
+      return new RacerListResponse(null);
     }
   }
 

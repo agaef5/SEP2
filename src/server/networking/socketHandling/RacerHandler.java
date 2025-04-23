@@ -2,8 +2,8 @@ package server.networking.socketHandling;
 
 import server.services.racerList.RacerListServiceImpl;
 import server.services.racerList.RacerListService;
-import shared.HorseListRequest;
-import shared.HorseListResponse;
+import shared.RacerListRequest;
+import shared.RacerListResponse;
 import shared.RacerRequest;
 import shared.RacerResponse;
 
@@ -18,7 +18,7 @@ public class RacerHandler implements RequestHandler
   @Override public Object handle(String action, Object payload){
     switch (action) {
       case "getRacerList" -> {
-        if (payload instanceof HorseListRequest horseListRequest) {
+        if (payload instanceof RacerListRequest horseListRequest) {
           return handleRacerListRequest();
         } else {
           throw new IllegalArgumentException("Invalid payload for horse list request");
@@ -36,7 +36,7 @@ public class RacerHandler implements RequestHandler
     }
   }
 
-  private HorseListResponse handleRacerListRequest(){
+  private RacerListResponse handleRacerListRequest(){
     return racerListService.getRacerList();
   }
 

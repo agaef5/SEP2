@@ -31,15 +31,16 @@ public class Horse implements Racer {
 
   @Override public int getPosition() { return position; }
 
-  public String getType() { return type; }
+  @Override public String getType() { return type; }
 
- public void setSpeedMax(int i) { this.speedMax = i; }
+  @Override public void setSpeedMax(int i) { this.speedMax = i; }
 
-  public void setSpeedMin(int i) { this.speedMin = i; }
+  @Override public void setSpeedMin(int i) { this.speedMin = i; }
 
-  public void setName(String s) { this.name = s; }
+  @Override public void setName(String s) { this.name = s; }
 
-  public void setType(String s) { this.type = s; }
+  @Override public void setType(String s) { this.type = s; }
+
 
   @Override public void move() {
     int step = (int) (Math.random() * (speedMax - speedMin + 1)) + speedMin;
