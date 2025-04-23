@@ -19,7 +19,8 @@ public class SocketServiceReceive implements Runnable {
         // Forward the raw JSON string to the SocketService
         socketService.receive(jsonLine);
       }
-    } catch (Exception e) {
+    } catch (IOException e) {
+      System.err.println("An I/O error occurred while reading from the input stream: " + e.getMessage());
       e.printStackTrace();
     }
   }
