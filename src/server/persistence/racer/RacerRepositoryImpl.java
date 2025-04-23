@@ -185,7 +185,7 @@ public class RacerRepositoryImpl implements RacerRepository
       PreparedStatement statement = connection.prepareStatement(
           "UPDATE Horse SET speedMin = ? WHERE id = >");
       statement.setFloat(1, horse.getSpeedMin());
-      statement.setFloat(2, horse.getSpeedMin());
+      statement.setFloat(2, horse.getId());
       statement.executeUpdate();
     }
   }
@@ -197,7 +197,7 @@ public class RacerRepositoryImpl implements RacerRepository
       PreparedStatement statement = connection.prepareStatement(
           "UPDATE Horse SET speedMax = ? WHERE id = ?");
       statement.setFloat(1, horse.getSpeedMax());
-      statement.setFloat(2, horse.getSpeedMax());
+      statement.setFloat(2, horse.getId());
       statement.executeUpdate();
     }
     
