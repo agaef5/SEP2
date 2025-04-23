@@ -12,7 +12,7 @@ public interface RacersClient
 {
   void getRacerList();
   void getRacer(RacerRequest racerRequest);
-  void addListener(MessageListener listener);
+//  void addListener(MessageListener listener);
   void deleteRacer(Racer selectedRacer);
   void updateRacer(Racer selectedRacer);
   void createRacer(Racer newRacer);

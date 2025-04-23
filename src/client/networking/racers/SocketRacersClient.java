@@ -21,7 +21,7 @@ public class SocketRacersClient implements RacersClient {
   }
 
 
-
+@Override
   public void getRacerList()
   {
     JsonElement payload = gson.toJsonTree(new RacerListRequest());
@@ -30,37 +30,44 @@ public class SocketRacersClient implements RacersClient {
   }
 
   @Override
-  public void getRacer(RacerRequest racerRequest) {
-    Request request = new Request("racer", "getRacer", racerRequest);
+  public void getRacer(RacerRequest racerRequest)
+  {
+    JsonElement payload = gson.toJsonTree(racerRequest);
+    Request request = new Request("racer", "getRacer", payload);
     socketService.sendRequest(request);
   }
 
+
   @Override
-  public void createRacer(Racer newRacer) {
-    Request request = new Request("racer", "createRacer", newRacer);
+  public void createRacer(Racer newRacer)
+  {
+    JsonElement payload = gson.toJsonTree(newRacer);
+    Request request = new Request("racer", "createRacer", payload);
     socketService.sendRequest(request);
   }
 
   @Override
   public void updateRacer(Racer selectedRacer) {
-    Request request = new Request("racer", "updateRacer", selectedRacer);
+    JsonElement payload = gson.toJsonTree(selectedRacer);
+    Request request = new Request("racer", "updateRacer", payload);
     socketService.sendRequest(request);
   }
 
   @Override
   public void deleteRacer(Racer selectedRacer) {
-    Request request = new Request("racer", "deleteRacer", selectedRacer);
+    JsonElement payload = gson.toJsonTree(selectedRacer);
+    Request request = new Request("racer", "deleteRacer", payload);
     socketService.sendRequest(request);
   }
 
-  @Override
-  public void addListener(MessageListener listener) {
-    listeners.add(listener);
-  }
-
-  private void handleMessage(Object message) {
-    for (MessageListener listener : listeners) {
-      listener.update(message);
-    }
-  }
+//  @Override
+//  public void addListener(MessageListener listener) {
+//    listeners.add(listener);
+//  }
+//
+//  private void handleMessage(Object message) {
+//    for (MessageListener listener : listeners) {
+//      listener.update(message);
+//    }
+//  }
 }

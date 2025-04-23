@@ -25,7 +25,7 @@ public class CreateEditRacerVM implements MessageListener {
 
   public CreateEditRacerVM(RacersClient client) {
     this.racersClient = client;
-    this.racersClient.addListener(this);
+//    this.racersClient.addListener(this);
     racersClient.getRacerList();
   }
 
@@ -50,7 +50,7 @@ public class CreateEditRacerVM implements MessageListener {
   }
   public void addRacer() {
     Racer newRacer = new Horse(
-        -1, // tijdelijk ID
+        -1, // temporary ID
         racerName.get(),
         speedMin.get(),
         speedMax.get()
