@@ -9,11 +9,13 @@ public class ClientHandler implements Runnable {
   private Socket socket;
   private ObjectInputStream in;
   private ObjectOutputStream out;
-  private final RequestHandler requestHandler;
+  private final RequestHandler authRequestHandler;
+  private final RequestHandler racerRequestHandler;
 
   public ClientHandler(Socket socket) {
     this.socket = socket;
-    this.requestHandler = new RegisterAndLoginHandler();
+    this.authRequestHandler = new RegisterAndLoginHandler();
+    this.racerRequestHandler = new RacerHandler();
   }
 
   @Override
@@ -43,9 +45,8 @@ public class ClientHandler implements Runnable {
     Object result;
 
     switch (request.handler()) {
-      case "auth" -> result = requestHandler.handle(request.action(), request.payload());
-      case "racer" -> {RequestHandler raceRequestHandler = new RacerHandler();
-                        result = raceRequestHandler.handle(request.action(), request.payload());}
+      case "auth" -> result = authRequestHandler.handle(request.action(), request.payload());
+      case "racer" -> {result = racerRequestHandler.handle(request.action(), request.payload());}
       default -> throw new IllegalStateException("Unexpected handler: " + request.handler());
     }
 
