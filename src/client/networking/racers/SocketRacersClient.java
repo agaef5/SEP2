@@ -24,7 +24,7 @@ public class SocketRacersClient implements RacersClient {
 
   public void getRacerList()
   {
-    JsonElement payload = gson.toJsonTree(new RacerListRequest());
+    JsonElement payload = gson.toJsonTree(new RacerListRequest("horse"));
     Request request = new Request("racer", "getRacerList", payload);
     socketService.sendRequest(request);
   }

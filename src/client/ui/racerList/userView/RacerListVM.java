@@ -6,8 +6,11 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import server.model.Horse;
+import server.model.Racer;
 import shared.RacerListResponse;
 import shared.Respond;
+
+import java.util.ArrayList;
 
 public class RacerListVM implements MessageListener
 {
@@ -34,7 +37,15 @@ public class RacerListVM implements MessageListener
     if (message instanceof Respond respond && "racer".equals(respond.type())) {
       Object payload = respond.payload();
       if (payload instanceof RacerListResponse racerListResponse) {
-        Platform.runLater(() -> horses.setAll(racerListResponse.horseList()));
+        Platform.runLater(() -> {
+          ArrayList<Horse> horseList = new ArrayList<>();
+          for (Racer racer : racerListResponse.racerList()) {
+            if (racer instanceof Horse horse) {
+              horseList.add(horse);
+            }
+          }
+          horses.setAll(horseList);
+        });
       }
     }
   }
