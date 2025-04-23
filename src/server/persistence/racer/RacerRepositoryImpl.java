@@ -1,6 +1,8 @@
 package server.persistence.racer;
+
 import server.model.Horse;
 
+import java.security.Key;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +11,13 @@ public class RacerRepositoryImpl implements RacerRepository
 {
   private static RacerRepositoryImpl instance;
   
-  public RacerRepositoryImpl() throws SQLException
+  public RacerRepositoryImpl () throws SQLException
   {
     DriverManager.registerDriver(new org.postgresql.Driver());
   }
   
-  public static synchronized RacerRepositoryImpl getInstance() throws SQLException
+  public static synchronized RacerRepositoryImpl getInstance ()
+      throws SQLException
   {
     if ( instance == null )
     {
@@ -43,8 +46,10 @@ public class RacerRepositoryImpl implements RacerRepository
       if ( keys.next() )
       {
         //TODO: constructor in horse class is kinda wrong. public Horse (Int id, String name,int speedMin, int speedMax)
-        return new Horse( name, 1, 10);
-      }else {
+        return new Horse(keys.getInt(1), name, 1, 10);
+      }
+      else
+      {
         throw new SQLException("No keys generated");
       }
     }
@@ -52,59 +57,121 @@ public class RacerRepositoryImpl implements RacerRepository
   
   @Override public Horse readByID ( int id ) throws SQLException
   {
-    try(Connection connection = getConnection())
+    try ( Connection connection = getConnection() )
     {
-      PreparedStatement statement = connection.prepareStatement("SELECT * FROM Horse WHERE id = ?");
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT * FROM Horse WHERE id = ?");
       statement.setInt(1, id);
       ResultSet resultSet = statement.executeQuery();
-      if ( resultSet.next() ){
+      if ( resultSet.next() )
+      {
         String name = resultSet.getString("name");
         int speedMin = resultSet.getInt("speedMin"); // speed is int/float?
         int speedMax = resultSet.getInt("speedMax");
-        return new Horse(name, speedMin, speedMax);
-      } else {
+        return new Horse(id, name, speedMin, speedMax);
+      }
+      else
+      {
         return null;
       }
     }
-  };
-
-  @Override public ArrayList<Horse> readAll() throws SQLException
-  {
-    try(Connection connection = getConnection())
-    {
-      ArrayList<Horse> horseArrayList = new ArrayList<>();
-      PreparedStatement statement = connection.prepareStatement("SELECT * FROM Horse");
-      ResultSet resultSet = statement.executeQuery();
-      while ( resultSet.next() ){
-        String name = resultSet.getString("name");
-        int speedMin = resultSet.getInt("speedMin"); // speed is int/float?
-        int speedMax = resultSet.getInt("speedMax");
-        horseArrayList.add(new Horse(name, speedMin, speedMax));
-      }
-      return horseArrayList;
-    }
-  };
-  
-  @Override public Horse readBySpeed_min ( float speedMin ) throws SQLException
-  {
-    return null;
   }
   
-  @Override public Horse readBySpeed_max ( float speedMax ) throws SQLException
+  @Override public ArrayList<Horse> readAll () throws SQLException
   {
-    return null;
+    try ( Connection connection = getConnection() )
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT * FROM Horse");
+      ResultSet resultSet = statement.executeQuery();
+      ArrayList<Horse> result = new ArrayList<>();
+      while ( resultSet.next() )
+      {
+        int id = resultSet.getInt("id");
+        String name = resultSet.getString("name");
+        int speedMin = resultSet.getInt("speedMin");
+        int speedMax = resultSet.getInt("speedMax");
+        //        horseArrayList.add(new Horse(id, name, speedMin, speedMax));
+        Horse horse = new Horse(id, name, speedMin, speedMax);
+        result.add(horse);
+      }
+      return result;
+    }
+  }
+  
+  @Override public Horse readBySpeed_min ( int speedMin ) throws SQLException
+  {
+    try ( Connection connection = getConnection() )
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT * FROM Horse WHERE speedMin = ?");
+      statement.setInt(1, speedMin);
+      ResultSet resultSet = statement.executeQuery();
+      if ( resultSet.next() )
+      {
+        int id = resultSet.getInt("id");
+        String name = resultSet.getString("name");
+        int speedMax = resultSet.getInt("speedMax");
+        return new Horse(id, name, speedMin, speedMax);
+      }
+      else
+      {
+        return null;
+      }
+    }
+  }
+  
+  @Override public Horse readBySpeed_max ( int speedMax ) throws SQLException
+  {
+    try ( Connection connection = getConnection() )
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT * FROM Horse WHERE speedMax = ?");
+      statement.setInt(1, speedMax);
+      ResultSet resultSet = statement.executeQuery();
+      if ( resultSet.next() )
+      {
+        int id = resultSet.getInt("id");
+        String name = resultSet.getString("name");
+        int speedMin = resultSet.getInt("speedMin");
+        return new Horse(id, name, speedMin, speedMax);
+      }
+      else
+      {
+        return null;
+      }
+    }
   }
   
   @Override public List<Horse> readByName ( String searchName )
       throws SQLException
   {
-    return List.of();
+    try ( Connection connection = getConnection() )
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "SELECT * FROM Horse WHERE name LIKE ?");
+      statement.setString(1, "%" + searchName + "%");
+      ResultSet resultSet = statement.executeQuery();
+      ArrayList<Horse> result = new ArrayList<>();
+      while ( resultSet.next() )
+      {
+        int id = resultSet.getInt("id");
+        String name = resultSet.getString("name");
+        int speedMin = resultSet.getInt("speedMin");
+        int speedMax = resultSet.getInt("speedMax");
+        Horse horse = new Horse(id, name, speedMin, speedMax);
+        result.add(horse);
+      }
+      return result;
+    }
   }
   
   @Override public void updateName ( Horse horse ) throws SQLException
   {
-    try(Connection connection = getConnection()){
-      PreparedStatement statement = connection.prepareStatement("UPDATE Horse SET name = ? WHERE id = ?");
+    try ( Connection connection = getConnection() )
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "UPDATE Horse SET name = ? WHERE id = ?");
       statement.setString(1, horse.getName());
       statement.setInt(2, horse.getId());
       statement.executeUpdate();
@@ -113,8 +180,10 @@ public class RacerRepositoryImpl implements RacerRepository
   
   @Override public void updateSpeedMin ( Horse horse ) throws SQLException
   {
-    try(Connection connection = getConnection()){
-      PreparedStatement statement = connection.prepareStatement("UPDATE Horse SET speedMin = ? WHERE id = >");
+    try ( Connection connection = getConnection() )
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "UPDATE Horse SET speedMin = ? WHERE id = >");
       statement.setFloat(1, horse.getSpeedMin());
       statement.setFloat(2, horse.getSpeedMin());
       statement.executeUpdate();
@@ -123,8 +192,10 @@ public class RacerRepositoryImpl implements RacerRepository
   
   @Override public void updateSpeedMax ( Horse horse ) throws SQLException
   {
-    try(Connection connection = getConnection()){
-      PreparedStatement statement = connection.prepareStatement("UPDATE Horse SET speedMax = ? WHERE id = ?");
+    try ( Connection connection = getConnection() )
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "UPDATE Horse SET speedMax = ? WHERE id = ?");
       statement.setFloat(1, horse.getSpeedMax());
       statement.setFloat(2, horse.getSpeedMax());
       statement.executeUpdate();
@@ -134,11 +205,13 @@ public class RacerRepositoryImpl implements RacerRepository
   
   @Override public void delete ( Horse horse ) throws SQLException
   {
-    try(Connection connection = getConnection()){
-    PreparedStatement statement = connection.prepareStatement("DELETE FROM Horse WHERE id = ?");
-    statement.setInt(1, horse.getId());
-    statement.executeUpdate();
+    try ( Connection connection = getConnection() )
+    {
+      PreparedStatement statement = connection.prepareStatement(
+          "DELETE FROM Horse WHERE id = ?");
+      statement.setInt(1, horse.getId());
+      statement.executeUpdate();
     }
-  
+    
   }
 }
