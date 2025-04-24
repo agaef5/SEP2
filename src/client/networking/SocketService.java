@@ -41,7 +41,7 @@ public class SocketService implements SocketSubject {
   }
 
   @Override
-  public void notifyListener(Object message) {
+  public void notifyListener(String message) {
     for (MessageListener listener : listeners) {
       listener.update(message);
     }

@@ -4,7 +4,7 @@ import client.ui.MessageListener;
 
 public interface SocketSubject
 {
-  void notifyListener(Object obj);
+  void notifyListener(String json);
   void addListener(MessageListener listener);
   void removeListener(MessageListener listener);
 }
