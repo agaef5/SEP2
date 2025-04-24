@@ -59,47 +59,31 @@ public class ClientHandler implements Runnable {
   }
 
   private void handleClientRequest(Request request) throws IOException {
-    Object result = null;
+    Respond response = null;
+    String responseType = request.action();
+    Object responsePayload = null;
 
     // Deserialize the payload based on handler and action
     switch (request.handler()) {
       case "auth" -> {
-        switch (request.action()) {
-          case "login" -> {
-            // Deserialize LoginRequest from payload
-            LoginRequest loginRequest = gson.fromJson(request.payload(), LoginRequest.class);
-            result = authRequestHandler.handle("login", loginRequest);
-          }
-          case "register" -> {
-            // Deserialize RegisterRequest from payload
-            RegisterRequest registerRequest = gson.fromJson(request.payload(), RegisterRequest.class);
-            result = authRequestHandler.handle("register", registerRequest);
-          }
-        }
+        responsePayload = authRequestHandler.handle(request.action(), request.payload());
       }
       case "racer" -> {
-        switch (request.action()) {
-          case "getRacerList" -> {
-            // Deserialize HorseListRequest from payload
-            RacerListRequest listRequest = gson.fromJson(request.payload(), RacerListRequest.class);
-            result = racerRequestHandler.handle("getRacerList", listRequest);
-          }
-          case "getRacer" -> {
-            // Deserialize RacerRequest from payload
-            RacerRequest racerRequest = gson.fromJson(request.payload(), RacerRequest.class);
-            result = racerRequestHandler.handle("getRacer", racerRequest);
-          }
-          case "createRacer"-> {
-            CreateRacerRequest createRacerRequest = gson.fromJson(request.payload(), CreateRacerRequest.class);
-            Object createRacer = racerRequestHandler.handle("createRacer", createRacerRequest);
-            result = new Respond("createRacer", createRacer);
-          }
-        }
+        responsePayload = racerRequestHandler.handle(request.action(), request.payload());
       }
       default -> throw new IllegalArgumentException("Unknown handler: " + request.handler());
     }
-    // Send back the result
-    send(result);
+    // Send back the response
+    response = wrapResponse(responseType, responsePayload);
+    send(response);
+  }
+
+  public Respond wrapResponse(String responseType, Object responsePayload){
+    if((responseType == null || responseType.isEmpty()) || responsePayload == null)
+    {
+//      TODO: error handling here
+    };
+    return new Respond(responseType, responsePayload);
   }
 
   // Method to send response as JSON
