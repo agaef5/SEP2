@@ -49,7 +49,6 @@ public class CreateEditRacerVM implements MessageListener {
       racerName.set(newVal.getName());
       speedMin.set(newVal.getSpeedMin());
       speedMax.set(newVal.getSpeedMax());
-
     }
   }
 
@@ -83,10 +82,13 @@ public class CreateEditRacerVM implements MessageListener {
   }
 
   @Override
-  public void update(Object message) {
+  public void update(Object message)
+  {
     if (message instanceof Respond respond && respond.payload() instanceof RacerListResponse response) {
       Platform.runLater(() -> racerList.setAll(response.racerList()));
+
     }
+
   }
 
 
