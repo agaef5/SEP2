@@ -52,17 +52,18 @@ public class CreateEditRacerVM implements MessageListener {
 
     }
   }
-  public void addRacer() {
+
+   public void addRacer() {
     Racer newRacer = new Horse(
         -1, // temporary ID
         racerName.get(),
         speedMin.get(),
         speedMax.get()
-
     );
     newRacer.setType(racerType.get());
     CreateRacerRequest createRacerRequest = new CreateRacerRequest(racerType.get(), racerName.get(), speedMin.get(), speedMax.get());
     racersClient.createRacer(createRacerRequest);
+     racersClient.getRacerList();
   }
 
   public void updateRacer() {
@@ -87,4 +88,7 @@ public class CreateEditRacerVM implements MessageListener {
       Platform.runLater(() -> racerList.setAll(response.racerList()));
     }
   }
+
+
+
 }
