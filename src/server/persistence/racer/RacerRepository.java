@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface RacerRepository
 {
-  void create (String racerType, String name, int speedMin, int speedMax) throws SQLException;
+  Racer create (String racerType, String name, int speedMin, int speedMax) throws SQLException;
   Racer readByID (String racerType, int id ) throws SQLException;
   Racer readBySpeed_min (String racerType, int speedMin ) throws SQLException;
   Racer readBySpeed_max (String racerType, int speedMax ) throws SQLException;

@@ -32,10 +32,10 @@ public class RacerHandler implements RequestHandler
         throw new IllegalArgumentException("Invalid payload for horse list request");
         }
       }
-//      case "createRacer"->{
-//        if(payload instanceof Racer racer){
-//          return createRacerRequest(racer);
-//       }
+      case "createRacer"->{
+        if(payload instanceof Racer racer){
+          return createRacerRequest(racer);
+       }
       }
       default -> throw new IllegalArgumentException("Invalid action: " + action);
 
@@ -49,7 +49,7 @@ public class RacerHandler implements RequestHandler
   private RacerResponse handleGetRacerRequest(RacerRequest racerRequest){
     return racerListService.getRacer(racerRequest.racerType(), racerRequest.id());
   }
-//  private RacerResponse createRacerRequest(Racer racer){
-//    racerListService.createRacer(racer); // TODO finish  it later :)
-//  }
+  private RacerResponse createRacerRequest(Racer racer){
+    racerListService.createRacer(racer); // TODO finish  it later :)
+  }
 }

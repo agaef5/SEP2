@@ -33,7 +33,7 @@ public class RacerRepositoryImpl implements RacerRepository
         "postgres", "1234");
   }
   
-  @Override public void create(String racerType, String name, int speedmMin, int speedMax) throws SQLException
+  @Override public Racer create(String racerType, String name, int speedmMin, int speedMax) throws SQLException
   {
     try ( Connection connection = getConnection() )
     {
@@ -45,6 +45,7 @@ public class RacerRepositoryImpl implements RacerRepository
       statement.setString(2, name);
       statement.executeUpdate();
     }
+    // TODO return the created Racer
   }
 
   public Racer createRacerObject(String racerType, ResultSet resultSet)

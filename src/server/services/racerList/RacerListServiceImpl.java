@@ -39,4 +39,20 @@ public class RacerListServiceImpl implements RacerListService
       return new RacerResponse("", null);
     }
   }
+
+  @Override public Racer createRacer(Racer racer)
+  {
+    // TODO maybe make this method better
+    try
+    {
+      RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
+      return racerRepository.create("horse",racer.getName(),racer.getSpeedMin(),racer.getSpeedMax());
+
+    }
+    catch (SQLException sqlException)
+    {
+      sqlException.getMessage();
+      return null;
+    }
+  }
 }
