@@ -34,8 +34,9 @@ public class SocketService implements SocketSubject {
   }
 
   public void receive(String jsonResponse) {
-    System.out.println("Server>> " + jsonResponse);
+    System.out.println("Server>> " + jsonResponse.toString());
     // You could parse jsonResponse into a proper object if you know the type
+
     notifyListener(jsonResponse);
   }
 

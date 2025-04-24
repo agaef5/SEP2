@@ -7,5 +7,5 @@ import shared.RacerResponse;
 public interface RacerListService {
   RacerListResponse getRacerList(String racerType);
   RacerResponse getRacer(String type, int id);
-  Racer createRacer(Racer racer);
+  Racer createRacer(String racerType, String racerName, int speedMin, int speedMax);
 }

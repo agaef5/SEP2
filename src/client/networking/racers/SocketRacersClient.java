@@ -39,9 +39,9 @@ public class SocketRacersClient implements RacersClient {
 
 
   @Override
-  public void createRacer(Racer newRacer)
+  public void createRacer(CreateRacerRequest createRacerRequest)
   {
-    JsonElement payload = gson.toJsonTree(newRacer);
+    JsonElement payload = gson.toJsonTree(createRacerRequest);
     Request request = new Request("racer", "createRacer", payload);
     socketService.sendRequest(request);
   }

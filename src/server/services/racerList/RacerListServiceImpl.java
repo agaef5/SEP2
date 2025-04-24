@@ -40,14 +40,13 @@ public class RacerListServiceImpl implements RacerListService
     }
   }
 
-  @Override public Racer createRacer(Racer racer)
+  @Override public Racer createRacer(String racerType, String racerName, int speedMin, int speedMax)
   {
     // TODO maybe make this method better
     try
     {
       RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
-      return racerRepository.create("horse",racer.getName(),racer.getSpeedMin(),racer.getSpeedMax());
-
+      return racerRepository.create(racerType.toLowerCase(),racerName, speedMin, speedMax);
     }
     catch (SQLException sqlException)
     {

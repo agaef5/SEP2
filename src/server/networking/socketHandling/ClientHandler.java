@@ -90,14 +90,14 @@ public class ClientHandler implements Runnable {
             result = racerRequestHandler.handle("getRacer", racerRequest);
           }
           case "createRacer"-> {
-            Racer racerRequest = gson.fromJson(request.payload(), Racer.class);
-            result = racerRequestHandler.handle("createRacer", racerRequest);
+            CreateRacerRequest createRacerRequest = gson.fromJson(request.payload(), CreateRacerRequest.class);
+            Object createRacer = racerRequestHandler.handle("createRacer", createRacerRequest);
+            result = new Respond("createRacer", createRacer);
           }
         }
       }
       default -> throw new IllegalArgumentException("Unknown handler: " + request.handler());
     }
-
     // Send back the result
     send(result);
   }

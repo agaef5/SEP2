@@ -37,15 +37,25 @@ public class RacerRepositoryImpl implements RacerRepository
   {
     try ( Connection connection = getConnection() )
     {
+      String query = "INSERT INTO " + racerType.toLowerCase() + " (name, speedMin, speedMax) VALUES (?, ?, ?)";
       PreparedStatement statement = connection.prepareStatement(
-          //      TODO: fix this, to insert all data, not only the name
-          "INSERT INTO ? (name) VALUES (?)",
+          query,
           PreparedStatement.RETURN_GENERATED_KEYS);
-      statement.setString(1, racerType);
-      statement.setString(2, name);
+      statement.setString(1, name);
+      statement.setInt(2, speedmMin);
+      statement.setInt(3, speedMax);
       statement.executeUpdate();
+      ResultSet resultSet = statement.getGeneratedKeys();
+      if (resultSet.next())
+      {
+        //TODO: constructor in horse class is kinda wrong. public Horse (Int id, String name,int speedMin, int speedMax)
+        return createRacerObject(racerType, resultSet);
+      }
+      else
+      {
+        throw new SQLException("No keys generated");
+      }
     }
-    // TODO return the created Racer
   }
 
   public Racer createRacerObject(String racerType, ResultSet resultSet)
@@ -91,12 +101,12 @@ public class RacerRepositoryImpl implements RacerRepository
   {
     try ( Connection connection = getConnection() )
     {
+      String query = "SELECT * FROM " + racerType.toLowerCase();
       PreparedStatement statement = connection.prepareStatement(
-          "SELECT * FROM ?");
-      statement.setString(1, racerType.toLowerCase());
+          query);
       ResultSet resultSet = statement.executeQuery();
       ArrayList<Racer> result = new ArrayList<>();
-      while (resultSet.next())
+      while (resultSet != null && resultSet.next())
       {
         Racer racer = createRacerObject(racerType, resultSet);
         result.add(racer);
@@ -114,7 +124,7 @@ public class RacerRepositoryImpl implements RacerRepository
       statement.setString(1, racerType.toLowerCase());
       statement.setInt(2, speedMin);
       ResultSet resultSet = statement.executeQuery();
-      if (resultSet.next())
+      if (resultSet!= null && resultSet.next())
       {
         return createRacerObject(racerType, resultSet);
       }
@@ -134,7 +144,7 @@ public class RacerRepositoryImpl implements RacerRepository
       statement.setString(1, racerType.toLowerCase());
       statement.setInt(2, speedMax);
       ResultSet resultSet = statement.executeQuery();
-      if ( resultSet.next() )
+      if (resultSet!= null && resultSet.next())
       {
         return createRacerObject(racerType, resultSet);
       }
@@ -156,7 +166,7 @@ public class RacerRepositoryImpl implements RacerRepository
       statement.setString(2, "%" + searchName + "%");
       ResultSet resultSet = statement.executeQuery();
       ArrayList<Racer> result = new ArrayList<>();
-      while ( resultSet.next() )
+      while (resultSet!= null && resultSet.next())
       {
         Racer racer = createRacerObject(racerType , resultSet);
         result.add(racer);

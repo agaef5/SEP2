@@ -21,4 +21,4 @@ create table sep2.horse(
     name varchar,
     speedMin int,
     speedMax int
-)
+);

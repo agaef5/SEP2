@@ -3,10 +3,7 @@ package server.networking.socketHandling;
 import server.model.Racer;
 import server.services.racerList.RacerListServiceImpl;
 import server.services.racerList.RacerListService;
-import shared.RacerListRequest;
-import shared.RacerListResponse;
-import shared.RacerRequest;
-import shared.RacerResponse;
+import shared.*;
 
 public class RacerHandler implements RequestHandler
 {
@@ -33,13 +30,13 @@ public class RacerHandler implements RequestHandler
         }
       }
       case "createRacer"->{
-        if(payload instanceof Racer racer){
-          return createRacerRequest(racer);
+        if(payload instanceof CreateRacerRequest createRacerRequest){
+          return createRacerRequest(createRacerRequest);
        }
       }
       default -> throw new IllegalArgumentException("Invalid action: " + action);
-
     }
+    return null;
   }
 
   private RacerListResponse handleRacerListRequest(RacerListRequest racerListRequest){
@@ -49,7 +46,9 @@ public class RacerHandler implements RequestHandler
   private RacerResponse handleGetRacerRequest(RacerRequest racerRequest){
     return racerListService.getRacer(racerRequest.racerType(), racerRequest.id());
   }
-  private RacerResponse createRacerRequest(Racer racer){
-    racerListService.createRacer(racer); // TODO finish  it later :)
+  private CreateRacerResponse createRacerRequest(CreateRacerRequest createRacerRequest){
+    Racer createdRacer = racerListService.createRacer(createRacerRequest.racerType(),
+        createRacerRequest.name(), createRacerRequest.speedMin(), createRacerRequest.speedMax() );
+    return new CreateRacerResponse(createdRacer);
   }
 }
