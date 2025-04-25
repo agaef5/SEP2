@@ -1,6 +1,7 @@
 package server.networking.socketHandling;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import server.services.authentication.AuthServiceImpl;
 import server.services.authentication.AuthentificationService;
 import shared.LoginRequest;
@@ -17,7 +18,7 @@ public class RegisterAndLoginHandler implements RequestHandler {
   }
 
   @Override
-  public Object handle(String action, Object payload) {
+  public Object handle(String action, JsonElement payload) {
     switch (action) {
       case "login" -> {
         LoginRequest loginRequest = gson.fromJson(gson.toJson(payload), LoginRequest.class);

@@ -1,8 +1,11 @@
 package client.ui;
 
+import com.google.gson.JsonElement;
+
 public interface MessageListener
 {
-  void update(String message);
+//  void update(String message);
+  void update(String type, String payload);
 }
 //this is how the update method could look like
 

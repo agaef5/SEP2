@@ -1,5 +1,10 @@
 package server.networking.socketHandling;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+
 import server.model.Racer;
 import server.services.racerList.RacerListServiceImpl;
 import server.services.racerList.RacerListService;
@@ -8,29 +13,35 @@ import shared.*;
 public class RacerHandler implements RequestHandler
 {
   private final RacerListService racerListService;
+  private final Gson gson = new Gson();
+
 
   public RacerHandler(){
     this.racerListService = new RacerListServiceImpl();
   }
 
-  @Override public Object handle(String action, Object payload){
+  @Override public Object handle(String action, JsonElement payload){
     switch (action) {
       case "getRacerList" -> {
-        if (payload instanceof RacerListRequest racerListRequest) {
+        Object request = gson.fromJson(payload, RacerListRequest.class);
+        if (request instanceof RacerListRequest racerListRequest) {
           return handleRacerListRequest(racerListRequest);
         } else {
           throw new IllegalArgumentException("Invalid payload for horse list request");
         }
       }
       case "getRacer" -> {
-        if(payload instanceof RacerRequest racerRequest){
+        Object request = gson.fromJson(payload, RacerRequest.class);
+        if(request instanceof RacerRequest racerRequest){
           return handleGetRacerRequest(racerRequest);
         }else {
         throw new IllegalArgumentException("Invalid payload for horse list request");
         }
       }
       case "createRacer"->{
-        if(payload instanceof CreateRacerRequest createRacerRequest){
+
+        Object request = gson.fromJson(payload, CreateRacerRequest.class);
+        if(request instanceof CreateRacerRequest createRacerRequest){
           return createRacerRequest(createRacerRequest);
        }
       }

@@ -4,15 +4,14 @@ import client.networking.SocketService;
 import client.networking.racers.RacersClient;
 import client.ui.MessageListener;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import server.model.Horse;
 import server.model.Racer;
-import shared.CreateRacerRequest;
-import shared.Respond;
-import shared.RacerListResponse;
+import shared.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +54,6 @@ public class CreateEditRacerVM implements MessageListener {
       racerName.set(newVal.getName());
       speedMin.set(newVal.getSpeedMin());
       speedMax.set(newVal.getSpeedMax());
-
     }
   }
 
@@ -66,10 +64,11 @@ public class CreateEditRacerVM implements MessageListener {
         speedMin.get(),
         speedMax.get()
     );
+
     newRacer.setType(racerType.get());
     CreateRacerRequest createRacerRequest = new CreateRacerRequest(racerType.get(), racerName.get(), speedMin.get(), speedMax.get());
     racersClient.createRacer(createRacerRequest);
-     racersClient.getRacerList();
+    racersClient.getRacerList();
   }
 
   public void updateRacer() {
@@ -88,52 +87,51 @@ public class CreateEditRacerVM implements MessageListener {
     }
   }
 
+  public void updateRacerList(RacerListResponse racerListResponse){
+    Platform.runLater(() -> {
+      List<Racer> dummyList = List.of(new Horse(1, "Test", 10, 20));
+      racerList.setAll(dummyList); // Should instantly update ListView
+    });
 
-//  public void updateRacerList(RacerListResponse racerListResponse)
-//  {
-//    List<Racer> racerList = racerListResponse.racerList();
-//    for (Racer racer: racerList)
-//    {
-//      getRacerList().add(racer);
-//    }
-//
-//  }
+    if(racerListResponse == null) return;
+
+    Platform.runLater(() -> {
+      ArrayList<Horse> horseList = new ArrayList<>();
+      for (Racer racer : racerListResponse.racerList()) {
+        if (racer instanceof Horse horse) {
+          horseList.add(horse);
+        }
+      }
+      racerList.setAll(horseList);
+      System.out.println("List updated");
+    });
+  }
 
   @Override
-  public void update(String message) {
-    // TODO Ensure the server consistently uses a single response format.
-    //
-    // 1. Refactor all server endpoints to wrap their output in the Respond class:
-    //
-    // 2. In each handler, replace direct payload returns with:
-    //       return new Respond(payload);
-    //
-    //
-    // By standardizing on Respond, the client can reliably deserialize every message with:
-    //     Respond resp = gson.fromJson(json, Respond.class);
-    //     List<Racer> racers = resp.getRacerList();
-
-    // now it doesnt work bc the respond we are getting is not in format of "Respond"
-
-
-
-
-    System.out.println("Received>> "+message);
-    Respond respond = gson.fromJson(message, Respond.class);
-      if (respond.payload() instanceof RacerListResponse racerListResponse) {
-        Platform.runLater(() -> {
-          ArrayList<Horse> horseList = new ArrayList<>();
-          for (Racer racer : racerListResponse.racerList()) {
-            if (racer instanceof Horse horse) {
-              horseList.add(horse);
-            }
-          }
-          racerList.setAll(horseList);
-          System.out.println("List updated");
-        });
-      }
+  public void update(String type, String payload){
+    System.out.println("Message received: " + type);
+    switch (type) {
+      case "racerList":
+        RacerListResponse racerListResponse = gson.fromJson(payload, RacerListResponse.class);
+        updateRacerList(racerListResponse);
+        break;
+      case "createRacer":
+        CreateRacerResponse createRacerResponse = gson.fromJson(payload, CreateRacerResponse.class);
+          handleCreateRacerResponse(createRacerResponse);
+        break;
+      case "editRacer":
+        break;
     }
   }
+
+  private void handleCreateRacerResponse(CreateRacerResponse createRacerResponse)
+  {
+    racersClient.getRacerList();
+    if (createRacerResponse.racer() instanceof Horse horse){
+      setSelectedRacer(horse);
+    }
+  }
+}
 
 
 

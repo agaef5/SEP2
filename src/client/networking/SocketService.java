@@ -3,6 +3,7 @@ package client.networking;
 import client.ui.MessageListener;
 import com.google.gson.Gson;
 import shared.Request;
+import shared.Respond;
 
 import java.io.*;
 import java.net.Socket;
@@ -35,15 +36,20 @@ public class SocketService implements SocketSubject {
 
   public void receive(String jsonResponse) {
     System.out.println("Server>> " + jsonResponse.toString());
-    // You could parse jsonResponse into a proper object if you know the type
+    Respond respond = gson.fromJson(jsonResponse, Respond.class);
 
-    notifyListener(jsonResponse);
+    if(respond == null || respond.payload() == null) return;{
+//      TODO: error handling
+    }
+    String payload = gson.toJson(respond.payload());
+
+    notifyListener(respond.type(), payload);
   }
 
   @Override
-  public void notifyListener(String message) {
+  public void notifyListener(String type, String payload) {
     for (MessageListener listener : listeners) {
-      listener.update(message);
+      listener.update(type, payload);
     }
   }
 
