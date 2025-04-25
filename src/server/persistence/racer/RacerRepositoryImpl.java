@@ -81,10 +81,10 @@ public class RacerRepositoryImpl implements RacerRepository
   {
     try ( Connection connection = getConnection() )
     {
+      String query = "SELECT * FROM " + racerType.toLowerCase() + " WHERE id = ?;";
       PreparedStatement statement = connection.prepareStatement(
-          "SELECT * FROM ? WHERE id = ?");
-      statement.setString(1, racerType.toLowerCase());
-      statement.setInt(2, id);
+          query);
+      statement.setInt(1, id);
       ResultSet resultSet = statement.executeQuery();
       if ( resultSet.next() )
       {
@@ -119,10 +119,10 @@ public class RacerRepositoryImpl implements RacerRepository
   {
     try ( Connection connection = getConnection() )
     {
+      String query = "SELECT * FROM " + racerType.toLowerCase() + " WHERE speedMin = ?";
       PreparedStatement statement = connection.prepareStatement(
-          "SELECT * FROM ? WHERE speedMin = ?");
-      statement.setString(1, racerType.toLowerCase());
-      statement.setInt(2, speedMin);
+          query);
+      statement.setInt(1, speedMin);
       ResultSet resultSet = statement.executeQuery();
       if (resultSet!= null && resultSet.next())
       {
@@ -139,10 +139,10 @@ public class RacerRepositoryImpl implements RacerRepository
   {
     try ( Connection connection = getConnection() )
     {
+      String query = "SELECT * FROM " + racerType.toLowerCase() + " WHERE speedMin = ?";
       PreparedStatement statement = connection.prepareStatement(
-          "SELECT * FROM ? WHERE speedMax = ?");
-      statement.setString(1, racerType.toLowerCase());
-      statement.setInt(2, speedMax);
+          query);
+      statement.setInt(1, speedMax);
       ResultSet resultSet = statement.executeQuery();
       if (resultSet!= null && resultSet.next())
       {
@@ -160,10 +160,10 @@ public class RacerRepositoryImpl implements RacerRepository
   {
     try ( Connection connection = getConnection() )
     {
+      String query = "SELECT * FROM " + racerType.toLowerCase() + " WHERE name LIKE ?";
       PreparedStatement statement = connection.prepareStatement(
-          "SELECT * FROM ? WHERE name LIKE ?");
-      statement.setString(1, racerType);
-      statement.setString(2, "%" + searchName + "%");
+          query);
+      statement.setString(1, "%" + searchName + "%");
       ResultSet resultSet = statement.executeQuery();
       ArrayList<Racer> result = new ArrayList<>();
       while (resultSet!= null && resultSet.next())
@@ -179,12 +179,13 @@ public class RacerRepositoryImpl implements RacerRepository
   {
     try ( Connection connection = getConnection() )
     {
-      PreparedStatement statement = connection.prepareStatement(
-          "UPDATE ? SET name = ?, speedMin = ?, speedMax = ? WHERE id = ?");
-      statement.setString(1, racer.getClass().getName().toLowerCase());
-      statement.setString(2, racer.getName());
-      statement.setInt(3, racer.getSpeedMin());
-      statement.setInt(2, racer.getSpeedMax());
+      String query = "UPDATE " + racer.getClass().getName().toLowerCase()
+          + " name = ?, speedMin = ?, speedMax = ? WHERE id = ?";
+      PreparedStatement statement = connection.prepareStatement(query);
+      statement.setString(1, racer.getName());
+      statement.setInt(2, racer.getSpeedMin());
+      statement.setInt(3, racer.getSpeedMax());
+      statement.setInt(4, racer.getId());
       statement.executeUpdate();
     }
   }
@@ -193,10 +194,11 @@ public class RacerRepositoryImpl implements RacerRepository
   {
     try ( Connection connection = getConnection() )
     {
+      String query = "DELETE FROM " + racer.getClass().getName().toLowerCase()
+          + "WHERE id = ?";
       PreparedStatement statement = connection.prepareStatement(
-          "DELETE FROM ? WHERE id = ?");
-      statement.setString(1, racer.getClass().getName().toLowerCase());
-      statement.setInt(2, racer.getId());
+          query);
+      statement.setInt(1, racer.getId());
       statement.executeUpdate();
     }
     
