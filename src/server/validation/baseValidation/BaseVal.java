@@ -8,6 +8,6 @@ public class BaseVal
 
   public static boolean valPosInt(int integer){
 //    validate positive int
-    return integer < 0;
+    return integer > 0;
   }
 }
