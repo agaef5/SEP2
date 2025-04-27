@@ -63,15 +63,29 @@ public class ClientHandler implements Runnable {
     String responseType = request.action();
     Object responsePayload = null;
 
-    // Deserialize the payload based on handler and action
-    switch (request.handler()) {
-      case "auth" -> {
-        responsePayload = authRequestHandler.handle(request.action(), request.payload());
+    try
+    {
+      // Deserialize the payload based on handler and action
+      switch (request.handler())
+      {
+        case "auth" ->
+        {
+          responsePayload = authRequestHandler.handle(request.action(),
+              request.payload());
+        }
+        case "racer" ->
+        {
+          responsePayload = racerRequestHandler.handle(request.action(),
+              request.payload());
+        }
+        default -> throw new IllegalArgumentException(
+            "Unknown handler: " + request.handler());
       }
-      case "racer" -> {
-        responsePayload = racerRequestHandler.handle(request.action(), request.payload());
-      }
-      default -> throw new IllegalArgumentException("Unknown handler: " + request.handler());
+    }catch (Exception e){
+      e.printStackTrace();
+//      If error occurs, send the "Error" response
+      response = wrapResponse("error", new ErrorResponse("Server processing error", e.getMessage()));
+      send(response);
     }
     // Send back the response
     response = wrapResponse(responseType, responsePayload);
