@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class RacerListServiceImpl implements RacerListService
 {
+
   @Override public RacerListResponse getRacerList(String racerType)
   {
     try{
