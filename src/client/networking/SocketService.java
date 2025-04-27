@@ -1,7 +1,10 @@
 package client.networking;
 
 import client.ui.MessageListener;
+import client.validation.ErrorHandler;
+import client.validation.RespondValidate;
 import com.google.gson.Gson;
+import server.networking.exceptions.InvalidMessageException;
 import shared.Request;
 import shared.Respond;
 
@@ -13,9 +16,11 @@ public class SocketService implements SocketSubject {
   private final BufferedWriter out;
   private final Gson gson = new Gson();
   private final ArrayList<MessageListener> listeners = new ArrayList<>();
+  private  ErrorHandler errorHandler;
 
   public SocketService(String host, int port) throws IOException {
     Socket socket = new Socket(host, port);
+    errorHandler = new ErrorHandler(this);
 
     this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -30,20 +35,19 @@ public class SocketService implements SocketSubject {
       out.newLine(); // very important to mark the end of the JSON message
       out.flush();
     } catch (IOException e) {
-      e.printStackTrace();
+      ErrorHandler.handleError(e, "SocketService");
     }
   }
 
   public void receive(String jsonResponse) {
     System.out.println("Server>> " + jsonResponse.toString());
-    Respond respond = gson.fromJson(jsonResponse, Respond.class);
-
-    if(respond == null || respond.payload() == null) return;{
-//      TODO: error handling
+    try
+    {
+      Respond respond = RespondValidate.decode(jsonResponse);
+      notifyListener(respond.type(), (String) respond.payload());
+    }catch (InvalidMessageException e){
+      ErrorHandler.handleError(e, "RespondValidate");
     }
-    String payload = gson.toJson(respond.payload());
-
-    notifyListener(respond.type(), payload);
   }
 
   @Override

@@ -1,5 +1,7 @@
 package client.networking;
 
+import client.validation.RespondValidate;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -17,12 +19,12 @@ public class SocketServiceReceive implements Runnable {
     try {
       String jsonLine;
       while ((jsonLine = in.readLine()) != null) {
+
         // Forward the raw JSON string to the SocketService
         socketService.receive(jsonLine);
       }
     } catch (IOException e) {
-      System.err.println("An I/O error occurred while reading from the input stream: " + e.getMessage());
-      e.printStackTrace();
+      System.err.println("Socket read error: " + e.getMessage());
     }
   }
 }
