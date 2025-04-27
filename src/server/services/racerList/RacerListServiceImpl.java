@@ -4,7 +4,6 @@ import server.model.Horse;
 import server.model.Racer;
 import server.persistence.racer.RacerRepository;
 import server.persistence.racer.RacerRepositoryImpl;
-import server.validation.baseValidation.BaseTypeValidation;
 import server.validation.baseValidation.BaseVal;
 import shared.RacerListResponse;
 import shared.RacerResponse;

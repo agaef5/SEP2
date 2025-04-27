@@ -48,13 +48,16 @@ public class RacerRepositoryImpl implements RacerRepository
       ResultSet resultSet = statement.getGeneratedKeys();
       if (resultSet.next())
       {
-        //TODO: constructor in horse class is kinda wrong. public Horse (Int id, String name,int speedMin, int speedMax)
         return createRacerObject(racerType, resultSet);
       }
       else
       {
-        throw new SQLException("No keys generated");
+        throw new SQLException("Failed to generate key for new racer");
       }
+    } catch (SQLException e) {
+      // Log the exception with additional context
+      System.err.println("Error executing create query for racerType: " + racerType + ", name: " + name);
+      throw new SQLException("Error creating racer", e);
     }
   }
 
