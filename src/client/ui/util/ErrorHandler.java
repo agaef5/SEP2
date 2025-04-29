@@ -27,8 +27,6 @@ public class ErrorHandler {
 
   // Handle client-side errors (e.g., validation errors, input errors)
   private static void handleClientError(Exception e) {
-    // You can decide to show the error message to the client here
-    // For example, a UI-friendly message for the client:
     String message = "An error occurred. Please try again.";
     displayErrorToClient(message);  // Use appropriate method to show the message to the client
   }
@@ -45,6 +43,7 @@ public class ErrorHandler {
   private static void sendErrorToServer(Exception e, String errorSource) {
     String detailedMessage = "Error in " + errorSource + ": " + e.getMessage();
 
+//    TODO: fix this one, find a way to send the error to the server
     Gson gson = new Gson();
     Request request = new Request("error", "error", gson.toJsonTree(detailedMessage));
   }
@@ -52,6 +51,7 @@ public class ErrorHandler {
   // Display error to the client (for UI or user communication)
   private static void displayErrorToClient(String message) {
     // Code to display the message to the user (e.g., a popup, toast, or alert in the UI)
+//    TODO: display error to client
     System.out.println(message);  // This is for example purposes; use a UI framework in a real app
   }
 

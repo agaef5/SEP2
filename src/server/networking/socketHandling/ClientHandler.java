@@ -92,7 +92,7 @@ public class ClientHandler implements Runnable {
     send(response);
   }
 
-  public Respond wrapResponse(String responseType, Object responsePayload){
+  private Respond wrapResponse(String responseType, Object responsePayload){
     if((responseType == null || responseType.isEmpty()) || responsePayload == null)
     {
 //      TODO: error handling here
