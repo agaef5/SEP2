@@ -1,4 +1,4 @@
-package client.validation.exceptions;
+package client.ui.util.exceptions;
 
 public class InvalidMessageException extends Exception
 {
