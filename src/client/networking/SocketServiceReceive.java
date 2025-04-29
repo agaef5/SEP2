@@ -1,7 +1,5 @@
 package client.networking;
 
-import client.validation.RespondValidate;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 

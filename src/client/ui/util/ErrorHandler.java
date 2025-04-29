@@ -1,7 +1,7 @@
-package client.validation;
+package client.ui.util;
 
 import client.networking.SocketService;
-import client.validation.exceptions.InvalidMessageException;
+import client.ui.util.exceptions.InvalidMessageException;
 import com.google.gson.Gson;
 import shared.Request;
 

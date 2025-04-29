@@ -1,8 +1,8 @@
 package client.networking;
 
 import client.ui.MessageListener;
-import client.validation.ErrorHandler;
-import client.validation.RespondValidate;
+import client.ui.util.ErrorHandler;
+import client.ui.util.RespondValidate;
 import com.google.gson.Gson;
 import server.networking.exceptions.InvalidMessageException;
 import shared.Request;

@@ -1,4 +1,4 @@
-package client.validation;
+package client.ui.util;
 
 import com.google.gson.Gson;
 import server.networking.exceptions.InvalidMessageException;
