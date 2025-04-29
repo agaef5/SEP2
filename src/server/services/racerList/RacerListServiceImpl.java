@@ -17,6 +17,7 @@ public class RacerListServiceImpl implements RacerListService
 
   @Override public RacerListResponse getRacerList(String racerType)
   {
+    validateRacerType(racerType);
     try{
       RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
       ArrayList<Racer> racerList = new ArrayList<>(racerRepository.readAll(racerType));
@@ -29,6 +30,7 @@ public class RacerListServiceImpl implements RacerListService
 
   @Override public RacerResponse getRacer(String racerType, int id)
   {
+    validateRacerType(racerType);
     if(id < 0) throw new IllegalArgumentException("Incorrect id");
     try{
       RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
@@ -45,9 +47,7 @@ public class RacerListServiceImpl implements RacerListService
 //  Data validation
     if(BaseVal.validate(racerName) || BaseVal.validate(racerType)) throw new  IllegalArgumentException("Cannot create new racer. Arguments are empty.");
     if(speedMin >= speedMax) throw new  IllegalArgumentException("SpeedMin cannot be bigger than speedMax");
-    List<String> allowedTypes = List.of("horse");
-    if (!allowedTypes.contains(racerType.toLowerCase()))
-      throw new IllegalArgumentException("No such type of racer exists");
+    validateRacerType(racerType);
     try
     {
       RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
@@ -58,5 +58,11 @@ public class RacerListServiceImpl implements RacerListService
       System.err.println("Database error when creating racer: " + sqlException.getMessage());
       throw new RuntimeException("Failed to create racer", sqlException);
     }
+  }
+
+  private void validateRacerType(String racerType){
+    List<String> allowedTypes = List.of("horse");
+    if (!allowedTypes.contains(racerType.toLowerCase()))
+      throw new IllegalArgumentException("No such type of racer exists");
   }
 }
