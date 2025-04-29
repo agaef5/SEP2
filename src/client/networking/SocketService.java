@@ -38,13 +38,15 @@ public class SocketService implements SocketSubject {
       ErrorHandler.handleError(e, "SocketService");
     }
   }
-
   public void receive(String jsonResponse) {
     System.out.println("Server>> " + jsonResponse.toString());
     try
     {
-      Respond respond = RespondValidate.decode(jsonResponse);
-      notifyListener(respond.type(), (String) respond.payload());
+      System.out.println("trying to decode the Respond");
+      Respond respond = gson.fromJson(jsonResponse,Respond.class);
+      Respond respondDecoded = RespondValidate.decode(respond);
+      System.out.println("respond decoded " + respondDecoded);
+      notifyListener(respondDecoded.type(), (String) respondDecoded.payload());
     }catch (InvalidMessageException e){
       ErrorHandler.handleError(e, "RespondValidate");
     }
@@ -54,6 +56,7 @@ public class SocketService implements SocketSubject {
   public void notifyListener(String type, String payload) {
     for (MessageListener listener : listeners) {
       listener.update(type, payload);
+      System.out.println("Notifing the listeners");
     }
   }
 

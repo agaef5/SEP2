@@ -3,8 +3,9 @@ package client.ui.racerList.adminView;
 import client.networking.SocketService;
 import client.networking.racers.RacersClient;
 import client.ui.MessageListener;
+import client.ui.util.RacerDeserializer;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.google.gson.GsonBuilder;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -14,7 +15,6 @@ import server.model.Racer;
 import shared.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CreateEditRacerVM implements MessageListener {
 
@@ -35,7 +35,9 @@ public class CreateEditRacerVM implements MessageListener {
     this.socketService = socketService;
     this.socketService.addListener(this);
     racersClient.getRacerList();
-    this.gson = new Gson();
+    this.gson = new GsonBuilder()
+        .registerTypeAdapter(Racer.class, new RacerDeserializer())
+        .create();
   }
 
   public Property<String> racerTypeProperty() { return racerType; }
@@ -88,14 +90,10 @@ public class CreateEditRacerVM implements MessageListener {
   }
 
   public void updateRacerList(RacerListResponse racerListResponse){
-    Platform.runLater(() -> {
-      List<Racer> dummyList = List.of(new Horse(1, "Test", 10, 20));
-      racerList.setAll(dummyList); // Should instantly update ListView
-    });
-
     if(racerListResponse == null) return;
 
     Platform.runLater(() -> {
+      System.out.println("Platform.runLater: racers = " + racerListResponse.racerList());
       ArrayList<Horse> horseList = new ArrayList<>();
       for (Racer racer : racerListResponse.racerList()) {
         if (racer instanceof Horse horse) {
@@ -111,8 +109,9 @@ public class CreateEditRacerVM implements MessageListener {
   public void update(String type, String payload){
     System.out.println("Message received: " + type);
     switch (type) {
-      case "racerList":
+      case "getRacerList":
         RacerListResponse racerListResponse = gson.fromJson(payload, RacerListResponse.class);
+        System.out.println("Parsed racers: " + racerListResponse.racerList());
         updateRacerList(racerListResponse);
         break;
       case "createRacer":

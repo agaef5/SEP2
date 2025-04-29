@@ -28,6 +28,7 @@ public class ClientTest extends Application
     SocketAuthenticationClient socketauth = new SocketAuthenticationClient(socketservice);
     SocketRacersClient socketRacersClient = new SocketRacersClient(socketservice);
     CreateEditRacerVM createEditRacerVM = new CreateEditRacerVM(socketRacersClient,socketservice);
+    socketservice.addListener(createEditRacerVM);
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/racerList/adminView/CreateEditRacer.fxml"));
     Parent root = loader.load();
     CreateEditRacerController controller = loader.getController();
