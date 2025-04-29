@@ -1,6 +1,5 @@
-package client.ui.racerList.adminView;
+package client.ui.racerList.adminView.horseList;
 
-import client.ui.racerList.adminView.CreateEditRacerVM;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;

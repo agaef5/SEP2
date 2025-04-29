@@ -2,15 +2,14 @@ package client.ui.racerList.adminView;
 
 import client.networking.SocketService;
 import client.networking.racers.RacersClient;
+import client.ui.racerList.adminView.horseList.CreateEditRacerVM;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import server.model.Horse;
 import server.model.Racer;
 import shared.CreateRacerRequest;
-import shared.CreateRacerResponse;
 import shared.RacerListResponse;
 
 import java.util.List;

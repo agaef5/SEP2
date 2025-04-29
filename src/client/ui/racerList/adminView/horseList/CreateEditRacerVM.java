@@ -1,4 +1,4 @@
-package client.ui.racerList.adminView;
+package client.ui.racerList.adminView.horseList;
 
 import client.networking.SocketService;
 import client.networking.racers.RacersClient;
