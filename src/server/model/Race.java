@@ -83,7 +83,7 @@ public void updateListenersOnRaceStarted() // notify Listeners about starting of
 
 
 
-  @Override public void run()
+  @Override public void run()//TODO Finish late the run() method
   {
     try {
       // Wait until the scheduled start time
