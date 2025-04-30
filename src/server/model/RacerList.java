@@ -4,11 +4,19 @@ import java.util.ArrayList;
 
 public class RacerList
 {
-  private ArrayList<Racer> racers;
+  private final ArrayList<Racer> racers;
+  private final Integer capacity;
 
   public RacerList()
   {
     this.racers = new ArrayList<Racer>();
+    this.capacity=null;
+  }
+
+  public RacerList(int capacity)
+  {
+    this.racers = new ArrayList<>();
+    this.capacity=capacity;
   }
 
   public ArrayList<Racer> getList()
@@ -40,9 +48,13 @@ public class RacerList
     return null;
   }
 
-  public void addToList(Racer racer)
+  public boolean addToList(Racer racer)
   {
-    racers.add(racer);
+    if (capacity!=null && racers.size()>=capacity)
+    {
+      return false;
+    }
+    return racers.add(racer);
   }
 
   public void removeFromList(Racer racer)
@@ -60,6 +72,11 @@ public class RacerList
         break;
       }
     }
+  }
+
+  public Integer getCapacity()
+  {
+    return capacity;
   }
 
 
