@@ -11,7 +11,7 @@ public class RacerRepositoryImpl implements RacerRepository
 {
   private static RacerRepositoryImpl instance;
   
-  public RacerRepositoryImpl() throws SQLException
+  private RacerRepositoryImpl() throws SQLException
   {
     DriverManager.registerDriver(new org.postgresql.Driver());
   }
