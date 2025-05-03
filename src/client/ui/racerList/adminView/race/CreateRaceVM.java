@@ -8,10 +8,7 @@ import server.model.Race;
 import server.model.RaceTrack;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class CreateRaceVM
 {
@@ -21,17 +18,15 @@ public class CreateRaceVM
   private ObjectProperty<RaceTrack> selectedRaceTrack = new SimpleObjectProperty<>();
   private ObservableList<RaceTrack> availableRaceTracks = FXCollections.observableArrayList();
 
-  // should this come from server??!!
-  private ObservableList<Horse> availableHorses = FXCollections.observableArrayList();
-
   public CreateRaceVM()
   {
     //fill in test data
-    availableRaceTracks.addAll( /* where from? */);
-    availableHorses.addAll( /* where from? */);
-  }
+    availableRaceTracks.addAll( /* where from? */
+    new RaceTrack("Dirt Track", 1000, "Texas"),
+    new RaceTrack("Green Field", 2000, "England"));
+      }
 
-  // Properties
+  // getters for Properties
   public StringProperty raceNameProperty()
   {
     return raceName;
@@ -57,28 +52,28 @@ public class CreateRaceVM
   {
     return raceName.get() != null && !raceName.get().isBlank()
         && selectedRaceTrack.get() != null && horseCount.get() > 0
-        && horseCount.get() <= getAvailableHorses().size();
-  }
-
-  public ObservableList<Horse> getAvailableHorses() {
-    return availableHorses.filtered(h -> !h.isInRace());
+        && horseCount.get() >0;
   }
 
   // main function, but needs filling
   public void createRace()
   {
-   //
-  }
+    try {
+      Race race = new Race(
+          raceName.get(),
+          horseCount.get()
+      );
 
-  private List<Horse> pickRandomHorses(int count)
-  {
-    List<Horse> freeHorses = availableHorses.stream()
-        .filter(h -> !h.isInRace())
-        .collect(Collectors.toList());
+      race.setRaceTrack(selectedRaceTrack.get());
 
-    //nice inbuilt api function to random shuffle things on lists
-    Collections.shuffle(freeHorses);
-    return freeHorses.subList(0, count);
+      RaceManager.getInstance().queueRace(race);
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+
+    }
   }
 }
+
+
 

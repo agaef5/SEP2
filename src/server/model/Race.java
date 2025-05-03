@@ -18,10 +18,10 @@ public class Race implements Runnable
   private List<RaceListener> listeners = new ArrayList<>();
   private RaceTrack raceTrack;
 
-  public Race(String name, Date startTime,int raceCapacity) throws SQLException
+  public Race(String name, int raceCapacity) throws SQLException
   {
     this.raceName =name;
-    this.startTime=startTime;
+//    this.startTime=startTime;
     this.racerList= new RacerList(raceCapacity);
     this.finalPositionList= new RacerList(raceCapacity);
     this.status= RaceState.NOT_STARTED;
@@ -99,5 +99,10 @@ public void updateListenersOnRaceStarted() // notify Listeners about starting of
     System.out.println("Race "+ raceName +" Started!");
     updateListenersOnRaceStarted(); // update listeners that the race started
 
+  }
+
+  public void setRaceTrack(RaceTrack raceTrack)
+  {
+    this.raceTrack = raceTrack;
   }
 }
