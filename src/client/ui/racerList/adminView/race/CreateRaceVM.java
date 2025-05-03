@@ -9,6 +9,7 @@ import server.model.RaceTrack;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,9 +60,8 @@ public class CreateRaceVM
         && horseCount.get() <= getAvailableHorses().size();
   }
 
-  private Collection<Object> getAvailableHorses()
-  {
-    return null;
+  public ObservableList<Horse> getAvailableHorses() {
+    return availableHorses.filtered(h -> !h.isInRace());
   }
 
   // main function, but needs filling
@@ -73,9 +73,12 @@ public class CreateRaceVM
   private List<Horse> pickRandomHorses(int count)
   {
     List<Horse> freeHorses = availableHorses.stream()
-        .filter(h -> !h.setInRace(true)).collect(Collectors.toList());
+        .filter(h -> !h.isInRace())
+        .collect(Collectors.toList());
 
-    return freeHorses;
+    //nice inbuilt api function to random shuffle things on lists
+    Collections.shuffle(freeHorses);
+    return freeHorses.subList(0, count);
   }
 }
 

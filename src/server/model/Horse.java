@@ -10,7 +10,8 @@ public class Horse implements Racer {
   private int speedMin;
   private int speedMax;
   private int position;
-   private String type;
+  private String type;
+  private boolean inRace = false;
 
   public Horse(int id, String name, int speedMin, int speedMax) {
     this.id = id;
@@ -71,7 +72,12 @@ public class Horse implements Racer {
         Objects.equals(name, horse.name);
   }
 
-  public boolean setInRace(boolean inRace)
+  public void setInRace(boolean inRace)
+  {
+    this.inRace = inRace;
+  }
+
+  public boolean isInRace()
   {
     return inRace;
   }
