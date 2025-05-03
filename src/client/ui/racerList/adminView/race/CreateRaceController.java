@@ -48,7 +48,8 @@ public class CreateRaceController
       //bind name
       raceName.textProperty()
           .bindBidirectional(createRaceVM.raceNameProperty());
-    });
+    }
+    );
   }
 
   @FXML private void onCreateRaceClicked() throws SQLException
@@ -69,7 +70,7 @@ public class CreateRaceController
     stage.setScene(new Scene(root));
   }
 
-  //trying out new things with alerts... :-) But maybe this should be / or is already done in seperate class
+  //trying out new things with alerts... :-) But maybe this should be / or is already done in separate class
   private void showAlert(String title, String content)
   {
     Alert alert = new Alert(Alert.AlertType.WARNING);
