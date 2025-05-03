@@ -5,13 +5,13 @@ import java.util.Objects;
 public class RaceTrack
 {
   private String name;
-  private int lenght;
+  private int length;
   private String location;
 
-  public RaceTrack(String name,int lenght,String location)
+  public RaceTrack(String name,int length,String location)
   {
     this.name=name;
-    this.lenght=lenght;
+    this.length=length;
     this.location=location;
   }
 
@@ -20,9 +20,9 @@ public class RaceTrack
     return name;
   }
 
-  public int getLenght()
+  public int getLength()
   {
-    return lenght;
+    return length;
   }
 
   public String getLocation()
@@ -37,13 +37,13 @@ public class RaceTrack
     if (o == null || getClass() != o.getClass())
       return false;
     RaceTrack raceTrack = (RaceTrack) o;
-    return lenght == raceTrack.lenght && Objects.equals(name, raceTrack.name)
+    return length == raceTrack.length && Objects.equals(name, raceTrack.name)
         && Objects.equals(location, raceTrack.location);
   }
 
   @Override public String toString()
   {
-    return "RaceTrack{" + "name='" + name + '\'' + ", lenght=" + lenght
+    return "RaceTrack{" + "name='" + name + '\'' + ", length=" + length
         + ", location='" + location + '\'' + '}';
   }
 }

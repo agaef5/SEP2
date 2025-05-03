@@ -10,16 +10,17 @@ import java.util.List;
 
 public class Race implements Runnable
 {
-  private String name;
+  private String raceName;
   private RaceState status;
   private Date startTime; // Dont know in which format we want to work on, So now I just put Date but feel free to change it
   private RacerList racerList;
   private RacerList finalPositionList;
   private List<RaceListener> listeners = new ArrayList<>();
+  private RaceTrack raceTrack;
 
   public Race(String name, Date startTime,int raceCapacity) throws SQLException
   {
-    this.name=name;
+    this.raceName =name;
     this.startTime=startTime;
     this.racerList= new RacerList(raceCapacity);
     this.finalPositionList= new RacerList(raceCapacity);
@@ -27,9 +28,9 @@ public class Race implements Runnable
     assignRandomRacersFromDatabase("horse");
   }
 
-  public String getName()
+  public String getRaceName()
   {
-    return name;
+    return raceName;
   }
 
   public RaceState getStatus()
@@ -76,7 +77,7 @@ public class Race implements Runnable
 public void updateListenersOnRaceStarted() // notify Listeners about starting of an race
 {
   for (RaceListener listener : listeners) {
-    listener.onRaceStarted(name);
+    listener.onRaceStarted(raceName);
   }
 }
 
@@ -95,7 +96,7 @@ public void updateListenersOnRaceStarted() // notify Listeners about starting of
       return;
     }
     status=RaceState.IN_PROGRESS;
-    System.out.println("Race "+name+" Started!");
+    System.out.println("Race "+ raceName +" Started!");
     updateListenersOnRaceStarted(); // update listeners that the race started
 
   }

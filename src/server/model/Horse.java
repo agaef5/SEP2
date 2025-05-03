@@ -70,4 +70,9 @@ public class Horse implements Racer {
         position == horse.position &&
         Objects.equals(name, horse.name);
   }
+
+  public boolean setInRace(boolean inRace)
+  {
+    return inRace;
+  }
 }

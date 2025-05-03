@@ -1,13 +1,8 @@
 package client.networking.racers;
 
-import client.ui.MessageListener;
-import client.ui.racerList.adminView.CreateEditRacerVM;
-import server.model.Horse;
 import server.model.Racer;
 import shared.CreateRacerRequest;
 import shared.RacerRequest;
-
-import java.util.List;
 
 public interface RacersClient
 {
