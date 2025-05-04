@@ -105,4 +105,12 @@ public void updateListenersOnRaceStarted() // notify Listeners about starting of
   {
     this.raceTrack = raceTrack;
   }
+
+  public String getName() {
+    return raceName;
+  }
+
+  public int getId() {
+    return 3; //place holder
+  }
 }

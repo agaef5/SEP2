@@ -25,24 +25,18 @@ create table sep2.horse(
     speedMax int
 );
 
+
 create table sep2.race(
+    id int references sep2.race(id),
     admin_id int references sep2.admin(id),
-    id int,
     name varchar,
     status varchar,
-    startTime time --creates time stamp for clock only, not full date
-
-);
-
-create table sep2.raceObserver(
-    player_username varchar(10) references sep2.player(username),
-    race_id int references sep2.race(race_id)
-
+    startTime date --for full date or time for just timestamp
 );
 
 create table sep2.raceTrack(
     race_id int references sep2.race(id),
-     name varchar,
-     raceLength varchar,
-     location varchar
+    name varchar,
+    raceLength int,
+   location varchar
 );
