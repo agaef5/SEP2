@@ -12,7 +12,7 @@ public class Race implements Runnable
 {
   private String name;
   private RaceState status;
-  private Date startTime; // Dont know in which format we want to work on, So now I just put Date but feel free to change it
+  private Date dateTime; // Dont know in which format we want to work on, So now I just put Date but feel free to change it
   private RacerList racerList;
   private RacerList finalPositionList;
   private List<RaceListener> listeners = new ArrayList<>();
@@ -20,7 +20,7 @@ public class Race implements Runnable
   public Race(String name, Date startTime,int raceCapacity) throws SQLException
   {
     this.name=name;
-    this.startTime=startTime;
+    this.dateTime =startTime;
     this.racerList= new RacerList(raceCapacity);
     this.finalPositionList= new RacerList(raceCapacity);
     this.status= RaceState.NOT_STARTED;
@@ -37,9 +37,9 @@ public class Race implements Runnable
     return status;
   }
 
-  public Date getStartTime()
+  public Date getDateTime()
   {
-    return startTime;
+    return dateTime;
   }
 
   public RacerList getRacerList()
@@ -83,11 +83,11 @@ public void updateListenersOnRaceStarted() // notify Listeners about starting of
 
 
 
-  @Override public void run()//TODO Finish late the run() method
+  @Override public void run()//TODO Finish late the run() method + add the Time Stamp at the start of Race
   {
     try {
       // Wait until the scheduled start time
-      while (new Date().before(startTime)) { //wait until the scheduled time of race
+      while (new Date().before(dateTime)) { //wait until the scheduled time of race
         Thread.sleep(1000);
       }
     } catch (InterruptedException e) {

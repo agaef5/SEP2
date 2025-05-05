@@ -32,6 +32,7 @@ public class RaceManager implements Runnable
       Race race = raceQueue.take();
       race.run();
       // TODO after the race is done add it to the database
+
     }
     catch (InterruptedException e)
     {

@@ -29,11 +29,11 @@ public class RaceHandler extends BaseRequestHandler
         CreateRaceRequest request = parsePayload(payload,CreateRaceRequest.class);
         return handleCreateRaceRequest(request);
       }
-      case "gerRace"->//action for geting the race
-      {
-       return handleGetRace()
+//      case "getRace"->//action for geting the race
+//      {
+//       return handleGetRace()
 
-      }
+//      }
       default ->
         throw new IllegalArgumentException("Invalid action "+ action);
     }

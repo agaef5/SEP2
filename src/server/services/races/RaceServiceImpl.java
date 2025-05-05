@@ -13,6 +13,7 @@ public class RaceServiceImpl implements RacesService
   @Override public Race createRace(String name, long startTime,
       int raceCapacity, RaceTrack raceTrack)
       //Validate the input for creating race, if valid create a race and return it
+      //TODO plus add the Race to Datebase
   {
     if (BaseVal.validate(name))
     {
