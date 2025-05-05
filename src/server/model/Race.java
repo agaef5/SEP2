@@ -47,7 +47,7 @@ public class Race implements Runnable
     return horseList;
   }
 
-  public HorseList getFinalpositionlist()
+  public HorseList getFinalPositionlist()
   {
     return finalpositionlist;
   }

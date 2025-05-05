@@ -2,7 +2,7 @@ package server.model;
 
 import java.util.Objects;
 
-public class Horse implements Racer {
+public class Horse {
   private static int nextId = 1;
 
   private int id;
@@ -22,37 +22,37 @@ public class Horse implements Racer {
     this.position = 0;
   }
 
-  @Override public int getId() { return id; }
+  public int getId() { return id; }
 
-  @Override public String getName() { return name; }
+  public String getName() { return name; }
 
-  @Override public int getSpeedMin() { return speedMin; }
+  public int getSpeedMin() { return speedMin; }
 
-  @Override public int getSpeedMax() { return speedMax; }
+  public int getSpeedMax() { return speedMax; }
 
-  @Override public int getPosition() { return position; }
+  public int getPosition() { return position; }
 
-  @Override public String getType() { return type; }
+  public String getType() { return type; }
 
-  @Override public void setSpeedMax(int i) { this.speedMax = i; }
+  public void setSpeedMax(int i) { this.speedMax = i; }
 
-  @Override public void setSpeedMin(int i) { this.speedMin = i; }
+  public void setSpeedMin(int i) { this.speedMin = i; }
 
-  @Override public void setName(String s) { this.name = s; }
+  public void setName(String s) { this.name = s; }
 
-  @Override public void setType(String s) { this.type = s; }
+  public void setType(String s) { this.type = s; }
 
 
-  @Override public void move() {
+  public void move() {
     int step = (int) (Math.random() * (speedMax - speedMin + 1)) + speedMin;
     position += step;
   }
 
-  @Override public void reset() {
+  public void reset() {
     position = 0;
   }
 
-  @Override public String toString() {
+  public String toString() {
     return "Horse{" +
         "id=" + id +
         ", name='" + name + '\'' +
@@ -62,7 +62,7 @@ public class Horse implements Racer {
         '}';
   }
 
-  @Override public boolean equals(Object o) {
+  public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
     Horse horse = (Horse) o;
     return id == horse.id &&

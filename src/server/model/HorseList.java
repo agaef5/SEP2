@@ -40,7 +40,7 @@ public class HorseList
   {
     for (int i = 0; i< horses.size(); i++)
     {
-      if (name == horses.get(i).getName())
+      if (name.equals(horses.get(i).getName()))
       {
         return horses.get(i);
       }
