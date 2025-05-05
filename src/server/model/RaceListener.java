@@ -6,5 +6,5 @@ public interface RaceListener
 {
   void onRacerFinished(Racer racer, int position);
   void onRaceStarted(String raceName);
-  void onRaceFinished(String raceName, List<Racer> finalPositions);
+  void onRaceFinished(String raceName, RacerList finalPositions);
 }

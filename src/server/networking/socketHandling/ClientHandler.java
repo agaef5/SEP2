@@ -19,11 +19,13 @@ public class ClientHandler implements Runnable {
 
   private final RequestHandler authRequestHandler;
   private final RequestHandler racerRequestHandler;
+  private final RequestHandler raceRequestHandler;
 
   public ClientHandler(Socket socket) {
     this.socket = socket;
     this.authRequestHandler = new RegisterAndLoginHandler();
     this.racerRequestHandler = new RacerHandler();
+    this.raceRequestHandler = new RaceHandler();
   }
 
   @Override
@@ -77,6 +79,10 @@ public class ClientHandler implements Runnable {
         {
           responsePayload = racerRequestHandler.handle(request.action(),
               request.payload());
+        }
+        case "race" ->
+        {
+          responsePayload = raceRequestHandler.handle(request.action(), request.payload());
         }
         default -> throw new IllegalArgumentException(
             "Unknown handler: " + request.handler());
