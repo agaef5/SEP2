@@ -1,4 +1,4 @@
-//package client.ui.racerList.userView;
+//package client.ui.userView;
 //
 //import javafx.fxml.FXML;
 //import javafx.scene.control.TableColumn;
@@ -6,8 +6,7 @@
 //import javafx.scene.control.cell.PropertyValueFactory;
 //import server.model.Horse;
 //
-//
-//public class RacerListViewController
+//public class HorseListViewController
 //{
 //  @FXML TableView<Horse> tableView;
 //  @FXML TableColumn <Horse, Integer> horseId;
@@ -15,19 +14,21 @@
 //  @FXML TableColumn <Horse, Integer> speedMin;
 //  @FXML TableColumn <Horse, Integer> speedMax;
 //
-//  private RacerListVM racerListVM;
+//  private HorseListVM horseListVM;
 //
-//  public RacerListViewController(RacerListVM racerListVM){
-//    this.racerListVM = racerListVM;
+//  public RacerListViewController(HorseListVM horseListVM)
+//  {
+//    this.horseListVM = horseListVM;
 //  }
 //
-//  public void initialize(){
+//  public void initialize()
+//  {
 //    horseId.setCellValueFactory(new PropertyValueFactory<>("id"));
 //    horseName.setCellValueFactory(new PropertyValueFactory<>("name"));
 //    speedMin.setCellValueFactory(new PropertyValueFactory<>("speedMin"));
 //    speedMax.setCellValueFactory(new PropertyValueFactory<>("speedMax"));
 //
-//    tableView.setItems(racerListVM.getHorses());
+//    tableView.setItems(horseListVM.getHorses());
 //  }
 //
 //}

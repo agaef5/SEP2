@@ -116,6 +116,11 @@ public class CreateEditHorseVM implements MessageListener {
     }
   }
 
+  @Override public void update(Object message)
+  {
+
+  }
+
   private void handleCreateHorseResponse(CreateHorseResponse createHorseResponse)
   {
     horseClient.getHorseList();
