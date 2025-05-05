@@ -1,7 +1,7 @@
 package server.persistence.raceRepository;
 
 import server.model.Race;
-import server.model.Racer;
+import server.model.Horse;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -131,7 +131,7 @@ public class RaceRepositoryimpl implements RaceRepository{
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, race.getName());
             statement.setString(2, race.getStatus().toString());
-            statement.setString(3, race.getStartTime().toString()); //just placeholder
+            statement.setString(3, null); //just placeholder
             statement.executeUpdate();
         }
     }
@@ -144,7 +144,7 @@ public class RaceRepositoryimpl implements RaceRepository{
                     + "WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(
                     query);
-            statement.setInt(1, race.getId());
+            statement.setInt(1, 3); //pkaceholder
             statement.executeUpdate();
         }
     }

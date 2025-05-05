@@ -66,10 +66,10 @@ public class HorseRepositoryImpl implements HorseRepository
 
   public Horse createHorseObject(ResultSet resultSet) throws SQLException
   {
-        int id = resultSet.getInt("id");
-        String name = resultSet.getString("name");
-        int speedMin = resultSet.getInt("speedMin");
-        int speedMax = resultSet.getInt("speedMax");
+    int id = resultSet.getInt("id");
+    String name = resultSet.getString("name");
+    int speedMin = resultSet.getInt("speedMin");
+    int speedMax = resultSet.getInt("speedMax");
 
     return new Horse(id, name, speedMin, speedMax);
 

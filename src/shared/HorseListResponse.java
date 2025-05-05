@@ -1,6 +1,6 @@
 package shared;
 
-import server.model.Racer;
+import server.model.Horse;
 
 import java.util.List;
 

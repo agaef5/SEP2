@@ -16,38 +16,35 @@ public class HorseListServiceImpl implements HorseListService
 
   @Override public HorseListResponse getHorseList()
   {
-    validateRacerType(racerType);
     try{
 
       HorseRepository horseRepository = HorseRepositoryImpl.getInstance();
       ArrayList<Horse> horseList = new ArrayList<>(horseRepository.readAll());
       return new HorseListResponse(horseList);
     }catch (SQLException sqlException){
-      System.err.println("Database error when fetching racer list: " + sqlException.getMessage());
-      throw new RuntimeException("Failed to fetch racer list", sqlException);
+      System.err.println("Database error when fetching horse list: " + sqlException.getMessage());
+      throw new RuntimeException("Failed to fetch horse list", sqlException);
     }
   }
 
   @Override public HorseResponse getHorse(int id)
   {
-    validateRacerType(racerType);
     if(id < 0) throw new IllegalArgumentException("Incorrect id");
     try{
       HorseRepository horseRepository = HorseRepositoryImpl.getInstance();
       Horse horse = horseRepository.readByID(id);
       return new HorseResponse(horseRepository.readByID(id));
     }catch (SQLException sqlException){
-      System.err.println("Database error when fetching racer: " + sqlException.getMessage());
-      throw new RuntimeException("Failed to fetch racer", sqlException);
+      System.err.println("Database error when fetching horse: " + sqlException.getMessage());
+      throw new RuntimeException("Failed to fetch horse", sqlException);
     }
   }
 
-  @Override public Racer createRacer(String racerType, String racerName, int speedMin, int speedMax)
+  @Override public Horse createHorse(String horseName, int speedMin, int speedMax)
   {
 //  Data validation
-    if(BaseVal.validate(racerName) || BaseVal.validate(racerType)) throw new  IllegalArgumentException("Cannot create new racer. Arguments are empty.");
+    if(BaseVal.validate(horseName)) throw new  IllegalArgumentException("Cannot create new horse. Arguments are empty.");
     if(speedMin >= speedMax) throw new  IllegalArgumentException("SpeedMin cannot be bigger than speedMax");
-    validateRacerType(racerType);
     try
     {
       HorseRepository horseRepository = HorseRepositoryImpl.getInstance();
@@ -55,14 +52,8 @@ public class HorseListServiceImpl implements HorseListService
     }
     catch (SQLException sqlException)
     {
-      System.err.println("Database error when creating racer: " + sqlException.getMessage());
-      throw new RuntimeException("Failed to create racer", sqlException);
+      System.err.println("Database error when creating horse: " + sqlException.getMessage());
+      throw new RuntimeException("Failed to create horse", sqlException);
     }
-  }
-
-  private void validateRacerType(String racerType){
-    List<String> allowedTypes = List.of("horse");
-    if (!allowedTypes.contains(racerType.toLowerCase()))
-      throw new IllegalArgumentException("No such type of racer exists");
   }
 }
