@@ -1,4 +1,4 @@
-package client.ui.racerList.adminView.race;
+package client.ui.adminView.race;
 
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;

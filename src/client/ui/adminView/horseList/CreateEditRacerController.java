@@ -1,4 +1,4 @@
-package client.ui.racerList.adminView.horseList;
+package client.ui.adminView.horseList;
 
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;

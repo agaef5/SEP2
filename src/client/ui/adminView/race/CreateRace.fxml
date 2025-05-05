@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.racerList.adminView.race.CreateRaceController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.adminView.race.CreateRaceController">
    <children>
       <Button fx:id="createRace" layoutX="366.0" layoutY="281.0" mnemonicParsing="false" onAction="#onCreateRaceClicked" text="Create Race" />
       <Button fx:id="back" layoutX="167.0" layoutY="281.0" mnemonicParsing="false" onAction="#onBackClicked" text="Back" />

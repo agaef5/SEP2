@@ -1,4 +1,4 @@
-package client.ui.racerList.adminView.adminPanel;
+package client.ui.adminView.adminPanel;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +17,8 @@ public class AdminPanelController
 
   @FXML
   private void initialize() {
-    addRace.setOnAction(e -> loadScene("/client/ui/racerList/adminView/race/CreateRace.fxml"));
+    addRace.setOnAction(e -> loadScene(
+        "/client/ui/adminView/race/CreateRace.fxml"));
     addHorse.setOnAction(e -> loadScene("/client/ui/racerList/adminView/racer/CreateEditRacer.fxml"));
 //    editUser.setOnAction(e -> loadScene("/client/ui/racerList/adminView/user/EditUser.fxml"));
   }

@@ -2,7 +2,7 @@ package client.ui.racerList.adminView;
 
 import client.networking.SocketService;
 import client.networking.racers.RacersClient;
-import client.ui.racerList.adminView.horseList.CreateEditRacerVM;
+import client.ui.adminView.horseList.CreateEditRacerVM;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import org.junit.jupiter.api.BeforeEach;
