@@ -1,6 +1,6 @@
 package server.model;
 
-import server.persistence.racer.RacerRepositoryImpl;
+import server.persistence.horses.HorseRepositoryImpl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,18 +13,18 @@ public class Race implements Runnable
   private String name;
   private RaceState status;
   private Date dateTime; // Dont know in which format we want to work on, So now I just put Date but feel free to change it
-  private RacerList racerList;
-  private RacerList finalPositionList;
+  private HorseList horseList;
+  private HorseList finalpositionlist;
   private List<RaceListener> listeners = new ArrayList<>();
 
   public Race(String name, Date startTime,int raceCapacity) throws SQLException
   {
     this.name=name;
     this.dateTime =startTime;
-    this.racerList= new RacerList(raceCapacity);
-    this.finalPositionList= new RacerList(raceCapacity);
+    this.horseList = new HorseList(raceCapacity);
+    this.finalpositionlist = new HorseList(raceCapacity);
     this.status= RaceState.NOT_STARTED;
-    assignRandomRacersFromDatabase("horse");
+    assignRandomHorsesFromDatabase();
   }
 
   public String getName()
@@ -42,14 +42,14 @@ public class Race implements Runnable
     return dateTime;
   }
 
-  public RacerList getRacerList()
+  public HorseList getHorseList()
   {
-    return racerList;
+    return horseList;
   }
 
-  public RacerList getFinalPositionList()
+  public HorseList getFinalpositionlist()
   {
-    return finalPositionList;
+    return finalpositionlist;
   }
 
   // Listener registration
@@ -57,19 +57,19 @@ public class Race implements Runnable
     listeners.add(listener);
   }
 
-  public void assignRandomRacersFromDatabase(String racerType) throws //this method will get random set of horses from database
+  public void assignRandomHorsesFromDatabase() throws //this method will get random set of horses from database
       SQLException
   {
-    ArrayList<Racer> allRacers = RacerRepositoryImpl.getInstance().readAll(racerType);
+    ArrayList<Horse> allHorses = HorseRepositoryImpl.getInstance().readAll();
 
-    if (allRacers.size() < racerList.getCapacity()) {
-      throw new IllegalArgumentException("Not enough racers available in database to start the race.");
+    if (allHorses.size() < horseList.getCapacity()) {
+      throw new IllegalArgumentException("Not enough horses available in database to start the race.");
     }
 
-    Collections.shuffle(allRacers);
+    Collections.shuffle(allHorses);
 
-    for (int i = 0; i < racerList.getCapacity(); i++) {
-      racerList.addToList(allRacers.get(i));
+    for (int i = 0; i < horseList.getCapacity(); i++) {
+      horseList.addToList(allHorses.get(i));
     }
   }
 

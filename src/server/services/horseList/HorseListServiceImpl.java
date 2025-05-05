@@ -1,41 +1,41 @@
-package server.services.racerList;
+package server.services.horseList;
 
 import server.model.Horse;
-import server.model.Racer;
-import server.persistence.racer.RacerRepository;
-import server.persistence.racer.RacerRepositoryImpl;
+import server.persistence.horses.HorseRepository;
+import server.persistence.horses.HorseRepositoryImpl;
 import server.validation.baseValidation.BaseVal;
-import shared.RacerListResponse;
-import shared.RacerResponse;
+import shared.HorseListResponse;
+import shared.HorseResponse;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RacerListServiceImpl implements RacerListService
+public class HorseListServiceImpl implements HorseListService
 {
 
-  @Override public RacerListResponse getRacerList(String racerType)
+  @Override public HorseListResponse getHorseList()
   {
     validateRacerType(racerType);
     try{
-      RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
-      ArrayList<Racer> racerList = new ArrayList<>(racerRepository.readAll(racerType));
-      return new RacerListResponse(racerList);
+
+      HorseRepository horseRepository = HorseRepositoryImpl.getInstance();
+      ArrayList<Horse> horseList = new ArrayList<>(horseRepository.readAll());
+      return new HorseListResponse(horseList);
     }catch (SQLException sqlException){
       System.err.println("Database error when fetching racer list: " + sqlException.getMessage());
       throw new RuntimeException("Failed to fetch racer list", sqlException);
     }
   }
 
-  @Override public RacerResponse getRacer(String racerType, int id)
+  @Override public HorseResponse getHorse(int id)
   {
     validateRacerType(racerType);
     if(id < 0) throw new IllegalArgumentException("Incorrect id");
     try{
-      RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
-      Racer racer = racerRepository.readByID(racerType, id);
-      return new RacerResponse(racer.getClass().getName(), racerRepository.readByID(racerType, id));
+      HorseRepository horseRepository = HorseRepositoryImpl.getInstance();
+      Horse horse = horseRepository.readByID(id);
+      return new HorseResponse(horseRepository.readByID(id));
     }catch (SQLException sqlException){
       System.err.println("Database error when fetching racer: " + sqlException.getMessage());
       throw new RuntimeException("Failed to fetch racer", sqlException);
@@ -50,8 +50,8 @@ public class RacerListServiceImpl implements RacerListService
     validateRacerType(racerType);
     try
     {
-      RacerRepository racerRepository = RacerRepositoryImpl.getInstance();
-      return racerRepository.create(racerType.toLowerCase(),racerName, speedMin, speedMax);
+      HorseRepository horseRepository = HorseRepositoryImpl.getInstance();
+      return horseRepository.create(horseName, speedMin, speedMax);
     }
     catch (SQLException sqlException)
     {

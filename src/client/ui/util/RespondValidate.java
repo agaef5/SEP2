@@ -11,10 +11,6 @@ public class RespondValidate
       throw new InvalidMessageException("Invalid object: Not an instance of Respond.");
     }
 
-    if (respond.type() == null || respond.type().isEmpty()) {
-      throw new InvalidMessageException("Invalid message: 'type' is missing.");
-    }
-
     Gson gson = new Gson();
     String payload;
 

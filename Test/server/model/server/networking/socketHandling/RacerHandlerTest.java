@@ -6,8 +6,7 @@ import com.google.gson.JsonParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.model.Racer;
-import server.services.racerList.RacerListService;
-import server.services.racerList.RacerListServiceImpl;
+import server.services.horseList.HorseListService;
 import shared.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,15 +15,15 @@ import static org.mockito.Mockito.*;
 class RacerHandlerTest
 {
 
-  private RacerHandler racerHandler;
-  private RacerListService mockRacerListService;
+  private HorseHandler racerHandler;
+  private HorseListService mockRacerListService;
   private Gson gson = new Gson();
 
   @BeforeEach void setUp()
   {
-    mockRacerListService = mock(RacerListService.class);
+    mockRacerListService = mock(HorseListService.class);
 
-    racerHandler = new RacerHandler()
+    racerHandler = new HorseHandler()
     {
       {
         // Inject mock into the handler instead of real RacerListServiceImpl
@@ -36,22 +35,22 @@ class RacerHandlerTest
 
   @Test void testHandleGetRacer()
   {
-    RacerRequest request = new RacerRequest("horse", 1);
+    HorseRequest request = new HorseRequest("horse", 1);
     Racer mockRacer = mock(Racer.class);
 
     when(mockRacerListService.getRacer("horse", 1)).thenReturn(
-        new RacerResponse("horse", mockRacer));
+        new HorseResponse("horse", mockRacer));
 
     JsonElement payload = JsonParser.parseString(gson.toJson(request));
     Object result = racerHandler.handle("getRacer", payload);
 
-    assertInstanceOf(RacerResponse.class, result);
+    assertInstanceOf(HorseResponse.class, result);
     verify(mockRacerListService).getRacer("horse", 1);
   }
 
   @Test void testHandleCreateRacer()
   {
-    CreateRacerRequest request = new CreateRacerRequest("horse", "Lightning",
+    CreateHorseRequest request = new CreateHorseRequest("horse", "Lightning",
         10, 20);
     Racer mockRacer = mock(Racer.class);
 
@@ -61,7 +60,7 @@ class RacerHandlerTest
     JsonElement payload = JsonParser.parseString(gson.toJson(request));
     Object result = racerHandler.handle("createRacer", payload);
 
-    assertInstanceOf(CreateRacerResponse.class, result);
+    assertInstanceOf(CreateHorseResponse.class, result);
     verify(mockRacerListService).createRacer("horse", "Lightning", 10, 20);
   }
 }

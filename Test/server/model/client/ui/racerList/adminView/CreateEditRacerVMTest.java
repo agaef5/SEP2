@@ -1,16 +1,16 @@
 package client.ui.racerList.adminView;
 
 import client.networking.SocketService;
-import client.networking.racers.RacersClient;
-import client.ui.adminView.horseList.CreateEditRacerVM;
+import client.networking.horses.HorsesClient;
+import client.ui.adminView.horseList.CreateEditHorseVM;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.model.Horse;
 import server.model.Racer;
-import shared.CreateRacerRequest;
-import shared.RacerListResponse;
+import shared.CreateHorseRequest;
+import shared.HorseListResponse;
 
 import java.util.List;
 
@@ -19,72 +19,72 @@ import static org.mockito.Mockito.*;
 
 class CreateEditRacerVMTest {
 
-  private RacersClient racersClient;
+  private HorsesClient racersClient;
   private SocketService socketService;
-  private CreateEditRacerVM viewModel;
+  private CreateEditHorseVM viewModel;
 
   @BeforeEach
   void setUp() {
-    racersClient = mock(RacersClient.class);
+    racersClient = mock(HorsesClient.class);
     socketService = mock(SocketService.class);
-    viewModel = new CreateEditRacerVM(racersClient, socketService);
+    viewModel = new CreateEditHorseVM(racersClient, socketService);
   }
 
   @Test
   void testAddRacer() {
     viewModel.racerTypeProperty().setValue("Horse");
-    viewModel.racerNameProperty().setValue("Lightning");
+    viewModel.horseNameProperty().setValue("Lightning");
     viewModel.speedMinProperty().setValue(10);
     viewModel.speedMaxProperty().setValue(20);
 
-    viewModel.addRacer();
+    viewModel.addHorse();
 
-    verify(racersClient, times(1)).createRacer(any(CreateRacerRequest.class));
-    verify(racersClient, times(1)).getRacerList();
+    verify(racersClient, times(1)).createHorse(any(CreateHorseRequest.class));
+    verify(racersClient, times(1)).getHorseList();
   }
 
   @Test
   void testUpdateRacer() {
     Racer racer = new Horse(1, "OldName", 5, 15);
-    viewModel.setSelectedRacer(racer);
+    viewModel.setSelectedHorse(racer);
 
-    viewModel.racerNameProperty().setValue("NewName");
+    viewModel.horseNameProperty().setValue("NewName");
     viewModel.speedMinProperty().setValue(10);
     viewModel.speedMaxProperty().setValue(30);
     viewModel.racerTypeProperty().setValue("Horse");
 
-    viewModel.updateRacer();
+    viewModel.updateHorse();
 
     assertEquals("NewName", racer.getName());
     assertEquals(10, racer.getSpeedMin());
     assertEquals(30, racer.getSpeedMax());
     assertEquals("Horse", racer.getType());
 
-    verify(racersClient, times(1)).updateRacer(racer);
+    verify(racersClient, times(1)).updateHorse(racer);
   }
 
   @Test
   void testRemoveRacer() {
     Racer racer = new Horse(1, "ToDelete", 5, 15);
-    viewModel.setSelectedRacer(racer);
+    viewModel.setSelectedHorse(racer);
 
-    viewModel.removeRacer();
+    viewModel.removeHorse();
 
-    verify(racersClient, times(1)).deleteRacer(racer);
+    verify(racersClient, times(1)).deleteHorse(racer);
   }
 
   @Test
   void testUpdateRacerList() {
-    RacerListResponse response = new RacerListResponse(
+    HorseListResponse response = new HorseListResponse(
         List.of(new Horse(1, "FastHorse", 10, 20))
     );
 
     Platform.runLater(() -> {
-      viewModel.updateRacerList(response);
+      viewModel.updateHorseList(response);
 
-      ObservableList<Racer> racers = viewModel.getRacerList();
+      ObservableList<Racer> racers = viewModel.getHorseList();
       assertEquals(1, racers.size());
-      assertNotNull(viewModel.getRacerList());
+      assertNotNull(viewModel.getHorseList());
     });
   }
 }

@@ -1,5 +1,5 @@
 package shared;
 
-public interface RaceRequest
+public record RaceRequest()
 {
 }

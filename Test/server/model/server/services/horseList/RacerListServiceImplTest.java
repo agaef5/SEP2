@@ -1,14 +1,13 @@
-package server.services.racerList;
+package server.services.horseList;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import server.model.Horse;
 import server.model.Racer;
-import server.persistence.racer.RacerRepository;
+import server.persistence.horses.HorseRepository;
 import org.mockito.Mockito;
-import shared.RacerListResponse;
-import shared.RacerResponse;
+import shared.HorseListResponse;
+import shared.HorseResponse;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -17,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RacerListServiceImplTest
 {
-  private RacerRepository mockRepo;
-  private RacerListServiceImpl service;
+  private HorseRepository mockRepo;
+  private HorseListServiceImpl service;
 
   @BeforeEach
   public void setUp() {
-    mockRepo = Mockito.mock(RacerRepository.class);
-    service = new RacerListServiceImpl();
+    mockRepo = Mockito.mock(HorseRepository.class);
+    service = new HorseListServiceImpl();
   }
 
   @Test
@@ -32,7 +31,7 @@ class RacerListServiceImplTest
     Racer horse = new Horse(1,"Spirit", 10, 15);
     Mockito.when(mockRepo.readAll("horse")).thenReturn(Arrays.asList(horse));
 
-    RacerListResponse response = service.getRacerList("horse");
+    HorseListResponse response = service.getHorseList("horse");
 
     assertNotNull(response.racerList());
   }
@@ -42,7 +41,7 @@ class RacerListServiceImplTest
     Racer horse = new Horse(1, "Moba", 8, 12);
     Mockito.when(mockRepo.readByID("horse", 1)).thenReturn(horse);
 
-    RacerResponse response = service.getRacer("horse", 1);
+    HorseResponse response = service.getRacer("horse", 1);
 
     assertNotNull(response.racer());
     assertEquals("Moba", response.racer().getName());
@@ -50,7 +49,7 @@ class RacerListServiceImplTest
 
   @Test
   public void testGetRacer_invalidType_returnsNull() {
-    RacerResponse response = service.getRacer("dog", 1);
+    HorseResponse response = service.getRacer("dog", 1);
 
     assertNull(response.racer());
   }

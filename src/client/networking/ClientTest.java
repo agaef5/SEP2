@@ -1,9 +1,9 @@
 package client.networking;
 
 import client.networking.authentication.SocketAuthenticationClient;
-import client.networking.racers.SocketRacersClient;
-import client.ui.adminView.horseList.CreateEditRacerController;
-import client.ui.adminView.horseList.CreateEditRacerVM;
+import client.networking.horses.SocketHorsesClient;
+import client.ui.adminView.horseList.CreateEditHorseController;
+import client.ui.adminView.horseList.CreateEditHorseVM;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,13 +23,13 @@ public class ClientTest extends Application
   {
     SocketService socketservice = new SocketService("localhost",2910 );
     SocketAuthenticationClient socketauth = new SocketAuthenticationClient(socketservice);
-    SocketRacersClient socketRacersClient = new SocketRacersClient(socketservice);
-    CreateEditRacerVM createEditRacerVM = new CreateEditRacerVM(socketRacersClient,socketservice);
+    SocketHorsesClient socketRacersClient = new SocketHorsesClient(socketservice);
+    CreateEditHorseVM createEditRacerVM = new CreateEditHorseVM(socketRacersClient,socketservice);
     socketservice.addListener(createEditRacerVM);
     FXMLLoader loader = new FXMLLoader(getClass().getResource(
         "/client/ui/adminView/horseList/CreateEditRacer.fxml"));
     Parent root = loader.load();
-    CreateEditRacerController controller = loader.getController();
+    CreateEditHorseController controller = loader.getController();
     controller.init(createEditRacerVM);
     Stage stage = new Stage();
     stage.setScene(new Scene(root));

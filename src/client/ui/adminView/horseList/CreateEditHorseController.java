@@ -4,11 +4,12 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.converter.NumberStringConverter;
-import server.model.Racer;
+import server.model.Horse;
 
-public class CreateEditRacerController {
+public class CreateEditHorseController
+{
 
-  @FXML private ListView<Racer> listView;
+  @FXML private ListView<Horse> listView;
   @FXML private TextField racerType;
   @FXML private TextField racerName;
   @FXML private TextField speedMin;
@@ -18,28 +19,28 @@ public class CreateEditRacerController {
   @FXML private Button edit;
   @FXML private Button remove;
 
-  private CreateEditRacerVM viewModel;
+  private CreateEditHorseVM viewModel;
 
-  public void init(CreateEditRacerVM viewModel) {
+  public void init(CreateEditHorseVM viewModel) {
     this.viewModel = viewModel;
 
     // ListView binding
-    listView.setItems(viewModel.getRacerList());
+    listView.setItems(viewModel.getHorseList());
     listView.getSelectionModel().selectedItemProperty().addListener(
-        (obs, oldVal, newVal) -> viewModel.setSelectedRacer(newVal)
+        (obs, oldVal, newVal) -> viewModel.setSelectedHorse(newVal)
     );
 
     // Binding inputfields to ViewModel-properties
     racerType.textProperty().bindBidirectional(viewModel.racerTypeProperty());
-    racerName.textProperty().bindBidirectional(viewModel.racerNameProperty());
+    racerName.textProperty().bindBidirectional(viewModel.horseNameProperty());
 
     // Integer binding with NumberStringConverter
     Bindings.bindBidirectional(speedMin.textProperty(), viewModel.speedMinProperty(), new NumberStringConverter());
     Bindings.bindBidirectional(speedMax.textProperty(), viewModel.speedMaxProperty(), new NumberStringConverter());
 
         // chain actions
-    create.setOnAction(e -> viewModel.addRacer());
-    edit.setOnAction(e -> viewModel.updateRacer());
-    remove.setOnAction(e -> viewModel.removeRacer());
+    create.setOnAction(e -> viewModel.addHorse());
+    edit.setOnAction(e -> viewModel.updateHorse());
+    remove.setOnAction(e -> viewModel.removeHorse());
   }
 }

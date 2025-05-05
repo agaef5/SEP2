@@ -1,14 +1,12 @@
 package server.networking.socketHandling;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.*;
 import java.net.Socket;
 
-import server.model.Racer;
 import shared.*;
 
 public class ClientHandler implements Runnable {
@@ -18,13 +16,13 @@ public class ClientHandler implements Runnable {
   private final Gson gson = new Gson();
 
   private final RequestHandler authRequestHandler;
-  private final RequestHandler racerRequestHandler;
+  private final RequestHandler horseRequestHandler;
   private final RequestHandler raceRequestHandler;
 
   public ClientHandler(Socket socket) {
     this.socket = socket;
     this.authRequestHandler = new RegisterAndLoginHandler();
-    this.racerRequestHandler = new RacerHandler();
+    this.horseRequestHandler = new HorseHandler();
     this.raceRequestHandler = new RaceHandler();
   }
 
@@ -75,9 +73,9 @@ public class ClientHandler implements Runnable {
           responsePayload = authRequestHandler.handle(request.action(),
               request.payload());
         }
-        case "racer" ->
+        case "horse" ->
         {
-          responsePayload = racerRequestHandler.handle(request.action(),
+          responsePayload = horseRequestHandler.handle(request.action(),
               request.payload());
         }
         case "race" ->

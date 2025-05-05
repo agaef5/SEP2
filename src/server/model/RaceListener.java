@@ -1,10 +1,8 @@
 package server.model;
 
-import java.util.List;
-
 public interface RaceListener
 {
-  void onRacerFinished(Racer racer, int position);
+  void onRacerFinished(Horse horse, int position);
   void onRaceStarted(String raceName);
-  void onRaceFinished(String raceName, RacerList finalPositions);
+  void onRaceFinished(String raceName, HorseList finalPositions);
 }
