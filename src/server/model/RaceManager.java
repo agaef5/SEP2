@@ -14,6 +14,7 @@ public class RaceManager implements Runnable
   {
     if (instance ==null){
       instance = new RaceManager();
+      //if we use a start, don't we also need a stop?
       new Thread(instance).start();
   }
     return instance;

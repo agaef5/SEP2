@@ -1,5 +1,6 @@
 package client.ui.adminView.race;
 
+import client.networking.race.RaceClient;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,13 +13,12 @@ import java.sql.SQLException;
 
 public class CreateRaceVM
 {
-
   private StringProperty raceName = new SimpleStringProperty();
   private IntegerProperty horseCount = new SimpleIntegerProperty();
   private ObjectProperty<RaceTrack> selectedRaceTrack = new SimpleObjectProperty<>();
   private ObservableList<RaceTrack> availableRaceTracks = FXCollections.observableArrayList();
 
-  public CreateRaceVM()
+  public CreateRaceVM(RaceClient raceClient)
   {
     //fill in test data
     availableRaceTracks.addAll( /* where from? */
@@ -51,27 +51,12 @@ public class CreateRaceVM
   public boolean isValid()
   {
     return raceName.get() != null && !raceName.get().isBlank()
-        && selectedRaceTrack.get() != null && horseCount.get() > 0
-        && horseCount.get() >0;
+        && selectedRaceTrack.get() != null && horseCount.get() > 0;
   }
 
-  // main function, but needs filling
+  //TODO main function, but needs filling
   public void createRace()
   {
-    try {
-      Race race = new Race(
-          raceName.get(),
-          horseCount.get()
-      );
-
-      race.setRaceTrack(selectedRaceTrack.get());
-
-      RaceManager.getInstance().queueRace(race);
-
-    } catch (SQLException e) {
-      e.printStackTrace();
-
-    }
   }
 }
 

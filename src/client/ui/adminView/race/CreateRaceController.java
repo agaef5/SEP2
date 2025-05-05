@@ -24,6 +24,9 @@ public class CreateRaceController
 
   private CreateRaceVM createRaceVM;
 
+  //empty/default constructor for FXML
+  public CreateRaceController(){};
+
 
   public void initialize() throws SQLException
   {
