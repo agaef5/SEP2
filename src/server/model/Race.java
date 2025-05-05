@@ -10,27 +10,26 @@ import java.util.List;
 
 public class Race implements Runnable
 {
-  private String raceName;
+  private String name;
   private RaceState status;
   private Date startTime; // Dont know in which format we want to work on, So now I just put Date but feel free to change it
   private RacerList racerList;
   private RacerList finalPositionList;
   private List<RaceListener> listeners = new ArrayList<>();
-  private RaceTrack raceTrack;
 
-  public Race(String name, int raceCapacity) throws SQLException
+  public Race(String name, Date startTime,int raceCapacity) throws SQLException
   {
-    this.raceName =name;
-//    this.startTime=startTime;
+    this.name=name;
+    this.startTime=startTime;
     this.racerList= new RacerList(raceCapacity);
     this.finalPositionList= new RacerList(raceCapacity);
     this.status= RaceState.NOT_STARTED;
     assignRandomRacersFromDatabase("horse");
   }
 
-  public String getRaceName()
+  public String getName()
   {
-    return raceName;
+    return name;
   }
 
   public RaceState getStatus()
@@ -77,7 +76,7 @@ public class Race implements Runnable
 public void updateListenersOnRaceStarted() // notify Listeners about starting of an race
 {
   for (RaceListener listener : listeners) {
-    listener.onRaceStarted(raceName);
+    listener.onRaceStarted(name);
   }
 }
 
@@ -96,21 +95,8 @@ public void updateListenersOnRaceStarted() // notify Listeners about starting of
       return;
     }
     status=RaceState.IN_PROGRESS;
-    System.out.println("Race "+ raceName +" Started!");
+    System.out.println("Race "+name+" Started!");
     updateListenersOnRaceStarted(); // update listeners that the race started
 
-  }
-
-  public void setRaceTrack(RaceTrack raceTrack)
-  {
-    this.raceTrack = raceTrack;
-  }
-
-  public String getName() {
-    return raceName;
-  }
-
-  public int getId() {
-    return 3; //place holder
   }
 }

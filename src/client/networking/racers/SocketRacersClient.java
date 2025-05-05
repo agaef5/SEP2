@@ -12,7 +12,6 @@ import java.util.List;
 
 public class SocketRacersClient implements RacersClient {
   private final SocketService socketService;
-  private final List<MessageListener> listeners = new ArrayList<>();
   private final Gson gson;
 
   public SocketRacersClient(SocketService socketService) {
