@@ -10,11 +10,8 @@ public class CreateEditHorseController
 {
 
   @FXML private ListView<Horse> listView;
-  @FXML private TextField racerType;
-  @FXML private TextField racerName;
   @FXML private TextField speedMin;
   @FXML private TextField speedMax;
-//  @FXML private TextField misc;
   @FXML private Button create;
   @FXML private Button edit;
   @FXML private Button remove;
@@ -29,10 +26,6 @@ public class CreateEditHorseController
     listView.getSelectionModel().selectedItemProperty().addListener(
         (obs, oldVal, newVal) -> viewModel.setSelectedHorse(newVal)
     );
-
-    // Binding inputfields to ViewModel-properties
-    racerType.textProperty().bindBidirectional(viewModel.racerTypeProperty());
-    racerName.textProperty().bindBidirectional(viewModel.horseNameProperty());
 
     // Integer binding with NumberStringConverter
     Bindings.bindBidirectional(speedMin.textProperty(), viewModel.speedMinProperty(), new NumberStringConverter());

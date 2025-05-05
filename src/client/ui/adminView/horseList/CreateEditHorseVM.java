@@ -22,7 +22,6 @@ public class CreateEditHorseVM implements MessageListener {
   private final SocketService socketService;
   private final ObservableList<Horse> horseList = FXCollections.observableArrayList();
 
-  private final StringProperty racerType = new SimpleStringProperty();
   private final StringProperty horseName = new SimpleStringProperty();
   private final IntegerProperty speedMin = new SimpleIntegerProperty();
   private final IntegerProperty speedMax = new SimpleIntegerProperty();
@@ -40,7 +39,6 @@ public class CreateEditHorseVM implements MessageListener {
         .create();
   }
 
-  public Property<String> racerTypeProperty() { return racerType; }
   public Property<String> horseNameProperty() { return horseName; }
   public IntegerProperty speedMinProperty() { return speedMin; }
   public IntegerProperty speedMaxProperty() { return speedMax; }

@@ -11,7 +11,7 @@ class HorseTest
 
   @BeforeEach
   void setUp() {
-    horse = new Horse("Lightning", 5, 10);
+    horse = new Horse(1, "Lightning", 5, 10);
   }
 
   @Test
