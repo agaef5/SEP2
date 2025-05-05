@@ -2,8 +2,8 @@ package client.networking;
 
 import client.networking.authentication.SocketAuthenticationClient;
 import client.networking.racers.SocketRacersClient;
-import client.ui.racerList.adminView.horseList.CreateEditRacerController;
-import client.ui.racerList.adminView.horseList.CreateEditRacerVM;
+import client.ui.adminView.horseList.CreateEditRacerController;
+import client.ui.adminView.horseList.CreateEditRacerVM;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,7 +27,7 @@ public class ClientTest extends Application
     CreateEditRacerVM createEditRacerVM = new CreateEditRacerVM(socketRacersClient,socketservice);
     socketservice.addListener(createEditRacerVM);
     FXMLLoader loader = new FXMLLoader(getClass().getResource(
-        "/client/ui/racerList/adminView/horseList/CreateEditRacer.fxml"));
+        "/client/ui/adminView/horseList/CreateEditRacer.fxml"));
     Parent root = loader.load();
     CreateEditRacerController controller = loader.getController();
     controller.init(createEditRacerVM);

@@ -1,4 +1,4 @@
-package client.ui.racerList.adminView.race;
+package client.ui.adminView.race;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -64,7 +64,8 @@ public class CreateRaceController
 
   @FXML private void onBackClicked() throws IOException
   {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/racerList/adminView/adminPanel/AdminPanel.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+        "/client/ui/adminView/adminPanel/AdminPanel.fxml"));
     Parent root = loader.load();
     Stage stage = (Stage) back.getScene().getWindow();
     stage.setScene(new Scene(root));
