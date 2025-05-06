@@ -56,4 +56,37 @@ public class HorseListServiceImpl implements HorseListService
       throw new RuntimeException("Failed to create horse", sqlException);
     }
   }
+
+  @Override public Horse updateHorse(Horse horse)
+  {
+    if (horse == null)
+      throw new IllegalArgumentException("No horse to update");
+    try
+    {
+      HorseRepository horseRepository = HorseRepositoryImpl.getInstance();
+      horseRepository.updateHorse(horse);
+      return horseRepository.readByID(horse.getId());
+    }
+    catch (SQLException sqlException)
+    {
+      System.err.println(
+          "Database error when fetching horse: " + sqlException.getMessage());
+      throw new RuntimeException("Failed to fetch horse", sqlException);
+    }
+  }
+
+  @Override public String removeHorse(Horse horse)
+  {
+    if (horse == null)
+      throw new IllegalArgumentException("No horse to update");
+    try{
+      HorseRepository horseRepository = HorseRepositoryImpl.getInstance();
+      horseRepository.delete(horse);
+      return "success";
+    }catch (SQLException sqlException){
+      System.err.println("Database error when fetching horse: " + sqlException.getMessage());
+      throw new RuntimeException("Failed to fetch horse", sqlException);
+    }
+  }
+
 }

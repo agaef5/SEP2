@@ -16,7 +16,7 @@ public class HorseRepositoryImpl implements HorseRepository
     DriverManager.registerDriver(new org.postgresql.Driver());
   }
 
-  public synchronized HorseRepositoryImpl getInstance() throws SQLException
+  public static synchronized HorseRepositoryImpl getInstance() throws SQLException
   {
     if (instance == null)
     {
@@ -38,7 +38,7 @@ public class HorseRepositoryImpl implements HorseRepository
     try (Connection connection = getConnection())
     {
       String query =
-          "INSERT INTO " + " (name, speedMin, speedMax) VALUES (?, ?, ?)";
+          "INSERT INTO horse (name, speedMin, speedMax) VALUES (?, ?, ?)";
       PreparedStatement statement = connection.prepareStatement(query,
           PreparedStatement.RETURN_GENERATED_KEYS);
       statement.setString(1, name);
@@ -171,8 +171,7 @@ public class HorseRepositoryImpl implements HorseRepository
   {
     try (Connection connection = getConnection())
     {
-      String query = "UPDATE " + horse.getClass().getName().toLowerCase()
-          + " name = ?, speedMin = ?, speedMax = ? WHERE id = ?";
+      String query = "UPDATE horse SET name = ?, speedMin = ?, speedMax = ? WHERE id = ?";
       PreparedStatement statement = connection.prepareStatement(query);
       statement.setString(1, horse.getName());
       statement.setInt(2, horse.getSpeedMin());
@@ -186,13 +185,13 @@ public class HorseRepositoryImpl implements HorseRepository
   {
     try (Connection connection = getConnection())
     {
-      String query = "DELETE FROM " + horse.getClass().getName().toLowerCase()
-          + "WHERE id = ?";
+      String query = "DELETE FROM horse WHERE id = ?";
       PreparedStatement statement = connection.prepareStatement(query);
       statement.setInt(1, horse.getId());
       statement.executeUpdate();
     }
   }
+
 }
 
 

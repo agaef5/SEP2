@@ -27,7 +27,7 @@ public class ClientTest extends Application
     CreateEditHorseVM createEditRacerVM = new CreateEditHorseVM(socketRacersClient,socketservice);
     socketservice.addListener(createEditRacerVM);
     FXMLLoader loader = new FXMLLoader(getClass().getResource(
-        "/client/ui/adminView/horseList/CreateEditRacer.fxml"));
+        "/client/ui/adminView/horseList/CreateEditHorse.fxml"));
     Parent root = loader.load();
     CreateEditHorseController controller = loader.getController();
     controller.init(createEditRacerVM);

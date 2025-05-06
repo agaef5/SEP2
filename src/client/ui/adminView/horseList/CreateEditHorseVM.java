@@ -3,9 +3,7 @@ package client.ui.adminView.horseList;
 import client.networking.SocketService;
 import client.networking.horses.HorsesClient;
 import client.ui.MessageListener;
-import client.ui.util.HorseDeserializer;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -25,23 +23,27 @@ public class CreateEditHorseVM implements MessageListener {
   private final StringProperty horseName = new SimpleStringProperty();
   private final IntegerProperty speedMin = new SimpleIntegerProperty();
   private final IntegerProperty speedMax = new SimpleIntegerProperty();
+  private final BooleanProperty editButtonDisabled = new SimpleBooleanProperty();
+  private final BooleanProperty removeButtonDisabled = new SimpleBooleanProperty();
   private final Gson gson;
 
   private Horse selectedHorse;
+  private boolean creatingHorse;
 
   public CreateEditHorseVM(HorsesClient client,SocketService socketService) {
     this.horseClient = client;
     this.socketService = socketService;
     this.socketService.addListener(this);
     horseClient.getHorseList();
-    this.gson = new GsonBuilder()
-        .registerTypeAdapter(Horse.class, new HorseDeserializer())
-        .create();
+    this.gson = new Gson();
+    creatingHorse = false;
   }
 
   public Property<String> horseNameProperty() { return horseName; }
   public IntegerProperty speedMinProperty() { return speedMin; }
   public IntegerProperty speedMaxProperty() { return speedMax; }
+  public BooleanProperty getEditButtonDisabledProperty() { return editButtonDisabled;}
+  public BooleanProperty getRemoveButtonDisableProperty() {return  removeButtonDisabled; }
 
   public ObservableList<Horse> getHorseList() {
     return horseList;
@@ -53,10 +55,25 @@ public class CreateEditHorseVM implements MessageListener {
       horseName.set(newVal.getName());
       speedMin.set(newVal.getSpeedMin());
       speedMax.set(newVal.getSpeedMax());
+
+      editButtonDisabled.set(false);
+      removeButtonDisabled.set(false);
     }
   }
 
+  public void setNull(){
+    this.selectedHorse = null;
+    horseName.set(null);
+    speedMin.set(0);
+    speedMax.set(0);
+
+    editButtonDisabled.set(true);
+    removeButtonDisabled.set(true);
+  }
+
    public void addHorse() {
+    if(!creatingHorse) return;
+
     Horse newHorse = new Horse(
         -1, // temporary ID
         horseName.get(),
@@ -66,7 +83,7 @@ public class CreateEditHorseVM implements MessageListener {
 
     CreateHorseRequest createHorseRequest = new CreateHorseRequest(horseName.get(), speedMin.get(), speedMax.get());
     horseClient.createHorse(createHorseRequest);
-    horseClient.getHorseList();
+    setReadMode();
   }
 
   //horse object is being directly manipulated, no DTO. We should change this
@@ -83,6 +100,7 @@ public class CreateEditHorseVM implements MessageListener {
   public void removeHorse() {
     if (selectedHorse != null) {
       horseClient.deleteHorse(selectedHorse);
+      setNull();
     }
   }
 
@@ -96,9 +114,22 @@ public class CreateEditHorseVM implements MessageListener {
         newHorseList.add(horse);
       }
       horseList.setAll(newHorseList);
+
+      if(selectedHorse == null) setSelectedHorse(horseList.getFirst());
       System.out.println("List updated");
     });
   }
+
+  public void setHorseCreationMode(){
+    if(creatingHorse) addHorse();
+
+    setNull();
+    creatingHorse = true;
+  }
+
+public void setReadMode(){
+    creatingHorse = false;
+}
 
   @Override
   public void update(String type, String payload){
@@ -113,10 +144,17 @@ public class CreateEditHorseVM implements MessageListener {
         CreateHorseResponse createHorseResponse = gson.fromJson(payload, CreateHorseResponse.class);
           handleCreateHorseResponse(createHorseResponse);
         break;
-      case "editHorse":
+      case "updateHorse":
+        Horse updatedHorse = gson.fromJson(payload, Horse.class);
+        handleUpdateHorseResponse(updatedHorse);
+        break;
+      case "deleteHorse":
+        String message = payload;
+        handleRemoveHorseResponse(message);
         break;
     }
   }
+
 
   @Override public void update(Object message)
   {
@@ -126,10 +164,28 @@ public class CreateEditHorseVM implements MessageListener {
   private void handleCreateHorseResponse(CreateHorseResponse createHorseResponse)
   {
     horseClient.getHorseList();
-    if (createHorseResponse.horse() instanceof Horse horse){
-      setSelectedHorse(horse);
+    if (createHorseResponse.horse() != null){
+      Horse newHorse = gson.fromJson(createHorseResponse.horse().toString(), Horse.class);
+      setSelectedHorse(newHorse);
     }
   }
+
+  private void handleUpdateHorseResponse(Horse updatedHorse)
+  {
+    horseClient.getHorseList();
+    if (updatedHorse != null){
+      setSelectedHorse(updatedHorse);
+    }
+  }
+
+  private void handleRemoveHorseResponse(String message)
+  {
+    if(message.equals("success")){
+      horseClient.getHorseList();
+      setNull();
+    }
+  }
+
 }
 
 

@@ -36,6 +36,15 @@ public class HorseHandler extends BaseRequestHandler
           CreateHorseRequest request = parsePayload(payload, CreateHorseRequest.class);
           return createHorserRequest(request);
         }
+        case "updateHorse" ->
+        {
+          Horse horseToUpdate = parsePayload(payload, Horse.class);
+          return handleUpdateHorse(horseToUpdate);
+        }
+        case "deleteHorse" -> {
+          Horse horseToRemove = parsePayload(payload, Horse.class);
+          return handleRemoveHorse(horseToRemove);
+        }
         default ->
             throw new IllegalArgumentException("Invalid action: " + action);
       }
@@ -49,6 +58,15 @@ public class HorseHandler extends BaseRequestHandler
   private HorseResponse handleGetHorseRequest(HorseRequest horseRequest){
     return horseListService.getHorse(horseRequest.id());
   }
+
+private Horse handleUpdateHorse(Horse horse){
+    return horseListService.updateHorse(horse);
+}
+
+private String handleRemoveHorse(Horse horse){
+    horseListService.removeHorse(horse);
+    return "success";
+}
 
   private CreateHorseResponse createHorserRequest(
       CreateHorseRequest createHorseRequest){

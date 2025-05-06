@@ -9,4 +9,6 @@ public interface HorseListService
   HorseListResponse getHorseList();
   HorseResponse getHorse( int id);
   Horse createHorse(String horseName, int speedMin, int speedMax);
+  Horse updateHorse(Horse horse);
+  String removeHorse(Horse horse);
 }
