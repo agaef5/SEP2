@@ -1,34 +1,57 @@
-//package client.ui.userView;
-//
-//import javafx.fxml.FXML;
-//import javafx.scene.control.TableColumn;
-//import javafx.scene.control.TableView;
-//import javafx.scene.control.cell.PropertyValueFactory;
-//import server.model.Horse;
-//
-//public class HorseListViewController
-//{
-//  @FXML TableView<Horse> tableView;
-//  @FXML TableColumn <Horse, Integer> horseId;
-//  @FXML TableColumn <Horse, String> horseName;
-//  @FXML TableColumn <Horse, Integer> speedMin;
-//  @FXML TableColumn <Horse, Integer> speedMax;
-//
-//  private HorseListVM horseListVM;
-//
-//  public RacerListViewController(HorseListVM horseListVM)
-//  {
-//    this.horseListVM = horseListVM;
-//  }
-//
-//  public void initialize()
-//  {
-//    horseId.setCellValueFactory(new PropertyValueFactory<>("id"));
-//    horseName.setCellValueFactory(new PropertyValueFactory<>("name"));
-//    speedMin.setCellValueFactory(new PropertyValueFactory<>("speedMin"));
-//    speedMax.setCellValueFactory(new PropertyValueFactory<>("speedMax"));
-//
-//    tableView.setItems(horseListVM.getHorses());
-//  }
-//
-//}
+package client.ui.userView;
+
+import javafx.beans.binding.Bindings;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.converter.DefaultStringConverter;
+import javafx.util.converter.NumberStringConverter;
+import server.model.Horse;
+
+public class HorseListViewController
+{
+  @FXML private ListView<Horse> listView;
+  @FXML private TextField horseName;
+  @FXML private TextField speedMin;
+  @FXML private TextField speedMax;
+
+  private HorseListVM viewModel;
+
+  public void initialize(HorseListVM viewModel)
+  {
+    this.viewModel = viewModel;
+
+    // ListView binding
+    listView.setItems(viewModel.getHorseList());
+
+    listView.setCellFactory(param -> new ListCell<>()
+    {
+      @Override protected void updateItem(Horse horse, boolean empty)
+      {
+        super.updateItem(horse, empty);
+        if (empty || horse == null)
+        {
+          setText(null);
+        }
+        else
+        {
+          setText(horse.getName() + " (speed: " + horse.getSpeedMin() + " - "
+              + horse.getSpeedMax() + ")");
+        }
+      }
+    });
+
+    listView.getSelectionModel().selectedItemProperty().addListener(
+        (obs, oldVal, newVal) -> viewModel.setSelectedHorse(newVal));
+
+    Bindings.bindBidirectional(horseName.textProperty(),
+        viewModel.horseNameProperty(), new DefaultStringConverter());
+
+    // Integer binding with NumberStringConverter
+    Bindings.bindBidirectional(speedMin.textProperty(),
+        viewModel.speedMinProperty(), new NumberStringConverter());
+    Bindings.bindBidirectional(speedMax.textProperty(),
+        viewModel.speedMaxProperty(), new NumberStringConverter());
+
+  }
+}
