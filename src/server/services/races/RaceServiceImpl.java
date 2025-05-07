@@ -13,7 +13,7 @@ import java.util.List;
 public class RaceServiceImpl implements RacesService
 {
 
-  @Override public Race createRace(String name, long startTime,
+  @Override public Race createRace(String name,
       int raceCapacity, RaceTrack raceTrack)
       //Validate the input for creating race, if valid create a race and return it
       //TODO plus add the Race to Datebase

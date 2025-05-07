@@ -48,7 +48,7 @@ public class RaceHandler extends BaseRequestHandler
   private Object handleCreateRaceRequest(CreateRaceRequest request)
       //creating race in service layer and returning this race
   {
-    Race createdRace = racesService.createRace(request.name(),request.startDelayMin(),request.capacity(),request.raceTrack());
+    Race createdRace = racesService.createRace(request.name(),request.capacity(),request.raceTrack());
     return new RaceResponse(createdRace);
   }
 
