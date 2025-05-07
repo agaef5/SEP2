@@ -16,25 +16,38 @@ public class AdminPanelController
   @FXML private Button addHorse;
   @FXML private Button editUser;
   @FXML private Label raceInfo;
+  private AdminPanelVM viewModel;
+
+  //empty constructor for FXML
+  public AdminPanelController(){};
 
   @FXML
-  private void initialize() {
+  private void init(AdminPanelVM viewModel)
+  {
+    this.viewModel = viewModel;
+
+    //binding the label to vm property
+    raceInfo.textProperty().bind(viewModel.getNextRaceInfo());
+
+    //set up the buttons
     addRace.setOnAction(e -> loadScene(
         "/client/ui/adminView/race/CreateRace.fxml"));
     addHorse.setOnAction(e -> loadScene("/client/ui/racerList/adminView/racer/CreateEditRacer.fxml"));
 //    editUser.setOnAction(e -> loadScene("/client/ui/racerList/adminView/user/EditUser.fxml"));
   }
 
-  private void loadScene(String fxmlPath) {
-    try {
+  private void loadScene(String fxmlPath)
+  {
+    try
+    {
       FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
       Parent root = loader.load();
       Stage stage = (Stage) addRace.getScene().getWindow();
       stage.setScene(new Scene(root));
-    } catch (IOException e) {
+    } catch (IOException e)
+    {
       e.printStackTrace();
 
     }
   }
-
 }
