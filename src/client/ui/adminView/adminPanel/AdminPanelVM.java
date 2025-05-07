@@ -12,36 +12,71 @@ import shared.GetRaceListResponse;
 
 import java.util.List;
 
+/**
+ * ViewModel for the Admin Panel view.
+ * Handles business logic and data processing for displaying upcoming race information.
+ * Implements MessageListener to receive updates from the server.
+ */
 public class AdminPanelVM implements MessageListener
 {
+  /** Client for communicating with race-related server endpoints */
   private RaceClient raceClient;
+
+  /** Service for socket communication with the server */
   private SocketService socketService;
+
+  /** JSON parser for handling server responses */
   private Gson gson;
 
+  /** Observable property containing information about the next race */
   private StringProperty nextRaceInfo = new SimpleStringProperty("No planned races");
 
+  /**
+   * Constructs the ViewModel with dependencies and initializes data.
+   *
+   * @param raceClient Client for race-related server operations
+   * @param socketService Service for socket communication with the server
+   */
   public AdminPanelVM(RaceClient raceClient, SocketService socketService)
   {
     this.raceClient = raceClient;
     this.socketService = socketService;
     this.gson = new Gson();
 
-    //register as listener
+    // Register this ViewModel as a listener for socket messages
     this.socketService.addListener(this);
 
+    // Request the current race list from the server
     refreshRaceList();
   }
 
+  /**
+   * Requests the current race list from the server.
+   * This will trigger an update via the MessageListener when the response is received.
+   */
   private void refreshRaceList()
   {
     raceClient.getRaceList();
   }
 
+  /**
+   * Gets the observable property containing information about the next race.
+   * This property can be bound to UI elements to display race information.
+   *
+   * @return StringProperty containing formatted race information
+   */
   public StringProperty getNextRaceInfo()
   {
     return nextRaceInfo;
   }
 
+  /**
+   * Handles messages received from the server via the socket connection.
+   * Processes different message types and updates the ViewModel state accordingly.
+   *
+   * @param type The type of message received
+   * @param payload The JSON payload containing the message data
+   */
   @Override public void update(String type, String payload)
   {
     if ("getRaceList".equals(type))
@@ -51,6 +86,13 @@ public class AdminPanelVM implements MessageListener
     }
   }
 
+  /**
+   * Updates the next race information based on the received race list.
+   * If races are available, formats information about the first race in the list.
+   * Updates must be performed on the JavaFX application thread.
+   *
+   * @param races List of races received from the server
+   */
   private void updateRaceInfo(List<Race> races)
   {
     Platform.runLater(() -> {
@@ -71,4 +113,3 @@ public class AdminPanelVM implements MessageListener
     });
   }
 }
-
