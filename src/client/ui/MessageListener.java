@@ -20,11 +20,11 @@ public interface MessageListener
    */
   void update(String type, String payload);
 
-  /**
-   * Updates the listener with a message that is an object. The type and payload can be extracted or processed
-   * as required.
-   *
-   * @param message the message object that can be processed as needed
-   */
-  void update(Object message);
+//  /**
+//   * Updates the listener with a message that is an object. The type and payload can be extracted or processed
+//   * as required.
+//   *
+//   * @param message the message object that can be processed as needed
+//   */
+//  void update(Object message);
 }

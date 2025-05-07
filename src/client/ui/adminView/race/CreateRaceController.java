@@ -4,11 +4,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import server.model.Race;
 import server.model.RaceTrack;
 
 import java.io.IOException;
@@ -21,6 +19,7 @@ public class CreateRaceController
   @FXML private TextField raceName;
   @FXML private Button createRace;
   @FXML private Button back;
+  @FXML private ListView<Race> raceQueueList;
 
   private CreateRaceVM createRaceVM;
 
@@ -28,31 +27,38 @@ public class CreateRaceController
   public CreateRaceController(){};
 
 
-  public void initialize(CreateRaceVM viewModel) throws SQLException
-  {
-    createRaceVM = viewModel;
+  public void initialize(CreateRaceVM viewModel) throws SQLException {
+    this.createRaceVM = viewModel;
 
-    //bind raceTrack items
+    // bind raceTrack items
     raceTrack.setItems(createRaceVM.getAvailableRaceTracks());
     createRaceVM.selectedRaceTrackProperty().bind(raceTrack.getSelectionModel().selectedItemProperty());
 
-    //listener on textfield for nr of horses
-    nrOfHorses.textProperty().addListener((obs, oldVal, newVal) ->
-    {
-      try
-      {
-        createRaceVM.horseCountProperty().set(Integer.parseInt(newVal));
+    // Set up race queue ListView
+    raceQueueList.setItems(createRaceVM.getRaceQueue());
+    raceQueueList.setCellFactory(param -> new ListCell<>() {
+      @Override
+      protected void updateItem(Race race, boolean empty) {
+        super.updateItem(race, empty);
+        if (empty || race == null) {
+          setText(null);
+        } else {
+          setText(race.getName() + " - Track: " + race.getRaceTrack().getName());
+        }
       }
-      catch (NumberFormatException e)
-      {
+    });
+
+    // listener on textfield for nr of horses
+    nrOfHorses.textProperty().addListener((obs, oldVal, newVal) -> {
+      try {
+        createRaceVM.horseCountProperty().set(Integer.parseInt(newVal));
+      } catch (NumberFormatException e) {
         createRaceVM.horseCountProperty().set(0); // or error
       }
+    });
 
-      //bind name
-      raceName.textProperty()
-          .bindBidirectional(createRaceVM.raceNameProperty());
-    }
-    );
+    // bind race name textfield
+    raceName.textProperty().bindBidirectional(createRaceVM.raceNameProperty());
   }
 
   @FXML private void onCreateRaceClicked() throws SQLException

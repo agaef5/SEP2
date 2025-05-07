@@ -86,7 +86,7 @@ public class CreateEditHorseVM implements MessageListener {
     setReadMode();
   }
 
-  //horse object is being directly manipulated, no DTO. We should change this
+
   public void updateHorse() {
     if (selectedHorse != null) {
       selectedHorse.setName(horseName.get());
@@ -96,7 +96,6 @@ public class CreateEditHorseVM implements MessageListener {
     }
   }
 
-  //horse object is being directly manipulated, no DTO. We should change this
   public void removeHorse() {
     if (selectedHorse != null) {
       horseClient.deleteHorse(selectedHorse);
@@ -155,11 +154,6 @@ public void setReadMode(){
     }
   }
 
-
-  @Override public void update(Object message)
-  {
-
-  }
 
   private void handleCreateHorseResponse(CreateHorseResponse createHorseResponse)
   {

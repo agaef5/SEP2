@@ -10,13 +10,16 @@ import shared.GetRaceTracksRequest;
  */
 public interface RaceClient {
 
+   void getRaceList();
+
    /**
     * Sends a request to retrieve a list of races based on the provided {@link GetRaceListRequest}.
     *
     * @param getRaceListRequest the request containing the criteria for retrieving races
     */
-   void getRaces(GetRaceListRequest getRaceListRequest);
 
+
+   void getRaceList(GetRaceListRequest getRaceListRequest);
    /**
     * Sends a request to create a new race using the provided {@link CreateRaceRequest}.
     *

@@ -53,7 +53,7 @@ public class CreateEditHorseController
     Bindings.bindBidirectional(remove.disableProperty(),
         viewModel.getRemoveButtonDisableProperty());
 
-        // chain actions
+     // chain actions
     create.setOnAction(e -> viewModel.setHorseCreationMode());
     edit.setOnAction(e -> viewModel.updateHorse());
     remove.setOnAction(e -> viewModel.removeHorse());

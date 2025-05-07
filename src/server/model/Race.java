@@ -109,4 +109,9 @@ public class Race implements Runnable {
 
     // TODO: Finish the rest of the race logic (e.g., horse movement, race end conditions)
   }
+
+  public RaceTrack getRaceTrack()
+  {
+    return raceTrack;
+  }
 }

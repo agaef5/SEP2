@@ -81,9 +81,4 @@ public class HorseListVM implements MessageListener
         break;
     }
   }
-
-  @Override public void update(Object message) {
-
-  }
-
 }
