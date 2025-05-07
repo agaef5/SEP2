@@ -9,13 +9,12 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import server.model.Horse;
-import server.model.Race;
 import server.model.RaceTrack;
 import shared.CreateRaceRequest;
 import shared.GetRaceListResponse;
 import shared.GetRaceTrackResponse;
+import shared.GetRaceTracksRequest;
 
-import java.sql.SQLException;
 
 
 public class CreateRaceVM implements MessageListener
@@ -36,7 +35,10 @@ public class CreateRaceVM implements MessageListener
     this.gson = new Gson();
     this.socketService = socketService;
     this.socketService.addListener(this);
-    //TODO send request for all the RaceTracks
+
+    // Request race tracks when the ViewModel is initialized
+    GetRaceTracksRequest request = new GetRaceTracksRequest();
+    raceClient.getRaceTracks(request);
   }
 
   // getters for Properties
@@ -66,13 +68,6 @@ public class CreateRaceVM implements MessageListener
     return raceName.get() != null && !raceName.get().isBlank()
         && selectedRaceTrack.get() != null && horseCount.get() > 0;
   }
-
-  //TODO main function, but needs filling
-
-
-
-
-
 
 
 
