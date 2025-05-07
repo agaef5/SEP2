@@ -1,7 +1,8 @@
-package server.model;
+
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.model.Horse;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -55,6 +55,8 @@ public class Race implements Runnable {
   /** @return the list of horses in their final positions */
   public HorseList getFinalPositionlist() { return finalpositionlist; }
 
+  /** @return the race track on which is the race located */
+  public RaceTrack getRaceTrack() {return raceTrack; }
   /**
    * Registers a listener to be notified when the race starts.
    *

@@ -58,7 +58,7 @@ public class RaceRepositoryimpl implements RaceRepository{
             if ( resultSet.next() )
             {
                 String race = resultSet.getString("name");
-                return new Race(race, 3); //3 is placeholder to temporary match constructor
+                return new Race(race, 3,null); //3 is placeholder to temporary match constructor
             }
             else
             {
@@ -81,7 +81,7 @@ public class RaceRepositoryimpl implements RaceRepository{
             {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
-                Race race = new Race(name, 3); //wrong constructor
+                Race race = new Race(name, 3,null); //wrong constructor
                 result.add(race);
             }
             return result;
@@ -98,7 +98,7 @@ public class RaceRepositoryimpl implements RaceRepository{
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
 
-                Race race = new Race(name, 3); //!!
+                Race race = new Race(name, 3,null); //!!
                 return race;
             } else {
                 return null;
@@ -115,7 +115,7 @@ public class RaceRepositoryimpl implements RaceRepository{
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-                Race race = new Race(name, 3); //!!
+                Race race = new Race(name, 3,null); //!!
                 return race;
             } else {
                 return null;
