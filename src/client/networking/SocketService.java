@@ -28,6 +28,10 @@ public class SocketService implements SocketSubject {
     new Thread(new SocketServiceReceive(this, in)).start();
   }
 
+  public void addListener(MessageListener listener) {
+    listeners.add(listener);
+  }
+
   public void sendRequest(Request request) {
     try {
       String json = gson.toJson(request);
@@ -38,6 +42,7 @@ public class SocketService implements SocketSubject {
       ErrorHandler.handleError(e, "SocketService");
     }
   }
+
   public void receive(String jsonResponse) {
     System.out.println("Server>> " + jsonResponse.toString());
     try
@@ -58,11 +63,6 @@ public class SocketService implements SocketSubject {
       listener.update(type, payload);
       System.out.println("Notifing the listeners");
     }
-  }
-
-  @Override
-  public void addListener(MessageListener listener) {
-    listeners.add(listener);
   }
 
   @Override

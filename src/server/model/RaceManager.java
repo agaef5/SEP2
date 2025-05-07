@@ -1,5 +1,7 @@
 package server.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -23,6 +25,11 @@ public class RaceManager implements Runnable
   public void addRace(Race race)
   {
     raceQueue.add(race);
+  }
+
+  public List<Race> getAllRaces()
+  {
+    return new ArrayList<>(raceQueue); // creates a snapshot
   }
 
   @Override public void run()

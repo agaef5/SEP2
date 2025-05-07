@@ -1,11 +1,14 @@
 package server.services.races;
 
 import server.model.Race;
+import server.model.RaceManager;
 import server.model.RaceTrack;
 import server.validation.baseValidation.BaseVal;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class RaceServiceImpl implements RacesService
 {
@@ -25,7 +28,7 @@ public class RaceServiceImpl implements RacesService
     }
     try
     {
-      Race race = new Race(name, startTime, raceCapacity, raceTrack);
+      Race race = new Race(name, raceCapacity, raceTrack);
       return race;
     }
     catch (SQLException e)
@@ -36,9 +39,15 @@ public class RaceServiceImpl implements RacesService
 
   }
 
-  @Override public Race getRace()
+  @Override public List<Race> getRaceList()
   {
-    //TODO where are we storing ongoing race,
+    List<Race> raceList = RaceManager.getInstance().getAllRaces();
+    return raceList;
+  }
+
+  @Override public List<RaceTrack> getRaceTracks()
+  {
+    //TODO call method in persistance layer to get all RaceTracks
     return null;
   }
 }

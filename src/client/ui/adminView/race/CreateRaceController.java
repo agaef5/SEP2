@@ -28,9 +28,9 @@ public class CreateRaceController
   public CreateRaceController(){};
 
 
-  public void initialize() throws SQLException
+  public void initialize(CreateRaceVM viewModel) throws SQLException
   {
-    createRaceVM = new CreateRaceVM();
+    createRaceVM = viewModel;
 
     //bind raceTrack items
     raceTrack.setItems(createRaceVM.getAvailableRaceTracks());

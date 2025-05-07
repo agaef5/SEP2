@@ -3,11 +3,13 @@ package server.networking.socketHandling;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import server.model.Race;
+import server.model.RaceTrack;
 import server.services.races.RaceServiceImpl;
 import server.services.races.RacesService;
-import shared.CreateRaceRequest;
-import shared.RaceRequest;
-import shared.RaceResponse;
+import shared.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RaceHandler extends BaseRequestHandler
 {
@@ -29,11 +31,14 @@ public class RaceHandler extends BaseRequestHandler
         CreateRaceRequest request = parsePayload(payload,CreateRaceRequest.class);
         return handleCreateRaceRequest(request);
       }
-//      case "getRace"->//action for geting the race
-//      {
-//       return handleGetRace()
-
-//      }
+      case "getRaceList"->//action for geting the race
+      {
+       return handleGetRace();
+      }
+      case "getRaceTracks"->
+      {
+        return handleGetRaceTracks();
+      }
       default ->
         throw new IllegalArgumentException("Invalid action "+ action);
     }
@@ -49,7 +54,13 @@ public class RaceHandler extends BaseRequestHandler
 
   private Object handleGetRace()
   {
-    Race race = racesService.getRace();
-    return new RaceResponse(race);
+    List<Race> races =racesService.getRaceList();
+    return new GetRaceListResponse(races);
+  }
+
+  private Object handleGetRaceTracks()
+  {
+    List<RaceTrack> raceTracks = racesService.getRaceTracks();
+    return new GetRaceTrackResponse(raceTracks);
   }
 }

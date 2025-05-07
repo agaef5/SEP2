@@ -3,24 +3,28 @@ package server.model;
 import server.persistence.horses.HorseRepositoryImpl;
 
 import java.sql.SQLException;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class Race implements Runnable
 {
   private String name;
   private RaceState status;
-  private Date dateTime; // Dont know in which format we want to work on, So now I just put Date but feel free to change it
+  private Timestamp dateTime;
   private HorseList horseList;
   private HorseList finalpositionlist;
   private List<RaceListener> listeners = new ArrayList<>();
+  private RaceTrack raceTrack;
 
-  public Race(String name, Date startTime,int raceCapacity) throws SQLException
+  public Race(String name,int raceCapacity,RaceTrack raceTrack) throws SQLException
   {
+    this.raceTrack=raceTrack;
     this.name=name;
-    this.dateTime =startTime;
+    this.dateTime =null;
     this.horseList = new HorseList(raceCapacity);
     this.finalpositionlist = new HorseList(raceCapacity);
     this.status= RaceState.NOT_STARTED;
@@ -37,7 +41,7 @@ public class Race implements Runnable
     return status;
   }
 
-  public Date getDateTime()
+  public Timestamp getDateTime()
   {
     return dateTime;
   }
@@ -83,13 +87,12 @@ public void updateListenersOnRaceStarted() // notify Listeners about starting of
 
 
 
-  @Override public void run()//TODO Finish late the run() method + add the Time Stamp at the start of Race
+  @Override public void run()//TODO Finish late the run() method
   {
     try {
+      dateTime = Timestamp.valueOf(LocalDateTime.now());
       // Wait until the scheduled start time
-      while (new Date().before(dateTime)) { //wait until the scheduled time of race
-        Thread.sleep(1000);
-      }
+        Thread.sleep(100000);
     } catch (InterruptedException e) {
       e.printStackTrace();
       return;

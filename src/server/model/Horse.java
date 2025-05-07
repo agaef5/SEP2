@@ -13,7 +13,8 @@ public class Horse {
   private String type;
   private boolean inRace = false;
 
-  public Horse(int id, String name, int speedMin, int speedMax) {
+  public Horse(int id, String name, int speedMin, int speedMax)
+  {
     this.id = id;
     this.name = name;
     this.speedMin = speedMin;
@@ -26,19 +27,19 @@ public class Horse {
 
   public String getName() { return name; }
 
+  public void setName(String s) { this.name = s; }
+
   public int getSpeedMin() { return speedMin; }
 
+  public void setSpeedMin(int i) { this.speedMin = i; }
+
   public int getSpeedMax() { return speedMax; }
+
+  public void setSpeedMax(int i) { this.speedMax = i; }
 
   public int getPosition() { return position; }
 
   public String getType() { return type; }
-
-  public void setSpeedMax(int i) { this.speedMax = i; }
-
-  public void setSpeedMin(int i) { this.speedMin = i; }
-
-  public void setName(String s) { this.name = s; }
 
   public void setType(String s) { this.type = s; }
 
@@ -72,13 +73,13 @@ public class Horse {
         Objects.equals(name, horse.name);
   }
 
-  public void setInRace(boolean inRace)
-  {
-    this.inRace = inRace;
-  }
-
   public boolean isInRace()
   {
     return inRace;
+  }
+
+  public void setInRace(boolean inRace)
+  {
+    this.inRace = inRace;
   }
 }

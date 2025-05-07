@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class CreateEditHorseVM implements MessageListener {
 
   private final HorsesClient horseClient;
-  private final SocketService socketService;
   private final ObservableList<Horse> horseList = FXCollections.observableArrayList();
 
   private final StringProperty horseName = new SimpleStringProperty();
@@ -26,11 +25,12 @@ public class CreateEditHorseVM implements MessageListener {
   private final BooleanProperty editButtonDisabled = new SimpleBooleanProperty();
   private final BooleanProperty removeButtonDisabled = new SimpleBooleanProperty();
   private final Gson gson;
+  private final SocketService socketService;
 
   private Horse selectedHorse;
   private boolean creatingHorse;
 
-  public CreateEditHorseVM(HorsesClient client,SocketService socketService) {
+  public CreateEditHorseVM(HorsesClient client, SocketService socketService) {
     this.horseClient = client;
     this.socketService = socketService;
     this.socketService.addListener(this);

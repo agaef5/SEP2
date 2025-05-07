@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.model.Horse;
-import server.model.Racer;
+
 import shared.CreateHorseRequest;
 import shared.HorseListResponse;
 
@@ -27,7 +27,7 @@ class CreateEditRacerVMTest {
   void setUp() {
     racersClient = mock(HorsesClient.class);
     socketService = mock(SocketService.class);
-    viewModel = new CreateEditHorseVM(racersClient, socketService);
+    viewModel = new CreateEditHorseVM(racersClient);
   }
 
   @Test
