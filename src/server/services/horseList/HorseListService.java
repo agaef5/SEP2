@@ -4,11 +4,50 @@ import server.model.Horse;
 import shared.HorseListResponse;
 import shared.HorseResponse;
 
+/**
+ * The {@code HorseListService} interface defines methods for managing the list of horses
+ * in the system. It includes functionality for retrieving, creating, updating, and removing horses.
+ */
 public interface HorseListService
 {
+  /**
+   * Retrieves the list of all horses.
+   *
+   * @return A {@link HorseListResponse} containing the list of all horses.
+   */
   HorseListResponse getHorseList();
-  HorseResponse getHorse( int id);
+
+  /**
+   * Retrieves a specific horse by its ID.
+   *
+   * @param id The ID of the horse to be retrieved.
+   * @return A {@link HorseResponse} containing the details of the specified horse.
+   */
+  HorseResponse getHorse(int id);
+
+  /**
+   * Creates a new horse with the given details.
+   *
+   * @param horseName The name of the horse.
+   * @param speedMin The minimum speed of the horse.
+   * @param speedMax The maximum speed of the horse.
+   * @return The created {@link Horse} object.
+   */
   Horse createHorse(String horseName, int speedMin, int speedMax);
+
+  /**
+   * Updates the details of an existing horse.
+   *
+   * @param horse The horse object containing the updated details.
+   * @return The updated {@link Horse} object.
+   */
   Horse updateHorse(Horse horse);
+
+  /**
+   * Removes a horse from the system.
+   *
+   * @param horse The horse to be removed.
+   * @return A string message indicating the result of the removal.
+   */
   String removeHorse(Horse horse);
 }

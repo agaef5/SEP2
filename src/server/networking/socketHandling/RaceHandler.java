@@ -8,58 +8,79 @@ import server.services.races.RaceServiceImpl;
 import server.services.races.RacesService;
 import shared.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class RaceHandler extends BaseRequestHandler
-{
+/**
+ * {@code RaceHandler} is responsible for processing race-related requests from clients.
+ * It interacts with the {@code RacesService} to handle actions such as creating races,
+ * retrieving race lists, and getting available race tracks.
+ */
+public class RaceHandler extends BaseRequestHandler {
   private final RacesService racesService;
   private final Gson gson = new Gson();
 
-  public RaceHandler()
-  {
-    this.racesService=new RaceServiceImpl();
+  /**
+   * Constructor to initialize the {@code RaceHandler} with a {@code RacesService}.
+   * This service is used for managing race data and race track information in the system.
+   */
+  public RaceHandler() {
+    this.racesService = new RaceServiceImpl();
   }
 
-  @Override public Object safeHandle(String action, JsonElement payload)
-  //check what action is required and based on that calls method on Service layer
-  {
-    switch (action)
-    {
-      case "createRace"-> //action for creating Race
-      {
-        CreateRaceRequest request = parsePayload(payload,CreateRaceRequest.class);
+  /**
+   * This method handles various actions related to races based on the provided action string.
+   * Each action corresponds to a specific race-related operation, which is delegated
+   * to the appropriate method for processing.
+   *
+   * @param action The action to be performed (e.g., "createRace", "getRaceList").
+   * @param payload The payload containing necessary data for the action.
+   * @return The response generated after processing the request.
+   * @throws IllegalArgumentException If the action is invalid.
+   */
+  @Override
+  public Object safeHandle(String action, JsonElement payload) {
+    switch (action) {
+      case "createRace" -> {
+        CreateRaceRequest request = parsePayload(payload, CreateRaceRequest.class);
         return handleCreateRaceRequest(request);
       }
-      case "getRaceList"->//action for geting the race
-      {
-       return handleGetRace();
+      case "getRaceList" -> {
+        return handleGetRace();
       }
-      case "getRaceTracks"->
-      {
+      case "getRaceTracks" -> {
         return handleGetRaceTracks();
       }
-      default ->
-        throw new IllegalArgumentException("Invalid action "+ action);
+      default -> throw new IllegalArgumentException("Invalid action " + action);
     }
-
   }
 
-  private Object handleCreateRaceRequest(CreateRaceRequest request)
-      //creating race in service layer and returning this race
-  {
-    Race createdRace = racesService.createRace(request.name(),request.capacity(),request.raceTrack());
+  /**
+   * Handles the request to create a new race.
+   *
+   * @param request The request containing data for creating the new race.
+   * @return The response containing the created race's data.
+   */
+  private Object handleCreateRaceRequest(CreateRaceRequest request) {
+    Race createdRace = racesService.createRace(request.name(), request.capacity(), request.raceTrack());
     return new RaceResponse(createdRace);
   }
 
-  private Object handleGetRace()
-  {
-    List<Race> races =racesService.getRaceList();
+  /**
+   * Handles the request to retrieve a list of all races.
+   *
+   * @return The response containing a list of all races.
+   */
+  private Object handleGetRace() {
+    List<Race> races = racesService.getRaceList();
     return new GetRaceListResponse(races);
   }
 
-  private Object handleGetRaceTracks()
-  {
+  /**
+   * Handles the request to retrieve a list of all available race tracks.
+   *
+   * @return The response containing a list of all race tracks.
+   */
+  private Object handleGetRaceTracks() {
     List<RaceTrack> raceTracks = racesService.getRaceTracks();
     return new GetRaceTrackResponse(raceTracks);
   }

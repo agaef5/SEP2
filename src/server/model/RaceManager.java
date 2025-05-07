@@ -5,48 +5,79 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class RaceManager implements Runnable
-{
+/**
+ * {@code RaceManager} is a singleton class that manages the execution of races.
+ * It holds a queue of races and ensures that each race is executed sequentially in a separate thread.
+ * <p>
+ * The class implements the {@link Runnable} interface, allowing it to be run in a separate thread.
+ * This ensures that race executions happen asynchronously without blocking other processes.
+ * </p>
+ */
+public class RaceManager implements Runnable {
+
+  /**
+   * The singleton instance of {@code RaceManager}.
+   */
   private static RaceManager instance;
+
+  /**
+   * A blocking queue to hold races awaiting execution.
+   */
   private final BlockingQueue<Race> raceQueue = new LinkedBlockingQueue<>();
 
-  private RaceManager(){}
+  /**
+   * Private constructor to enforce the singleton pattern.
+   */
+  private RaceManager() {}
 
-  public static synchronized RaceManager getInstance()
-  {
-    if (instance ==null){
+  /**
+   * Returns the singleton instance of {@code RaceManager}.
+   * If the instance does not exist, it is created and started in a new thread.
+   *
+   * @return The singleton instance of {@code RaceManager}.
+   */
+  public static synchronized RaceManager getInstance() {
+    if (instance == null) {
       instance = new RaceManager();
-      //if we use a start, don't we also need a stop?
+      // If we use a start, don't we also need a stop?
       new Thread(instance).start();
-  }
+    }
     return instance;
   }
 
-  public void addRace(Race race)
-  {
+  /**
+   * Adds a new race to the queue for execution.
+   *
+   * @param race The race to be added to the queue.
+   */
+  public void addRace(Race race) {
     raceQueue.add(race);
   }
 
-  public List<Race> getAllRaces()
-  {
+  /**
+   * Returns a list of all races in the queue. The list is a snapshot of the current state of the race queue.
+   *
+   * @return A list containing all races in the queue.
+   */
+  public List<Race> getAllRaces() {
     return new ArrayList<>(raceQueue); // creates a snapshot
   }
 
-  @Override public void run()
-  {
-  while (true)
-  {
-    try{
-      Race race = raceQueue.take();
-      race.run();
-      // TODO after the race is done add it to the database
-
+  /**
+   * Continuously takes races from the queue and executes them.
+   * This method is run in a separate thread and processes each race sequentially.
+   */
+  @Override
+  public void run() {
+    while (true) {
+      try {
+        Race race = raceQueue.take();
+        race.run();
+        // TODO after the race is done add it to the database
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        break;
+      }
     }
-    catch (InterruptedException e)
-    {
-      Thread.currentThread().interrupt();
-      break;
-    }
-  }
   }
 }
