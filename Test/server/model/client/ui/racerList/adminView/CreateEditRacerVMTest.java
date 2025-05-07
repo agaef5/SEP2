@@ -19,58 +19,56 @@ import static org.mockito.Mockito.*;
 
 class CreateEditRacerVMTest {
 
-  private HorsesClient racersClient;
+  private HorsesClient horsesClient;
   private SocketService socketService;
   private CreateEditHorseVM viewModel;
 
   @BeforeEach
   void setUp() {
-    racersClient = mock(HorsesClient.class);
+    horsesClient = mock(HorsesClient.class);
     socketService = mock(SocketService.class);
-    viewModel = new CreateEditHorseVM(racersClient);
+    viewModel = new CreateEditHorseVM(horsesClient, socketService);
   }
 
   @Test
   void testAddRacer() {
-    viewModel.racerTypeProperty().setValue("Horse");
     viewModel.horseNameProperty().setValue("Lightning");
     viewModel.speedMinProperty().setValue(10);
     viewModel.speedMaxProperty().setValue(20);
 
     viewModel.addHorse();
 
-    verify(racersClient, times(1)).createHorse(any(CreateHorseRequest.class));
-    verify(racersClient, times(1)).getHorseList();
+    verify(horsesClient, times(1)).createHorse(any(CreateHorseRequest.class));
+    verify(horsesClient, times(1)).getHorseList();
   }
 
   @Test
   void testUpdateRacer() {
-    Racer racer = new Horse(1, "OldName", 5, 15);
-    viewModel.setSelectedHorse(racer);
+    Horse horse = new Horse(1, "OldName", 5, 15);
+    viewModel.setSelectedHorse(horse);
 
     viewModel.horseNameProperty().setValue("NewName");
     viewModel.speedMinProperty().setValue(10);
     viewModel.speedMaxProperty().setValue(30);
-    viewModel.racerTypeProperty().setValue("Horse");
 
     viewModel.updateHorse();
 
-    assertEquals("NewName", racer.getName());
-    assertEquals(10, racer.getSpeedMin());
-    assertEquals(30, racer.getSpeedMax());
-    assertEquals("Horse", racer.getType());
+    assertEquals("NewName", horse.getName());
+    assertEquals(10, horse.getSpeedMin());
+    assertEquals(30, horse.getSpeedMax());
+    assertEquals("Horse", horse.getType());
 
-    verify(racersClient, times(1)).updateHorse(racer);
+    verify(horsesClient, times(1)).updateHorse(horse);
   }
 
   @Test
   void testRemoveRacer() {
-    Racer racer = new Horse(1, "ToDelete", 5, 15);
-    viewModel.setSelectedHorse(racer);
+    Horse horse = new Horse(1, "ToDelete", 5, 15);
+    viewModel.setSelectedHorse(horse);
 
     viewModel.removeHorse();
 
-    verify(racersClient, times(1)).deleteHorse(racer);
+    verify(horsesClient, times(1)).deleteHorse(horse);
   }
 
   @Test
@@ -82,8 +80,8 @@ class CreateEditRacerVMTest {
     Platform.runLater(() -> {
       viewModel.updateHorseList(response);
 
-      ObservableList<Racer> racers = viewModel.getHorseList();
-      assertEquals(1, racers.size());
+      ObservableList<Horse> horses = viewModel.getHorseList();
+      assertEquals(1, horses.size());
       assertNotNull(viewModel.getHorseList());
     });
   }

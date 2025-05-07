@@ -27,7 +27,7 @@ create table sep2.horse(
 
 
 create table sep2.race(
-    id int references sep2.race(id),
+    id int primary key,
     admin_id int references sep2.admin(id),
     name varchar,
     status varchar,
