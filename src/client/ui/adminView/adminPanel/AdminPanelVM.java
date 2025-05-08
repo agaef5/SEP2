@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import server.model.Race;
+import shared.DTO.RaceDTO;
 import shared.GetRaceListResponse;
 
 import java.util.List;
@@ -93,18 +94,18 @@ public class AdminPanelVM implements MessageListener
    *
    * @param races List of races received from the server
    */
-  private void updateRaceInfo(List<Race> races)
+  private void updateRaceInfo(List<RaceDTO> races)
   {
     Platform.runLater(() -> {
       if (races != null && !races.isEmpty()) {
         // Get the first race in the queue (assume it's sorted by time)
-        Race nextRace = races.get(0);
+        RaceDTO nextRace = races.get(0);
 
         // Format the race information
         String info = String.format("Next race: %s - Track: %s - Horses: %d",
-            nextRace.getName(),
-            nextRace.getRaceTrack().getName(),
-            nextRace.getHorseList().getList().size());
+            nextRace.name(),
+            nextRace.raceTrack().name(),
+            nextRace.horses().size());
 
         nextRaceInfo.set(info);
       } else {

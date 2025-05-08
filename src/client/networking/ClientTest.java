@@ -7,8 +7,8 @@ import client.ui.adminView.horseList.CreateEditHorseController;
 import client.ui.adminView.horseList.CreateEditHorseVM;
 import client.ui.adminView.race.CreateRaceController;
 import client.ui.adminView.race.CreateRaceVM;
-import client.ui.userView.HorseListVM;
-import client.ui.userView.HorseListViewController;
+import client.ui.userView.bettingPage.HorseListVM;
+import client.ui.userView.bettingPage.HorseListViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -46,24 +46,24 @@ public class ClientTest extends Application
 
     CreateRaceVM createRaceVM = new CreateRaceVM(socketRaceClient,socketservice);
 
-//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-//        "/client/ui/adminView/race/CreateRace.fxml") );
-//    Parent root = loader.load();
-//    CreateRaceController createRaceController = loader.getController();
-//    createRaceController.initialize(createRaceVM);
+    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+        "/client/ui/adminView/race/CreateRace.fxml") );
+    Parent root = loader.load();
+    CreateRaceController createRaceController = loader.getController();
+    createRaceController.initialize(createRaceVM);
 
 
 
 
 
 //    === HORSE LIST VIEW - USER
-    HorseListVM horseListVM = new HorseListVM(socketRacersClient,socketservice);
-    socketservice.addListener(horseListVM);
-    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-        "/client/ui/userView/HorseListView.fxml"));
-    Parent root = loader.load();
-    HorseListViewController controller = loader.getController();
-    controller.initialize(horseListVM);
+//    HorseListVM horseListVM = new HorseListVM(socketRacersClient,socketservice);
+//    socketservice.addListener(horseListVM);
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+//        "/client/ui/userView/HorseListView.fxml"));
+//    Parent root = loader.load();
+//    HorseListViewController controller = loader.getController();
+//    controller.initialize(horseListVM);
 
     Stage stage = new Stage();
     stage.setScene(new Scene(root));
