@@ -40,7 +40,7 @@ public class RaceHandler extends BaseRequestHandler {
    * @throws IllegalArgumentException If the action is invalid.
    */
   @Override
-  public Object safeHandle(String action, JsonElement payload) {
+  public Object safeHandle(String action, JsonElement payload) throws SQLException {
     switch (action) {
       case "createRace" -> {
         CreateRaceRequest request = parsePayload(payload, CreateRaceRequest.class);
