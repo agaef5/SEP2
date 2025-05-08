@@ -8,9 +8,10 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import server.model.Horse;
+
 
 import shared.*;
+import shared.DTO.HorseDTO;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class CreateEditHorseVM implements MessageListener {
   private final HorsesClient horseClient;
 
   /** Observable list containing all horses retrieved from the server */
-  private final ObservableList<Horse> horseList = FXCollections.observableArrayList();
+  private final ObservableList<HorseDTO> horseList = FXCollections.observableArrayList();
 
   /** Observable property for the horse name */
   private final StringProperty horseName = new SimpleStringProperty();
@@ -50,7 +51,7 @@ public class CreateEditHorseVM implements MessageListener {
   private final SocketService socketService;
 
   /** The currently selected horse */
-  private Horse selectedHorse;
+  private HorseDTO selectedHorse;
 
   /** Flag indicating whether the view is in horse creation mode */
   private boolean creatingHorse;
@@ -104,7 +105,7 @@ public class CreateEditHorseVM implements MessageListener {
    * Gets the observable list containing all horses.
    * @return Observable list of all horses
    */
-  public ObservableList<Horse> getHorseList() {
+  public ObservableList<HorseDTO> getHorseList() {
     return horseList;
   }
 
@@ -113,12 +114,12 @@ public class CreateEditHorseVM implements MessageListener {
    *
    * @param newVal The newly selected horse, or null if no selection
    */
-  public void setSelectedHorse(Horse newVal) {
+  public void setSelectedHorse(HorseDTO newVal) {
     this.selectedHorse = newVal;
     if (newVal != null) {
-      horseName.set(newVal.getName());
-      speedMin.set(newVal.getSpeedMin());
-      speedMax.set(newVal.getSpeedMax());
+      horseName.set(newVal.name());
+      speedMin.set(newVal.speedMin());
+      speedMax.set(newVal.speedMax());
 
       editButtonDisabled.set(false);
       removeButtonDisabled.set(false);
@@ -143,19 +144,18 @@ public class CreateEditHorseVM implements MessageListener {
    * Only executes if the view is in creation mode.
    */
   public void addHorse() {
-    if(!creatingHorse) return;
+    if (!creatingHorse) return;
 
-    Horse newHorse = new Horse(
-        -1, // temporary ID
-        horseName.get(),
-        speedMin.get(),
-        speedMax.get()
+    CreateHorseRequest createHorseRequest = new CreateHorseRequest(
+            horseName.get(),
+            speedMin.get(),
+            speedMax.get()
     );
 
-    CreateHorseRequest createHorseRequest = new CreateHorseRequest(horseName.get(), speedMin.get(), speedMax.get());
     horseClient.createHorse(createHorseRequest);
     setReadMode();
   }
+
 
   /**
    * Updates the currently selected horse with the form values.
@@ -163,12 +163,17 @@ public class CreateEditHorseVM implements MessageListener {
    */
   public void updateHorse() {
     if (selectedHorse != null) {
-      selectedHorse.setName(horseName.get());
-      selectedHorse.setSpeedMin(speedMin.get());
-      selectedHorse.setSpeedMax(speedMax.get());
-      horseClient.updateHorse(selectedHorse);
+      HorseDTO updatedHorse = new HorseDTO(
+              selectedHorse.id(),        // keep the original ID
+              horseName.get(),
+              speedMin.get(),
+              speedMax.get(),0
+      );
+
+      horseClient.updateHorse(updatedHorse);
     }
   }
+
 
   /**
    * Removes the currently selected horse.
@@ -192,8 +197,8 @@ public class CreateEditHorseVM implements MessageListener {
 
     Platform.runLater(() -> {
       System.out.println("Platform.runLater: horses = " + horseListResponse.horseList());
-      ArrayList<Horse> newHorseList = new ArrayList<>();
-      for (Horse horse : horseListResponse.horseList()) {
+      ArrayList<HorseDTO> newHorseList = new ArrayList<>();
+      for (HorseDTO horse : horseListResponse.horseList()) {
         newHorseList.add(horse);
       }
       horseList.setAll(newHorseList);
@@ -242,7 +247,7 @@ public class CreateEditHorseVM implements MessageListener {
         handleCreateHorseResponse(createHorseResponse);
         break;
       case "updateHorse":
-        Horse updatedHorse = gson.fromJson(payload, Horse.class);
+        HorseDTO updatedHorse = gson.fromJson(payload, HorseDTO.class);
         handleUpdateHorseResponse(updatedHorse);
         break;
       case "deleteHorse":
@@ -261,7 +266,7 @@ public class CreateEditHorseVM implements MessageListener {
   private void handleCreateHorseResponse(CreateHorseResponse createHorseResponse) {
     horseClient.getHorseList();
     if (createHorseResponse.horse() != null) {
-      Horse newHorse = gson.fromJson(createHorseResponse.horse().toString(), Horse.class);
+      HorseDTO newHorse = gson.fromJson(createHorseResponse.horse().toString(), HorseDTO.class);
       setSelectedHorse(newHorse);
     }
   }
@@ -272,7 +277,7 @@ public class CreateEditHorseVM implements MessageListener {
    *
    * @param updatedHorse The updated horse object returned from the server
    */
-  private void handleUpdateHorseResponse(Horse updatedHorse) {
+  private void handleUpdateHorseResponse(HorseDTO updatedHorse) {
     horseClient.getHorseList();
     if (updatedHorse != null) {
       setSelectedHorse(updatedHorse);

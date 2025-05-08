@@ -7,6 +7,7 @@ import javafx.util.converter.BooleanStringConverter;
 import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import server.model.Horse;
+import shared.DTO.HorseDTO;
 
 /**
  * Controller for the Create/Edit Horse view.
@@ -16,7 +17,7 @@ import server.model.Horse;
 public class CreateEditHorseController
 {
   /** ListView displaying all available horses */
-  @FXML private ListView<Horse> listView;
+  @FXML private ListView<HorseDTO> listView;
 
   /** Text field for editing horse name */
   @FXML private TextField horseName;
@@ -55,12 +56,12 @@ public class CreateEditHorseController
     // Configure cell rendering for the horse list
     listView.setCellFactory(param -> new ListCell<>() {
       @Override
-      protected void updateItem(Horse horse, boolean empty) {
+      protected void updateItem(HorseDTO horse, boolean empty) {
         super.updateItem(horse, empty);
         if (empty || horse == null) {
           setText(null);
         } else {
-          setText(horse.getName() + " (speed: " + horse.getSpeedMin() + " - " + horse.getSpeedMax() + ")");
+          setText(horse.name() + " (speed: " + horse.speedMin() + " - " + horse.speedMax() + ")");
         }
       }
     });

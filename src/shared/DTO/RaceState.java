@@ -1,4 +1,4 @@
-package server.model;
+package shared.DTO;
 
 /**
  * {@code RaceState} is an enum representing the different states of a race.

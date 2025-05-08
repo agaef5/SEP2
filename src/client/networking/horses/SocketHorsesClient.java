@@ -3,8 +3,9 @@ package client.networking.horses;
 import client.networking.SocketService;
 import com.google.gson.JsonElement;
 import com.google.gson.Gson;
-import server.model.Horse;
+
 import shared.*;
+import shared.DTO.HorseDTO;
 
 /**
  * Implementation of the {@link HorsesClient} interface using socket communication.
@@ -68,7 +69,7 @@ public class SocketHorsesClient implements HorsesClient {
    * @param selectedHorse the horse with updated data
    */
   @Override
-  public void updateHorse(Horse selectedHorse) {
+  public void updateHorse(HorseDTO selectedHorse) {
     JsonElement payload = gson.toJsonTree(selectedHorse);
     Request request = new Request("horse", "updateHorse", payload);
     socketService.sendRequest(request);
@@ -80,7 +81,7 @@ public class SocketHorsesClient implements HorsesClient {
    * @param selectedHorse the horse to be deleted
    */
   @Override
-  public void deleteHorse(Horse selectedHorse) {
+  public void deleteHorse(HorseDTO selectedHorse) {
     JsonElement payload = gson.toJsonTree(selectedHorse);
     Request request = new Request("horse", "deleteHorse", payload);
     socketService.sendRequest(request);

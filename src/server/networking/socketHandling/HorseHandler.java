@@ -3,10 +3,11 @@ package server.networking.socketHandling;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-import server.model.Horse;
+
 import server.services.horseList.HorseListServiceImpl;
 import server.services.horseList.HorseListService;
 import shared.*;
+import shared.DTO.HorseDTO;
 
 /**
  * {@code HorseHandler} is responsible for processing horse-related requests from clients.
@@ -51,11 +52,11 @@ public class HorseHandler extends BaseRequestHandler {
         return createHorserRequest(request);
       }
       case "updateHorse" -> {
-        Horse horseToUpdate = parsePayload(payload, Horse.class);
+        HorseDTO horseToUpdate = parsePayload(payload, HorseDTO.class);
         return handleUpdateHorse(horseToUpdate);
       }
       case "deleteHorse" -> {
-        Horse horseToRemove = parsePayload(payload, Horse.class);
+        HorseDTO horseToRemove = parsePayload(payload, HorseDTO.class);
         return handleRemoveHorse(horseToRemove);
       }
       default -> throw new IllegalArgumentException("Invalid action: " + action);
@@ -88,7 +89,7 @@ public class HorseHandler extends BaseRequestHandler {
    * @param horse The horse object containing the updated data.
    * @return The updated horse object.
    */
-  private Horse handleUpdateHorse(Horse horse) {
+  private HorseDTO handleUpdateHorse(HorseDTO horse) {
     return horseListService.updateHorse(horse);
   }
 
@@ -98,7 +99,7 @@ public class HorseHandler extends BaseRequestHandler {
    * @param horse The horse object to be removed.
    * @return A success message indicating the removal was successful.
    */
-  private String handleRemoveHorse(Horse horse) {
+  private String handleRemoveHorse(HorseDTO horse) {
     horseListService.removeHorse(horse);
     return "success";
   }
@@ -110,7 +111,7 @@ public class HorseHandler extends BaseRequestHandler {
    * @return The response containing the created horse's data.
    */
   private CreateHorseResponse createHorserRequest(CreateHorseRequest createHorseRequest) {
-    Horse createdHorse = horseListService.createHorse(
+    HorseDTO createdHorse = horseListService.createHorse(
         createHorseRequest.name(), createHorseRequest.speedMin(), createHorseRequest.speedMax());
     return new CreateHorseResponse(createdHorse);
   }

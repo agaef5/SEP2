@@ -1,6 +1,7 @@
 package server.model;
 
 import server.persistence.horses.HorseRepositoryImpl;
+import shared.DTO.RaceState;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -113,8 +114,4 @@ public class Race implements Runnable {
     // TODO: Finish the rest of the race logic (e.g., horse movement, race end conditions)
   }
 
-  public RaceTrack getRaceTrack()
-  {
-    return raceTrack;
-  }
 }

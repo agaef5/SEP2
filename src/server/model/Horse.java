@@ -7,14 +7,12 @@ import java.util.Objects;
  * identity, speed range, current position, and whether it is active in a race.
  */
 public class Horse {
-  private static int nextId = 1;
 
   private int id;
   private String name;
   private int speedMin;
   private int speedMax;
   private int position;
-  private String type;
   private boolean inRace = false;
 
   /**
@@ -30,7 +28,6 @@ public class Horse {
     this.name = name;
     this.speedMin = speedMin;
     this.speedMax = speedMax;
-    this.type = "Horse";
     this.position = 0;
   }
 
@@ -58,11 +55,7 @@ public class Horse {
   /** @return the current position of the horse in the race */
   public int getPosition() { return position; }
 
-//  /** @return the type of the entity ("Horse") */
-//  public String getType() { return type; }
-//
-//  /** @param s the new type to set */
-//  public void setType(String s) { this.type = s; }
+
 
   /**
    * Moves the horse forward by a random step within its speed range.

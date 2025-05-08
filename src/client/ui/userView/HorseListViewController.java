@@ -7,6 +7,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import server.model.Horse;
+import shared.DTO.HorseDTO;
 
 /**
  * Controller for the Horse List view in the user interface.
@@ -16,7 +17,7 @@ import server.model.Horse;
 public class HorseListViewController
 {
   /** ListView displaying all available horses */
-  @FXML private ListView<Horse> listView;
+  @FXML private ListView<HorseDTO> listView;
 
   /** Text field displaying the selected horse's name */
   @FXML private TextField horseName;

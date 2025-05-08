@@ -1,7 +1,8 @@
 package shared;
 
 import server.model.Race;
+import shared.DTO.RaceDTO;
 
-public record RaceResponse(Race race)
+public record RaceResponse(RaceDTO race)
 {
 }

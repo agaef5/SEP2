@@ -2,6 +2,7 @@ package client.networking.horses;
 
 import server.model.Horse;
 import shared.CreateHorseRequest;
+import shared.DTO.HorseDTO;
 import shared.HorseRequest;
 
 /**
@@ -18,28 +19,28 @@ public interface HorsesClient {
   /**
    * Sends a request to retrieve a specific horse based on the provided request.
    *
-   * @param horseRequest the request containing information to identify the horse
+   * @param racerRequest the request containing information to identify the horse
    */
-  void getHorse(HorseRequest horseRequest);
+  void getHorse(HorseRequest racerRequest);
 
   /**
    * Sends a request to delete the specified horse.
    *
-   * @param selectedHorse the horse to be deleted
+   * @param selectedRacer the horse to be deleted
    */
-  void deleteHorse(Horse selectedHorse);
+  void deleteHorse(HorseDTO selectedRacer);
 
   /**
    * Sends a request to update the specified horse.
    *
-   * @param selectedHorse the horse to be updated
+   * @param selectedRacer the horse to be updated
    */
-  void updateHorse(Horse selectedHorse);
+  void updateHorse(HorseDTO selectedRacer);
 
   /**
    * Sends a request to create a new horse using the provided information.
    *
-   * @param createHorseRequest the request containing data for the new horse
+   * @param createRacerRequest the request containing data for the new horse
    */
-  void createHorse(CreateHorseRequest createHorseRequest);
+  void createHorse(CreateHorseRequest createRacerRequest);
 }

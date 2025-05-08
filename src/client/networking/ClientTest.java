@@ -46,24 +46,24 @@ public class ClientTest extends Application
 
     CreateRaceVM createRaceVM = new CreateRaceVM(socketRaceClient,socketservice);
 
-    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-        "/client/ui/adminView/race.CreateRace.fxml") );
-    Parent root = loader.load();
-    CreateRaceController createRaceController = loader.getController();
-    createRaceController.initialize(createRaceVM);
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+//        "/client/ui/adminView/race/CreateRace.fxml") );
+//    Parent root = loader.load();
+//    CreateRaceController createRaceController = loader.getController();
+//    createRaceController.initialize(createRaceVM);
 
 
 
 
 
 //    === HORSE LIST VIEW - USER
-//    HorseListVM horseListVM = new HorseListVM(socketRacersClient,socketservice);
-//    socketservice.addListener(horseListVM);
-//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-//        "/client/ui/userView/HorseListView.fxml"));
-//    Parent root = loader.load();
-//    HorseListViewController controller = loader.getController();
-//    controller.initialize(horseListVM);
+    HorseListVM horseListVM = new HorseListVM(socketRacersClient,socketservice);
+    socketservice.addListener(horseListVM);
+    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+        "/client/ui/userView/HorseListView.fxml"));
+    Parent root = loader.load();
+    HorseListViewController controller = loader.getController();
+    controller.initialize(horseListVM);
 
     Stage stage = new Stage();
     stage.setScene(new Scene(root));

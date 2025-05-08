@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import server.model.Horse;
 import shared.CreateHorseResponse;
+import shared.DTO.HorseDTO;
 import shared.HorseListResponse;
 import shared.Respond;
 
@@ -23,29 +24,22 @@ import java.util.ArrayList;
  */
 public class HorseListVM implements MessageListener
 {
-  /** Client for communicating with horse-related server endpoints */
-  private HorsesClient horseClient;
-
   /** Service for socket communication with the server */
   private final SocketService socketService;
-
-  /** Observable list containing all horses retrieved from the server */
-  private ObservableList<Horse> horseList = FXCollections.observableArrayList();
-
   /** Observable property for the horse name */
   private final StringProperty horseName = new SimpleStringProperty();
-
   /** Observable property for the minimum speed value */
   private final IntegerProperty speedMin = new SimpleIntegerProperty();
-
   /** Observable property for the maximum speed value */
   private final IntegerProperty speedMax = new SimpleIntegerProperty();
-
   /** JSON parser for handling server responses */
   private final Gson gson;
-
+  /** Client for communicating with horse-related server endpoints */
+  private HorsesClient horseClient;
+  /** Observable list containing all horses retrieved from the server */
+  private ObservableList<HorseDTO> horseList = FXCollections.observableArrayList();
   /** The currently selected horse */
-  private Horse selectedHorse;
+  private HorseDTO selectedHorse;
 
   /**
    * Constructs the ViewModel with necessary dependencies and initializes data.
@@ -85,7 +79,7 @@ public class HorseListVM implements MessageListener
    * Gets the observable list containing all horses.
    * @return Observable list of all horses
    */
-  public ObservableList<Horse> getHorseList() {
+  public ObservableList<HorseDTO> getHorseList() {
     return horseList;
   }
 
@@ -95,12 +89,12 @@ public class HorseListVM implements MessageListener
    *
    * @param newVal The newly selected horse, or null if no selection
    */
-  public void setSelectedHorse(Horse newVal) {
+  public void setSelectedHorse(HorseDTO newVal) {
     this.selectedHorse = newVal;
     if (newVal != null) {
-      horseName.set(newVal.getName());
-      speedMin.set(newVal.getSpeedMin());
-      speedMax.set(newVal.getSpeedMax());
+      horseName.set(newVal.name());
+      speedMin.set(newVal.speedMin());
+      speedMax.set(newVal.speedMax());
     }
   }
 
@@ -115,8 +109,8 @@ public class HorseListVM implements MessageListener
 
     Platform.runLater(() -> {
       System.out.println("Platform.runLater: horses = " + horseListResponse.horseList());
-      ArrayList<Horse> newHorseList = new ArrayList<>();
-      for (Horse horse : horseListResponse.horseList()) {
+      ArrayList<HorseDTO> newHorseList = new ArrayList<>();
+      for (HorseDTO horse : horseListResponse.horseList()) {
         newHorseList.add(horse);
       }
       horseList.setAll(newHorseList);

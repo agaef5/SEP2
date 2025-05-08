@@ -1,6 +1,6 @@
 package server.services.horseList;
 
-import server.model.Horse;
+import shared.DTO.HorseDTO;
 import shared.HorseListResponse;
 import shared.HorseResponse;
 
@@ -31,17 +31,17 @@ public interface HorseListService
    * @param horseName The name of the horse.
    * @param speedMin The minimum speed of the horse.
    * @param speedMax The maximum speed of the horse.
-   * @return The created {@link Horse} object.
+   * @return The created {@link HorseDTO} object.
    */
-  Horse createHorse(String horseName, int speedMin, int speedMax);
+  HorseDTO createHorse(String horseName, int speedMin, int speedMax);
 
   /**
    * Updates the details of an existing horse.
    *
    * @param horse The horse object containing the updated details.
-   * @return The updated {@link Horse} object.
+   * @return The updated {@link HorseDTO} object.
    */
-  Horse updateHorse(Horse horse);
+  HorseDTO updateHorse(HorseDTO horse);
 
   /**
    * Removes a horse from the system.
@@ -49,5 +49,5 @@ public interface HorseListService
    * @param horse The horse to be removed.
    * @return A string message indicating the result of the removal.
    */
-  String removeHorse(Horse horse);
+  String removeHorse(HorseDTO horse);
 }
