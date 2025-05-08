@@ -3,6 +3,7 @@ package server.services.races;
 import server.model.Race;
 import server.model.RaceManager;
 import server.model.RaceTrack;
+import server.persistence.raceRepository.raceTrack.RaceTrackRepImpl;
 import server.validation.baseValidation.BaseVal;
 
 import java.sql.SQLException;
@@ -70,9 +71,7 @@ public class RaceServiceImpl implements RacesService
    * @return A list of all {@link RaceTrack} objects.
    * @throws RuntimeException If the race tracks cannot be fetched (e.g., database error).
    */
-  @Override public List<RaceTrack> getRaceTracks()
-  {
-    // TODO: call method in persistence layer to get all RaceTracks
-    return null;
+  @Override public List<RaceTrack> getRaceTracks() throws SQLException {
+    return RaceTrackRepImpl.getInstance().getAll();
   }
 }

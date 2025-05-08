@@ -94,8 +94,23 @@ public class RaceRepositoryimpl implements RaceRepository {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
+
             if (resultSet.next()) {
-                return new Race(resultSet.getString(3), null, null);
+                String name = resultSet.getString("name");
+                String status = resultSet.getString("status");
+                Date startTime = resultSet.getDate("startTime");
+
+                String trackName = resultSet.getString("track_name");
+                int trackLength = resultSet.getInt("raceLength");
+                String trackLocation = resultSet.getString("location");
+
+                RaceTrack raceTrack = null;
+                if(trackName!=null){
+                    raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
+                }
+
+
+                return new Race(name, startTime, raceTrack);
             } else {
                 return null;
             }
@@ -110,17 +125,35 @@ public class RaceRepositoryimpl implements RaceRepository {
      * @throws SQLException if a database access error occurs
      */
     @Override
-    public List<Race> readByName(String searchName) throws SQLException {
-        try (Connection connection = getConnection()) {
+    public List<Race> readByName(String searchName) throws SQLException
+    {
+        try (Connection connection = getConnection())
+        {
             String query = "SELECT * FROM race WHERE name LIKE ?";
+
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, "%" + searchName + "%");
             ResultSet resultSet = statement.executeQuery();
+
             ArrayList<Race> result = new ArrayList<>();
             while (resultSet != null && resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
-                Race race = new Race(name, null, null);
+                String status = resultSet.getString("status");
+                Date startTime = resultSet.getDate("startTime");
+
+                String trackName = resultSet.getString("track_name");
+                int trackLength = resultSet.getInt("raceLength");
+                String trackLocation = resultSet.getString("location");
+
+                RaceTrack raceTrack = null;
+                if(trackName!=null){
+                    raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
+                }
+
+
+                Race race = new Race(name, startTime, raceTrack);
+
                 result.add(race);
             }
             return result;
@@ -137,13 +170,29 @@ public class RaceRepositoryimpl implements RaceRepository {
     public List<Race> getAll() throws SQLException {
         try (Connection connection = getConnection()) {
             String query = "SELECT * FROM race";
+
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
+
             ArrayList<Race> result = new ArrayList<>();
             while (resultSet != null && resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
-                Race race = new Race(name, null, null);
+                String status = resultSet.getString("status");
+                Date startTime = resultSet.getDate("startTime");
+
+                String trackName = resultSet.getString("track_name");
+                int trackLength = resultSet.getInt("raceLength");
+                String trackLocation = resultSet.getString("location");
+
+                RaceTrack raceTrack = null;
+                if(trackName!=null){
+                    raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
+                }
+
+
+                Race race = new Race(name, startTime, raceTrack);
+
                 result.add(race);
             }
             return result;
@@ -161,12 +210,28 @@ public class RaceRepositoryimpl implements RaceRepository {
     public Race readByTime(Date time) throws SQLException {
         try (Connection connection = getConnection()) {
             String query = "SELECT * FROM race WHERE startTime = ?";
+
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setDate(1, new java.sql.Date(time.getTime()));
             ResultSet resultSet = statement.executeQuery();
+
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-                return new Race(name, null, null);
+                String status = resultSet.getString("status");
+                Date startTime = resultSet.getDate("startTime");
+
+                String trackName = resultSet.getString("track_name");
+                int trackLength = resultSet.getInt("raceLength");
+                String trackLocation = resultSet.getString("location");
+
+                RaceTrack raceTrack = null;
+                if(trackName!=null){
+                    raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
+                }
+
+                Race race = new Race(name, startTime, raceTrack);
+
+             return race;
             } else {
                 return null;
             }
@@ -183,12 +248,29 @@ public class RaceRepositoryimpl implements RaceRepository {
     @Override
     public Race readByStatus(String status) throws SQLException {
         try (Connection connection = getConnection()) {
+
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM race WHERE status LIKE ?");
             statement.setString(1, "%" + status + "%");
             ResultSet resultSet = statement.executeQuery();
+
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-                return new Race(name, null, null);
+                String resultStatus = resultSet.getString("status");
+                Date startTime = resultSet.getDate("startTime");
+
+                String trackName = resultSet.getString("track_name");
+                int trackLength = resultSet.getInt("raceLength");
+                String trackLocation = resultSet.getString("location");
+
+                RaceTrack raceTrack = null;
+                if(trackName!=null){
+                    raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
+                }
+
+
+                Race race = new Race(name, startTime, raceTrack);
+
+               return race;
             } else {
                 return null;
             }

@@ -3,6 +3,7 @@ package server.services.races;
 import server.model.Race;
 import server.model.RaceTrack;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -33,5 +34,5 @@ public interface RacesService
    *
    * @return A list of all {@link RaceTrack} objects.
    */
-  List<RaceTrack> getRaceTracks();
+  List<RaceTrack> getRaceTracks() throws SQLException;
 }
