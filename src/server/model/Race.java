@@ -28,7 +28,6 @@ public class Race implements Runnable {
    * Constructs a new {@code Race}.
    *
    * @param name         the name of the race
-   * @param raceCapacity the maximum number of horses allowed
    * @param raceTrack    the track on which the race is run
    * @throws SQLException if assigning horses from the DB fails
    */

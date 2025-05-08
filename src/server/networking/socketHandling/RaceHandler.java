@@ -8,6 +8,8 @@ import server.services.races.RaceServiceImpl;
 import server.services.races.RacesService;
 import shared.*;
 
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,7 +63,10 @@ public class RaceHandler extends BaseRequestHandler {
    * @return The response containing the created race's data.
    */
   private Object handleCreateRaceRequest(CreateRaceRequest request) {
-    Race createdRace = racesService.createRace(request.name(), request.capacity(), request.raceTrack());
+
+    Date startTime = request.startTime() != null ? request.startTime() : new Date();
+
+    Race createdRace = racesService.createRace(request.name(), startTime, request.raceTrack());
     return new RaceResponse(createdRace);
   }
 
@@ -80,7 +85,7 @@ public class RaceHandler extends BaseRequestHandler {
    *
    * @return The response containing a list of all race tracks.
    */
-  private Object handleGetRaceTracks() {
+  private Object handleGetRaceTracks() throws SQLException {
     List<RaceTrack> raceTracks = racesService.getRaceTracks();
     return new GetRaceTrackResponse(raceTracks);
   }

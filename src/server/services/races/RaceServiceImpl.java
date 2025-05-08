@@ -22,14 +22,14 @@ public class RaceServiceImpl implements RacesService
    * Creates a new race with the specified parameters.
    *
    * @param name The name of the race.
-   * @param raceCapacity The capacity of the race (number of participants).
+   * @param startTime The start time of the race.
    * @param raceTrack The race track where the race will take place.
    * @return The created {@link Race} object.
-   * @throws IllegalArgumentException If the input data is invalid (e.g., empty name, non-positive capacity).
+   * @throws IllegalArgumentException If the input data is invalid (e.g., empty name).
    * @throws RuntimeException If a database error occurs while creating the race.
    */
   @Override public Race createRace(String name,
-      int raceCapacity, RaceTrack raceTrack)
+                                   Date startTime, RaceTrack raceTrack)
   // Validate the input for creating race, if valid create a race and return it
   // TODO: plus add the Race to Database
   {
@@ -37,13 +37,22 @@ public class RaceServiceImpl implements RacesService
     {
       throw new IllegalArgumentException("Cannot create new racer. Arguments are empty.");
     }
-    if (BaseVal.valPosInt(raceCapacity))
+
+    // Valideer startTime indien nodig
+    if (startTime == null)
     {
-      throw new IllegalArgumentException("Capacity for Race needs to be positive number");
+      throw new IllegalArgumentException("Start time cannot be null.");
     }
+
+    // Valideer raceTrack indien nodig
+    if (raceTrack == null)
+    {
+      throw new IllegalArgumentException("Race track cannot be null.");
+    }
+
     try
     {
-      Race race = new Race(name, raceCapacity, raceTrack);
+      Race race = new Race(name, startTime, raceTrack);
       return race;
     }
     catch (SQLException e)
@@ -51,7 +60,6 @@ public class RaceServiceImpl implements RacesService
       System.err.println("Database error when creating racer: " + e.getMessage());
       throw new RuntimeException("Failed to create race", e);
     }
-
   }
 
   /**
@@ -71,7 +79,12 @@ public class RaceServiceImpl implements RacesService
    * @return A list of all {@link RaceTrack} objects.
    * @throws RuntimeException If the race tracks cannot be fetched (e.g., database error).
    */
-  @Override public List<RaceTrack> getRaceTracks() throws SQLException {
-    return RaceTrackRepImpl.getInstance().getAll();
+  @Override public List<RaceTrack> getRaceTracks() {
+    try {
+      return RaceTrackRepImpl.getInstance().getAll();
+    } catch (SQLException e) {
+      System.err.println("Database error when fetching race tracks: " + e.getMessage());
+      throw new RuntimeException("Failed to fetch race tracks", e);
+    }
   }
 }
