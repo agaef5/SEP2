@@ -30,7 +30,7 @@ public class Race implements Runnable {
    * @param raceTrack    the track on which the race is run
    * @throws SQLException if assigning horses from the DB fails
    */
-  public Race(String name, int raceCapacity, RaceTrack raceTrack) throws SQLException {
+  public Race(String name, Integer raceCapacity, RaceTrack raceTrack) throws SQLException {
     this.raceTrack = raceTrack;
     this.name = name;
     this.dateTime = null;
@@ -110,5 +110,10 @@ public class Race implements Runnable {
     updateListenersOnRaceStarted();
 
     // TODO: Finish the rest of the race logic (e.g., horse movement, race end conditions)
+  }
+
+  public RaceTrack getRaceTrack()
+  {
+    return raceTrack;
   }
 }

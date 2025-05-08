@@ -1,151 +1,230 @@
 package server.persistence.raceRepository;
 
 import server.model.Race;
-import server.model.Horse;
+import server.model.RaceTrack;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class RaceRepositoryimpl implements RaceRepository{
+/**
+ * This class implements the {@link RaceRepository} interface and provides methods for interacting with the race data in the database.
+ * It handles CRUD operations for races, including creating, reading, updating, and deleting race records.
+ */
+public class RaceRepositoryimpl implements RaceRepository {
+
     private static RaceRepositoryimpl instance;
-    private RaceRepositoryimpl() throws SQLException{
+
+    /**
+     * Private constructor to prevent direct instantiation.
+     * Registers the PostgreSQL JDBC driver.
+     *
+     * @throws SQLException if a database access error occurs
+     */
+    private RaceRepositoryimpl() throws SQLException {
         DriverManager.registerDriver(new org.postgresql.Driver());
     }
-    public static synchronized RaceRepositoryimpl getInstance() throws SQLException{
-        if (instance == null){
+
+    /**
+     * Provides a singleton instance of the {@link RaceRepositoryimpl} class.
+     * Ensures that only one instance of this repository exists.
+     *
+     * @return the singleton instance of {@link RaceRepositoryimpl}
+     * @throws SQLException if a database access error occurs
+     */
+    public static synchronized RaceRepositoryimpl getInstance() throws SQLException {
+        if (instance == null) {
             instance = new RaceRepositoryimpl();
         }
         return instance;
     }
-    private Connection getConnection() throws SQLException
-    {
+
+    /**
+     * Establishes a connection to the PostgreSQL database.
+     *
+     * @return a {@link Connection} object to interact with the database
+     * @throws SQLException if a database access error occurs
+     */
+    private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5432/postgres?currentSchema=sep2",
                 "postgres", "1234");
     }
+
+    /**
+     * Creates a new race record in the database.
+     *
+     * @param name     the name of the race
+     * @param time     the start time of the race
+     * @param raceTrack the race track associated with the race
+     * @return a new {@link Race} object with the generated ID
+     * @throws SQLException if a database access error occurs
+     */
     @Override
-    public Race create(String name, Date time, String status) throws SQLException {
+    public Race create(String name, Date time, RaceTrack raceTrack) throws SQLException {
         try (Connection connection = getConnection()) {
-            String query = "INSERT INTO race" + " (name, startTime, status) VALUES (?, ?, ?)"; //admin id?
+            String query = "INSERT INTO race (name, startTime, race) VALUES (?, ?)";
             PreparedStatement statement = connection.prepareStatement(
                     query,
                     PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, name);
-            statement.setDate(2, (java.sql.Date) time);
-            statement.setString(3, status);
+            statement.setDate(2, new java.sql.Date(time.getTime()));
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-//                return new Race(resultSet.getInt(1), name); needs id in constructor
+                return new Race(resultSet.getString(3), null, null);
             } else {
                 throw new SQLException("No keys generated");
             }
         }
-        return null; //placeholder
     }
 
+    /**
+     * Reads a race from the database by its ID.
+     *
+     * @param id the ID of the race to read
+     * @return a {@link Race} object if found, or {@code null} if no race exists with the given ID
+     * @throws SQLException if a database access error occurs
+     */
     @Override
     public Race readByID(int id) throws SQLException {
-        try ( Connection connection = getConnection() )
-        {
-            String query = "SELECT * FROM race"+ " WHERE id = ?;";
-            PreparedStatement statement = connection.prepareStatement(
-                    query);
+        try (Connection connection = getConnection()) {
+            String query = "SELECT * FROM race WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            if ( resultSet.next() )
-            {
-                String race = resultSet.getString("name");
-                return new Race(race, 3,null); //3 is placeholder to temporary match constructor
-            }
-            else
-            {
+            if (resultSet.next()) {
+                return new Race(resultSet.getString(3), null, null);
+            } else {
                 return null;
             }
         }
     }
 
+    /**
+     * Reads races from the database that match the given name.
+     *
+     * @param searchName the name (or part of the name) to search for
+     * @return a list of {@link Race} objects that match the given name
+     * @throws SQLException if a database access error occurs
+     */
     @Override
     public List<Race> readByName(String searchName) throws SQLException {
-        try ( Connection connection = getConnection() )
-        {
-            String query = "SELECT * FROM race" + " WHERE name LIKE ?";
-            PreparedStatement statement = connection.prepareStatement(
-                    query);
+        try (Connection connection = getConnection()) {
+            String query = "SELECT * FROM race WHERE name LIKE ?";
+            PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, "%" + searchName + "%");
             ResultSet resultSet = statement.executeQuery();
             ArrayList<Race> result = new ArrayList<>();
-            while (resultSet!= null && resultSet.next())
-            {
+            while (resultSet != null && resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
-                Race race = new Race(name, 3,null); //wrong constructor
+                Race race = new Race(name, null, null);
                 result.add(race);
             }
             return result;
         }
     }
 
+    /**
+     * Retrieves all races from the database.
+     *
+     * @return a list of all {@link Race} objects
+     * @throws SQLException if a database access error occurs
+     */
+    @Override
+    public List<Race> getAll() throws SQLException {
+        try (Connection connection = getConnection()) {
+            String query = "SELECT * FROM race";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<Race> result = new ArrayList<>();
+            while (resultSet != null && resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                Race race = new Race(name, null, null);
+                result.add(race);
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Reads a race from the database by its start time.
+     *
+     * @param time the start time of the race
+     * @return a {@link Race} object if found, or {@code null} if no race exists at the given time
+     * @throws SQLException if a database access error occurs
+     */
     @Override
     public Race readByTime(Date time) throws SQLException {
-        try(Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM race" +
-                    " WHERE  = ?"); //!!
-            statement.setDate(1, (java.sql.Date) time);
+        try (Connection connection = getConnection()) {
+            String query = "SELECT * FROM race WHERE startTime = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setDate(1, new java.sql.Date(time.getTime()));
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-
-                Race race = new Race(name, 3,null); //!!
-                return race;
+                return new Race(name, null, null);
             } else {
                 return null;
             }
         }
     }
 
+    /**
+     * Reads a race from the database by its status.
+     *
+     * @param status the status of the race to search for
+     * @return a {@link Race} object if found, or {@code null} if no race exists with the given status
+     * @throws SQLException if a database access error occurs
+     */
     @Override
     public Race readByStatus(String status) throws SQLException {
-        try(Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM race" +
-                    " WHERE status LIKE ?"); //!!
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM race WHERE status LIKE ?");
             statement.setString(1, "%" + status + "%");
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
-                Race race = new Race(name, 3,null); //!!
-                return race;
+                return new Race(name, null, null);
             } else {
                 return null;
             }
         }
     }
 
+    /**
+     * Updates the details of a race in the database.
+     *
+     * @param race the race object containing updated data
+     * @throws SQLException if a database access error occurs
+     */
     @Override
-    public void updateRacer(Race race) throws SQLException {
-        try ( Connection connection = getConnection() )
-        {
-            String query = "UPDATE " + race.getClass().getName().toLowerCase()
-                    + " name = ?, status = ?, startTime = ? WHERE id = ?";
+    public void updateRace(Race race) throws SQLException {
+        try (Connection connection = getConnection()) {
+            String query = "UPDATE race SET name = ?, status = ?, startTime = ? WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, race.getName());
             statement.setString(2, race.getStatus().toString());
-            statement.setString(3, null); //just placeholder
+            statement.setString(3, null); // Placeholder for start time
             statement.executeUpdate();
         }
     }
 
+    /**
+     * Deletes a race from the database.
+     *
+     * @param race the race to delete
+     * @throws SQLException if a database access error occurs
+     */
     @Override
     public void delete(Race race) throws SQLException {
-        try ( Connection connection = getConnection() )
-        {
-            String query = "DELETE FROM " + race.getClass().getName().toLowerCase()
-                    + "WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(
-                    query);
-            statement.setInt(1, 3); //pkaceholder
+        try (Connection connection = getConnection()) {
+            String query = "DELETE FROM race WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, 3); // Placeholder for race ID
             statement.executeUpdate();
         }
     }
