@@ -90,7 +90,11 @@ public class RaceRepositoryimpl implements RaceRepository {
     @Override
     public Race readByID(int id) throws SQLException {
         try (Connection connection = getConnection()) {
-            String query = "SELECT * FROM race WHERE id = ?";
+            String query = "SELECT r.id, r.name, r.status, r.startTime, " +
+                    "rt.name as track_name, rt.raceLength, rt.location " +
+                    "FROM race r " +
+                    "LEFT JOIN raceTrack rt ON r.race_id = rt.race_id " +
+                    "WHERE r.id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -129,7 +133,11 @@ public class RaceRepositoryimpl implements RaceRepository {
     {
         try (Connection connection = getConnection())
         {
-            String query = "SELECT * FROM race WHERE name LIKE ?";
+            String query = "SELECT r.id, r.name, r.status, r.startTime, " +
+                    "rt.name as track_name, rt.raceLength, rt.location " +
+                    "FROM race r " +
+                    "LEFT JOIN raceTrack rt ON r.race_id = rt.race_id " +
+                    "WHERE r.name LIKE ?";
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, "%" + searchName + "%");
@@ -151,7 +159,6 @@ public class RaceRepositoryimpl implements RaceRepository {
                     raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
                 }
 
-
                 Race race = new Race(name, raceTrack, raceCapacity);
 
                 result.add(race);
@@ -169,7 +176,10 @@ public class RaceRepositoryimpl implements RaceRepository {
     @Override
     public List<Race> getAll() throws SQLException {
         try (Connection connection = getConnection()) {
-            String query = "SELECT * FROM race";
+            String query = "SELECT r.id, r.name, r.status, r.startTime, " +
+                    "rt.name as track_name, rt.raceLength, rt.location " +
+                    "FROM race r " +
+                    "LEFT JOIN raceTrack rt ON r.race_id = rt.race_id";
 
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
@@ -208,7 +218,11 @@ public class RaceRepositoryimpl implements RaceRepository {
     @Override
     public Race readByTime(Date time) throws SQLException {
         try (Connection connection = getConnection()) {
-            String query = "SELECT * FROM race WHERE startTime = ?";
+            String query = "SELECT r.id, r.name, r.status, r.startTime, " +
+                    "rt.name as track_name, rt.raceLength, rt.location " +
+                    "FROM race r " +
+                    "LEFT JOIN raceTrack rt ON r.race_id = rt.race_id " +
+                    "WHERE r.startTime = ?";
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setDate(1, new java.sql.Date(time.getTime()));
@@ -247,6 +261,12 @@ public class RaceRepositoryimpl implements RaceRepository {
     @Override
     public Race readByStatus(String status) throws SQLException {
         try (Connection connection = getConnection()) {
+
+            String query = "SELECT r.id, r.name, r.status, r.startTime, " +
+                    "rt.name as track_name, rt.raceLength, rt.location " +
+                    "FROM race r " +
+                    "LEFT JOIN raceTrack rt ON r.race_id = rt.race_id " +
+                    "WHERE r.status LIKE ?";
 
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM race WHERE status LIKE ?");
             statement.setString(1, "%" + status + "%");
