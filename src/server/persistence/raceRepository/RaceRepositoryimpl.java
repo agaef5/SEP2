@@ -98,7 +98,7 @@ public class RaceRepositoryimpl implements RaceRepository {
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
                 String status = resultSet.getString("status");
-                Date startTime = resultSet.getDate("startTime");
+                Integer raceCapacity = resultSet.getInt("raceCapacity");
 
                 String trackName = resultSet.getString("track_name");
                 int trackLength = resultSet.getInt("raceLength");
@@ -110,7 +110,7 @@ public class RaceRepositoryimpl implements RaceRepository {
                 }
 
 
-                return new Race(name, startTime, raceTrack);
+                return new Race(name, raceTrack, raceCapacity);
             } else {
                 return null;
             }
@@ -140,7 +140,7 @@ public class RaceRepositoryimpl implements RaceRepository {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 String status = resultSet.getString("status");
-                Date startTime = resultSet.getDate("startTime");
+                Integer raceCapacity = resultSet.getInt("raceCapacity");
 
                 String trackName = resultSet.getString("track_name");
                 int trackLength = resultSet.getInt("raceLength");
@@ -152,7 +152,7 @@ public class RaceRepositoryimpl implements RaceRepository {
                 }
 
 
-                Race race = new Race(name, startTime, raceTrack);
+                Race race = new Race(name, raceTrack, raceCapacity);
 
                 result.add(race);
             }
@@ -179,7 +179,7 @@ public class RaceRepositoryimpl implements RaceRepository {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 String status = resultSet.getString("status");
-                Date startTime = resultSet.getDate("startTime");
+                Integer raceCapacity = resultSet.getInt("raceCapacity");
 
                 String trackName = resultSet.getString("track_name");
                 int trackLength = resultSet.getInt("raceLength");
@@ -190,8 +190,7 @@ public class RaceRepositoryimpl implements RaceRepository {
                     raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
                 }
 
-
-                Race race = new Race(name, startTime, raceTrack);
+                Race race = new Race(name, raceTrack, raceCapacity);
 
                 result.add(race);
             }
@@ -218,7 +217,7 @@ public class RaceRepositoryimpl implements RaceRepository {
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
                 String status = resultSet.getString("status");
-                Date startTime = resultSet.getDate("startTime");
+                Integer raceCapacity = resultSet.getInt("raceCapacity");
 
                 String trackName = resultSet.getString("track_name");
                 int trackLength = resultSet.getInt("raceLength");
@@ -229,7 +228,7 @@ public class RaceRepositoryimpl implements RaceRepository {
                     raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
                 }
 
-                Race race = new Race(name, startTime, raceTrack);
+                Race race = new Race(name, raceTrack, raceCapacity);
 
              return race;
             } else {
@@ -256,7 +255,7 @@ public class RaceRepositoryimpl implements RaceRepository {
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
                 String resultStatus = resultSet.getString("status");
-                Date startTime = resultSet.getDate("startTime");
+                Integer raceCapacity = resultSet.getInt("raceCapacity");
 
                 String trackName = resultSet.getString("track_name");
                 int trackLength = resultSet.getInt("raceLength");
@@ -268,7 +267,7 @@ public class RaceRepositoryimpl implements RaceRepository {
                 }
 
 
-                Race race = new Race(name, startTime, raceTrack);
+                Race race = new Race(name, raceTrack, raceCapacity);
 
                return race;
             } else {
