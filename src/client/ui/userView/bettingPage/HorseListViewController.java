@@ -1,9 +1,8 @@
-package client.ui.userView;
+package client.ui.userView.bettingPage;
 
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import server.model.Horse;
