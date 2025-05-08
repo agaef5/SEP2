@@ -1,4 +1,4 @@
-package client.ui.userView;
+package client.ui.userView.bettingPage;
 
 import client.networking.SocketService;
 import client.networking.horses.HorsesClient;
@@ -8,11 +8,8 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import server.model.Horse;
-import shared.CreateHorseResponse;
 import shared.DTO.HorseDTO;
 import shared.HorseListResponse;
-import shared.Respond;
 
 import java.util.ArrayList;
 

@@ -44,7 +44,7 @@ public class AdminPanelController
    * @param viewModel The ViewModel that provides data and business logic for this view
    */
   @FXML
-  private void init(AdminPanelVM viewModel)
+  private void initialize(AdminPanelVM viewModel)
   {
     this.viewModel = viewModel;
 

@@ -47,7 +47,7 @@ public class CreateEditHorseController
    *
    * @param viewModel The ViewModel that provides data and operations for this view
    */
-  public void init(CreateEditHorseVM viewModel) {
+  public void initialize(CreateEditHorseVM viewModel) {
     this.viewModel = viewModel;
 
     // Bind the ListView to the horse list in the ViewModel
