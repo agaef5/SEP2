@@ -1,5 +1,6 @@
 create schema sep2;
 set schema 'sep2';
+
 create table sep2.user(
     username varchar(10) primary key,
     password_hash varchar,
@@ -15,7 +16,7 @@ create table sep2.player(
 create table sep2.admin
 (
     username varchar(10) references sep2.user(username),
-    id int
+    id int primary key
 );
 
 create table sep2.horse(
@@ -26,17 +27,28 @@ create table sep2.horse(
 );
 
 
-create table sep2.race(
-    id int primary key,
-    admin_id int references sep2.admin(id),
-    name varchar,
-    status varchar,
-    startTime date --for full date or time for just timestamp
+CREATE TABLE sep2.race (
+    id INT PRIMARY KEY,
+    admin_id INT REFERENCES sep2.admin(id),
+    name VARCHAR,
+    status VARCHAR,
+    startTime DATE
 );
 
-create table sep2.raceTrack(
-    race_id int references sep2.race(id),
-    name varchar,
-    raceLength int,
-   location varchar
+CREATE TABLE sep2.raceTrack (
+    race_id INT,
+    name VARCHAR,
+    raceLength INT,
+    location VARCHAR
 );
+
+INSERT INTO sep2.raceTrack (race_id, name, raceLength, location)
+VALUES (1, 'Midtown Madness', 1000, 'Aarhus'),
+       (2, 'Steelball Run', 10000, 'U.S.A.'),
+       (3, 'Dakar Rally', 2500, 'Sahara'),
+       (4, 'Dirt track', 3300, 'Sweden'),
+       (5, 'Ice track', 4000, 'Syberia'),
+       (6, 'Hot', 666, 'Hell')
+
+DROP TABLE IF EXISTS sep2.raceTrack;
+DROP TABLE IF EXISTS sep2.race;

@@ -3,6 +3,8 @@ package server.services.races;
 import server.model.Race;
 import server.model.RaceTrack;
 
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,11 +17,10 @@ public interface RacesService
    * Creates a new race with the specified parameters.
    *
    * @param name The name of the race.
-   * @param raceCapacity The capacity of the race (number of participants).
    * @param raceTrack The race track where the race will take place.
    * @return The created {@link Race} object.
    */
-  Race createRace(String name, int raceCapacity, RaceTrack raceTrack);
+  Race createRace(String name, Date startTime, RaceTrack raceTrack);
 
   /**
    * Retrieves the list of all races.
@@ -33,5 +34,5 @@ public interface RacesService
    *
    * @return A list of all {@link RaceTrack} objects.
    */
-  List<RaceTrack> getRaceTracks();
+  List<RaceTrack> getRaceTracks() throws SQLException;
 }

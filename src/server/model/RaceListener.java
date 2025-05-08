@@ -16,7 +16,7 @@ public interface RaceListener {
    * @param horse The horse that finished.
    * @param position The finishing position of the horse.
    */
-  void onRacerFinished(Horse horse, int position);
+  void onHorseFinished(Horse horse, int position);
 
   /**
    * This method is called when the race starts.
