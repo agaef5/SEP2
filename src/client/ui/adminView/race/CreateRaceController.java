@@ -53,7 +53,8 @@ public class CreateRaceController
    * @param viewModel The ViewModel that provides data and operations for this view
    * @throws SQLException If there is an error accessing the database
    */
-  public void initialize(CreateRaceVM viewModel) throws SQLException {
+  public void initialize(CreateRaceVM viewModel) throws SQLException
+  {
     this.createRaceVM = viewModel;
 
     // Bind the choice box to the available race tracks in the ViewModel

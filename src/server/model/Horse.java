@@ -58,11 +58,11 @@ public class Horse {
   /** @return the current position of the horse in the race */
   public int getPosition() { return position; }
 
-  /** @return the type of the entity ("Horse") */
-  public String getType() { return type; }
-
-  /** @param s the new type to set */
-  public void setType(String s) { this.type = s; }
+//  /** @return the type of the entity ("Horse") */
+//  public String getType() { return type; }
+//
+//  /** @param s the new type to set */
+//  public void setType(String s) { this.type = s; }
 
   /**
    * Moves the horse forward by a random step within its speed range.
