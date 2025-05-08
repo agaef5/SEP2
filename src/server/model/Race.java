@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class Race implements Runnable {
   private String name;
-  private int raceCapacity;
   private RaceState status;
   private Timestamp dateTime;
   private HorseList horseList;
@@ -32,7 +31,7 @@ public class Race implements Runnable {
    * @param raceTrack    the track on which the race is run
    * @throws SQLException if assigning horses from the DB fails
    */
-  public Race(String name, Date dateTime, RaceTrack raceTrack) throws SQLException {
+  public Race(String name, RaceTrack raceTrack,Integer raceCapacity) throws SQLException {
     this.raceTrack = raceTrack;
     this.name = name;
     this.dateTime = null;

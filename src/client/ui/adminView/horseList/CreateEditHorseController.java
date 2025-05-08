@@ -6,7 +6,6 @@ import javafx.scene.control.*;
 import javafx.util.converter.BooleanStringConverter;
 import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.NumberStringConverter;
-import server.model.Horse;
 import shared.DTO.HorseDTO;
 
 /**

@@ -167,7 +167,7 @@ public class CreateEditHorseVM implements MessageListener {
               selectedHorse.id(),        // keep the original ID
               horseName.get(),
               speedMin.get(),
-              speedMax.get(),0
+              speedMax.get()
       );
 
       horseClient.updateHorse(updatedHorse);

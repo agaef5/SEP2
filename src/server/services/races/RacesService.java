@@ -2,8 +2,11 @@ package server.services.races;
 
 import server.model.Race;
 import server.model.RaceTrack;
+import shared.DTO.RaceDTO;
+import shared.DTO.RaceTrackDTO;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -20,19 +23,19 @@ public interface RacesService
    * @param raceTrack The race track where the race will take place.
    * @return The created {@link Race} object.
    */
-  Race createRace(String name, Date startTime, RaceTrack raceTrack);
+  RaceDTO createRace(String name, RaceTrackDTO raceTrack,Integer capacity);
 
   /**
    * Retrieves the list of all races.
    *
    * @return A list of all {@link Race} objects.
    */
-  List<Race> getRaceList();
+  List<RaceDTO> getRaceList();
 
   /**
    * Retrieves the list of all race tracks.
    *
    * @return A list of all {@link RaceTrack} objects.
    */
-  List<RaceTrack> getRaceTracks() throws SQLException;
+  List<RaceTrackDTO> getRaceTracks() throws SQLException;
 }

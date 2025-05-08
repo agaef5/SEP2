@@ -8,10 +8,9 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import server.model.Horse;
-import server.model.Race;
-import server.model.RaceTrack;
 import shared.*;
+import shared.DTO.RaceDTO;
+import shared.DTO.RaceTrackDTO;
 
 /**
  * ViewModel for the Create Race view.
@@ -37,13 +36,13 @@ public class CreateRaceVM implements MessageListener
   private IntegerProperty horseCount = new SimpleIntegerProperty();
 
   /** Observable property for the selected race track */
-  private ObjectProperty<RaceTrack> selectedRaceTrack = new SimpleObjectProperty<>();
+  private ObjectProperty<RaceTrackDTO> selectedRaceTrack = new SimpleObjectProperty<>();
 
   /** Observable list containing all available race tracks */
-  private ObservableList<RaceTrack> availableRaceTracks = FXCollections.observableArrayList();
+  private ObservableList<RaceTrackDTO> availableRaceTracks = FXCollections.observableArrayList();
 
   /** Observable list containing the queue of upcoming races */
-  private ObservableList<Race> raceQueue = FXCollections.observableArrayList();
+  private ObservableList<RaceDTO> raceQueue = FXCollections.observableArrayList();
 
   /**
    * Constructs the ViewModel with necessary dependencies and initializes data.
@@ -88,7 +87,7 @@ public class CreateRaceVM implements MessageListener
    * Gets the observable property for the selected race track.
    * @return Property containing the selected race track
    */
-  public ObjectProperty<RaceTrack> selectedRaceTrackProperty()
+  public ObjectProperty<RaceTrackDTO> selectedRaceTrackProperty()
   {
     return selectedRaceTrack;
   }
@@ -97,7 +96,7 @@ public class CreateRaceVM implements MessageListener
    * Gets the observable list containing all available race tracks.
    * @return Observable list of all race tracks
    */
-  public ObservableList<RaceTrack> getAvailableRaceTracks()
+  public ObservableList<RaceTrackDTO> getAvailableRaceTracks()
   {
     return availableRaceTracks;
   }
@@ -106,7 +105,7 @@ public class CreateRaceVM implements MessageListener
    * Gets the observable list containing the queue of upcoming races.
    * @return Observable list of races in the queue
    */
-  public ObservableList<Race> getRaceQueue(){
+  public ObservableList<RaceDTO> getRaceQueue(){
     return raceQueue;
   }
 
@@ -167,7 +166,7 @@ public class CreateRaceVM implements MessageListener
         handleCreateRaceResponse(createRaceResponse);
         raceClient.getRaceList();
         if (createRaceResponse.Race() != null){
-          Race newRace = gson.fromJson(createRaceResponse.Race().toString(), Race.class);
+          RaceDTO newRace = gson.fromJson(createRaceResponse.Race().toString(), RaceDTO.class);
           setSelectedRace(newRace);
         }
     }
@@ -179,7 +178,7 @@ public class CreateRaceVM implements MessageListener
    *
    * @param newRace The race to select
    */
-  private void setSelectedRace(Race newRace)
+  private void setSelectedRace(RaceDTO newRace)
   {
     // This is a placeholder method, implementation may be added in the future
   }

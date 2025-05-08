@@ -6,8 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import server.model.Race;
-import server.model.RaceTrack;
+import shared.DTO.RaceDTO;
+import shared.DTO.RaceTrackDTO;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -23,7 +23,7 @@ public class CreateRaceController
   @FXML private TextField nrOfHorses;
 
   /** Choice box for selecting the race track */
-  @FXML private ChoiceBox<RaceTrack> raceTrack;
+  @FXML private ChoiceBox<RaceTrackDTO> raceTrack;
 
   /** Text field for entering the race name */
   @FXML private TextField raceName;
@@ -35,7 +35,7 @@ public class CreateRaceController
   @FXML private Button back;
 
   /** ListView displaying the queue of upcoming races */
-  @FXML private ListView<Race> raceQueueList;
+  @FXML private ListView<RaceDTO> raceQueueList;
 
   /** ViewModel that provides data and operations for this view */
   private CreateRaceVM createRaceVM;
@@ -65,12 +65,12 @@ public class CreateRaceController
     raceQueueList.setItems(createRaceVM.getRaceQueue());
     raceQueueList.setCellFactory(param -> new ListCell<>() {
       @Override
-      protected void updateItem(Race race, boolean empty) {
+      protected void updateItem(RaceDTO race, boolean empty) {
         super.updateItem(race, empty);
         if (empty || race == null) {
           setText(null);
         } else {
-          setText(race.getName() + " - Track: " + race.getRaceTrack().getName());
+          setText(race.name() + " - Track: " + race.raceTrack().name());
         }
       }
     });

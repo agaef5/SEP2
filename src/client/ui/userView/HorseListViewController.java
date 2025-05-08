@@ -49,7 +49,7 @@ public class HorseListViewController
     listView.setCellFactory(param -> new ListCell<>()
     {
       @Override
-      protected void updateItem(Horse horse, boolean empty)
+      protected void updateItem(HorseDTO horse, boolean empty)
       {
         super.updateItem(horse, empty);
         if (empty || horse == null)
@@ -58,8 +58,8 @@ public class HorseListViewController
         }
         else
         {
-          setText(horse.getName() + " (speed: " + horse.getSpeedMin() + " - "
-              + horse.getSpeedMax() + ")");
+          setText(horse.name() + " (speed: " + horse.speedMin() + " - "
+              + horse.speedMax() + ")");
         }
       }
     });

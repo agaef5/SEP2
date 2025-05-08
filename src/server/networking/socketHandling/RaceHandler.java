@@ -2,11 +2,13 @@ package server.networking.socketHandling;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import server.model.Race;
-import server.model.RaceTrack;
 import server.services.races.RaceServiceImpl;
+
 import server.services.races.RacesService;
+import shared.DTO.RaceDTO;
 import shared.*;
+import shared.DTO.RaceTrackDTO;
+
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -63,12 +65,15 @@ public class RaceHandler extends BaseRequestHandler {
    * @return The response containing the created race's data.
    */
   private Object handleCreateRaceRequest(CreateRaceRequest request) {
+    String name = request.name();
+    RaceTrackDTO raceTrackDTO = request.raceTrack();
+    Integer capacity = request.capacity();
 
-    Date startTime = request.startTime() != null ? request.startTime() : new Date();
-
-    Race createdRace = racesService.createRace(request.name(), startTime, request.raceTrack());
+    RaceDTO createdRace = racesService.createRace(name, raceTrackDTO, capacity);
     return new RaceResponse(createdRace);
   }
+
+
 
   /**
    * Handles the request to retrieve a list of all races.
@@ -76,7 +81,7 @@ public class RaceHandler extends BaseRequestHandler {
    * @return The response containing a list of all races.
    */
   private Object handleGetRace() {
-    List<Race> races = racesService.getRaceList();
+    List<RaceDTO> races = racesService.getRaceList();
     return new GetRaceListResponse(races);
   }
 
@@ -86,7 +91,7 @@ public class RaceHandler extends BaseRequestHandler {
    * @return The response containing a list of all race tracks.
    */
   private Object handleGetRaceTracks() throws SQLException {
-    List<RaceTrack> raceTracks = racesService.getRaceTracks();
+    List<RaceTrackDTO> raceTracks = racesService.getRaceTracks();
     return new GetRaceTrackResponse(raceTracks);
   }
 }

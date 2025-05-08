@@ -3,10 +3,9 @@ package server.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.persistence.horses.HorseRepositoryImpl;
+import shared.DTO.RaceState;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

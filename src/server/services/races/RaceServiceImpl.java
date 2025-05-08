@@ -1,90 +1,105 @@
 package server.services.races;
 
+import server.model.Horse;
 import server.model.Race;
 import server.model.RaceManager;
 import server.model.RaceTrack;
 import server.persistence.raceRepository.raceTrack.RaceTrackRepImpl;
 import server.validation.baseValidation.BaseVal;
+import shared.DTO.RaceDTO;
+import shared.DTO.RaceTrackDTO;
+import shared.DTO.HorseDTO;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * The {@code RaceServiceImpl} class implements the {@link RacesService} interface.
- * It provides methods for creating races, retrieving the list of races, and retrieving race tracks.
- */
-public class RaceServiceImpl implements RacesService
-{
+public class RaceServiceImpl implements RacesService {
 
-  /**
-   * Creates a new race with the specified parameters.
-   *
-   * @param name The name of the race.
-   * @param startTime The start time of the race.
-   * @param raceTrack The race track where the race will take place.
-   * @return The created {@link Race} object.
-   * @throws IllegalArgumentException If the input data is invalid (e.g., empty name).
-   * @throws RuntimeException If a database error occurs while creating the race.
-   */
-  @Override public Race createRace(String name,
-                                   Date startTime, RaceTrack raceTrack)
-  // Validate the input for creating race, if valid create a race and return it
-  // TODO: plus add the Race to Database
-  {
-    if (BaseVal.validate(name))
-    {
-      throw new IllegalArgumentException("Cannot create new racer. Arguments are empty.");
+  @Override
+  public RaceDTO createRace(String name, RaceTrackDTO raceTrackDTO,Integer capacity) {
+    if (BaseVal.validate(name)) {
+      throw new IllegalArgumentException("Cannot create new race. Name is empty.");
     }
 
-    // Valideer startTime indien nodig
-    if (startTime == null)
-    {
+    if (raceTrackDTO == null) {
       throw new IllegalArgumentException("Start time cannot be null.");
     }
 
-    // Valideer raceTrack indien nodig
-    if (raceTrack == null)
-    {
+    if (raceTrackDTO == null) {
       throw new IllegalArgumentException("Race track cannot be null.");
     }
 
-    try
-    {
-      Race race = new Race(name, startTime, raceTrack);
-      return race;
-    }
-    catch (SQLException e)
-    {
-      System.err.println("Database error when creating racer: " + e.getMessage());
+    try {
+      RaceTrack raceTrack = fromDTO(raceTrackDTO);
+      Race race = new Race(name, raceTrack,capacity);
+      RaceManager.getInstance().addRace(race); // assuming this adds it to in-memory list
+      return toDTO(race);
+    } catch (SQLException e) {
+      System.err.println("Database error when creating race: " + e.getMessage());
       throw new RuntimeException("Failed to create race", e);
     }
   }
 
-  /**
-   * Retrieves the list of all races.
-   *
-   * @return A list of all {@link Race} objects.
-   */
-  @Override public List<Race> getRaceList()
-  {
+  @Override
+  public List<RaceDTO> getRaceList() {
     List<Race> raceList = RaceManager.getInstance().getAllRaces();
-    return raceList;
+    List<RaceDTO> dtoList = new ArrayList<>();
+    for (Race race : raceList) {
+      dtoList.add(toDTO(race));
+    }
+    return dtoList;
   }
 
-  /**
-   * Retrieves the list of all race tracks.
-   *
-   * @return A list of all {@link RaceTrack} objects.
-   * @throws RuntimeException If the race tracks cannot be fetched (e.g., database error).
-   */
-  @Override public List<RaceTrack> getRaceTracks() {
+  @Override
+  public List<RaceTrackDTO> getRaceTracks() {
     try {
-      return RaceTrackRepImpl.getInstance().getAll();
+      List<RaceTrack> tracks = RaceTrackRepImpl.getInstance().getAll();
+      List<RaceTrackDTO> dtos = new ArrayList<>();
+      for (RaceTrack track : tracks) {
+        dtos.add(toDTO(track));
+      }
+      return dtos;
     } catch (SQLException e) {
       System.err.println("Database error when fetching race tracks: " + e.getMessage());
       throw new RuntimeException("Failed to fetch race tracks", e);
     }
+  }
+
+  // --- DTO conversion methods ---
+
+  private RaceDTO toDTO(Race race) {
+    // Convert RaceTrack and HorseList to appropriate DTOs
+    List<HorseDTO> horseDTOs = new ArrayList<>();
+    for (Horse horse : race.getHorseList().getList()) {
+      horseDTOs.add(new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax()));
+    }
+
+    List<HorseDTO> finalPositionDTOs = new ArrayList<>();
+    for (Horse horse : race.getFinalPositionlist().getList()) {
+      finalPositionDTOs.add(new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax()));
+    }
+
+    return new RaceDTO(
+            race.getName(),
+            race.getStatus(),
+            race.getDateTime(),
+            horseDTOs,
+            finalPositionDTOs,
+            toDTO(race.getRaceTrack())
+    );
+  }
+
+
+
+
+  private RaceTrackDTO toDTO(RaceTrack track) {
+    return new RaceTrackDTO(track.getName(), track.getLength(), track.getLocation());
+  }
+
+  private RaceTrack fromDTO(RaceTrackDTO dto) {
+    return new RaceTrack(dto.name(), dto.length(), dto.location());
   }
 }
