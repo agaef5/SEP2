@@ -1,4 +1,4 @@
-package client.ui.adminView;
+package client.ui.adminView.base;
 
 public interface BaseViewModel {
 

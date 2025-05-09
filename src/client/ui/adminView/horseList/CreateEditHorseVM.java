@@ -3,7 +3,7 @@ package client.ui.adminView.horseList;
 import client.networking.SocketService;
 import client.networking.horses.HorsesClient;
 import client.ui.MessageListener;
-import client.ui.adminView.BaseViewModel;
+import client.ui.adminView.base.BaseViewModel;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.*;

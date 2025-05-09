@@ -1,12 +1,11 @@
 package client.ui.adminView.horseList;
 
-import client.ui.adminView.AdminTabbedWindowController;
-import client.ui.adminView.BaseAdminController;
-import client.ui.adminView.BaseViewModel;
+import client.ui.adminView.AdminViewController;
+import client.ui.adminView.base.BaseAdminController;
+import client.ui.adminView.base.BaseViewModel;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.util.converter.BooleanStringConverter;
 import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import shared.DTO.HorseDTO;
@@ -43,7 +42,7 @@ public class CreateEditHorseController implements BaseAdminController
   private CreateEditHorseVM viewModel;
 
   /** Controller that allows to control changing the view inside the main window*/
-  private AdminTabbedWindowController adminTabbedWindowController;
+  private AdminViewController adminViewController;
 
 
   /**
@@ -96,11 +95,11 @@ public class CreateEditHorseController implements BaseAdminController
   /**
    * Allows to change tabs inside the main window within the tab
    *
-   * @param adminTabbedWindowController - the main window controller that changes tabs
+   * @param adminViewController - the main window controller that changes tabs
    */
   @Override
-  public void setTabbedWindowController(AdminTabbedWindowController adminTabbedWindowController) {
-    if(adminTabbedWindowController != null)
-      this.adminTabbedWindowController = adminTabbedWindowController;
+  public void setTabbedWindowController(AdminViewController adminViewController) {
+    if(adminViewController != null)
+      this.adminViewController = adminViewController;
   }
 }

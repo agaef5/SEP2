@@ -1,18 +1,12 @@
 package client.ui.adminView.adminPanel;
 
-import client.ui.adminView.AdminTabbedWindowController;
-import client.ui.adminView.BaseAdminController;
-import client.ui.adminView.BaseViewModel;
+import client.ui.adminView.AdminViewController;
+import client.ui.adminView.base.BaseAdminController;
+import client.ui.adminView.base.BaseViewModel;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 /**
@@ -37,7 +31,7 @@ public class AdminPanelController implements BaseAdminController
   private AdminPanelVM viewModel;
 
   /** Controller that allows to control changing the view inside the main window*/
-  private AdminTabbedWindowController adminTabbedWindowController;
+  private AdminViewController adminViewController;
 
   /**
    * Default empty constructor required by FXML loader.
@@ -70,12 +64,12 @@ public class AdminPanelController implements BaseAdminController
   /**
    * Allows to change tabs inside the main window within the tab
    *
-   * @param adminTabbedWindowController - the main window controller that changes tabs
+   * @param adminViewController - the main window controller that changes tabs
    */
   @Override
-  public void setTabbedWindowController(AdminTabbedWindowController adminTabbedWindowController) {
-    if(adminTabbedWindowController != null)
-      this.adminTabbedWindowController = adminTabbedWindowController;
+  public void setTabbedWindowController(AdminViewController adminViewController) {
+    if(adminViewController != null)
+      this.adminViewController = adminViewController;
   }
 
 
@@ -87,11 +81,11 @@ public class AdminPanelController implements BaseAdminController
   public void loadPage(javafx.event.ActionEvent event) throws IOException {
 
     if(event.getSource() == addHorse){
-      adminTabbedWindowController.loadHorsePage();
+      adminViewController.loadHorsePage();
     }
 
     if(event.getSource() == addRace){
-      adminTabbedWindowController.loadRacePage();
+      adminViewController.loadRacePage();
     }
 
 //    try

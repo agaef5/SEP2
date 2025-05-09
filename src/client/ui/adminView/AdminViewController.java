@@ -8,6 +8,8 @@ import client.networking.race.RaceClient;
 import client.networking.race.SocketRaceClient;
 import client.ui.adminView.adminPanel.AdminPanelController;
 import client.ui.adminView.adminPanel.AdminPanelVM;
+import client.ui.adminView.base.BaseAdminController;
+import client.ui.adminView.base.BaseViewModel;
 import client.ui.adminView.horseList.CreateEditHorseController;
 import client.ui.adminView.horseList.CreateEditHorseVM;
 import client.ui.adminView.race.CreateRaceController;
@@ -21,7 +23,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class AdminTabbedWindowController{
+public class AdminViewController {
     @FXML
     private StackPane mainPane;
     private Stage stage;
