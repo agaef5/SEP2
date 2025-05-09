@@ -54,7 +54,7 @@ public class ClientTest extends Application
 //    HorseListVM horseListVM = new HorseListVM(socketRacersClient,socketservice);
 //    socketservice.addListener(horseListVM);
 //    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-//        "/client/ui/userView/HorseListView.fxml"));
+//        "/client/ui/userView/UserBettingView.fxml"));
 //    Parent root = loader.load();
 //    HorseListViewController controller = loader.getController();
 //    controller.initialize(horseListVM);

@@ -93,7 +93,7 @@ public class UserLandingPageController {
     private void navigateToBettingPage() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/client/ui/userView/bettingPage/HorseListView.fxml"));
+                    "/client/ui/userView/bettingPage/UserBettingView.fxml"));
             Parent root = loader.load();
 
             // Get the controller and initialize it with the ViewModel
