@@ -61,7 +61,7 @@ public interface RaceTrackRep {
      * @param raceTrack the {@code RaceTrack} to update
      * @throws SQLException if the database operation fails
      */
-    void updateRacer(RaceTrack raceTrack) throws SQLException;
+    void updateRaceTrack(RaceTrack raceTrack) throws SQLException; // Hernoemd van updateRacer naar updateRaceTrack
 
     /**
      * Deletes a race track entry from the database.

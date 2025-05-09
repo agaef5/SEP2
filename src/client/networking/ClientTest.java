@@ -43,9 +43,7 @@ public class ClientTest extends Application
 
 
 //    === CREATE RACE VIEW - ADMIN
-
     CreateRaceVM createRaceVM = new CreateRaceVM(socketRaceClient,socketservice);
-
     FXMLLoader loader = new FXMLLoader(getClass().getResource(
         "/client/ui/adminView/race/CreateRace.fxml") );
     Parent root = loader.load();

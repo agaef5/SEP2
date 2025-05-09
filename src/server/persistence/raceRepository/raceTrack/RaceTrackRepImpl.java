@@ -164,6 +164,8 @@ public class RaceTrackRepImpl implements RaceTrackRep {
         }
     }
 
+
+
     /**
      * Updates a race track in the database.
      *
@@ -171,7 +173,7 @@ public class RaceTrackRepImpl implements RaceTrackRep {
      * @throws SQLException if the update fails
      */
     @Override
-    public void updateRacer(RaceTrack raceTrack) throws SQLException {
+    public void updateRaceTrack(RaceTrack raceTrack) throws SQLException {
         try (Connection connection = getConnection()) {
             String query = "UPDATE raceTrack SET name = ?, raceLength = ?, location = ? WHERE name = ?";
             PreparedStatement statement = connection.prepareStatement(query);

@@ -12,9 +12,9 @@ import java.util.List;
  * This class implements the {@link RaceRepository} interface and provides methods for interacting with the race data in the database.
  * It handles CRUD operations for races, including creating, reading, updating, and deleting race records.
  */
-public class RaceRepositoryimpl implements RaceRepository {
+public class RaceRepositoryImpl implements RaceRepository {
 
-    private static RaceRepositoryimpl instance;
+    private static RaceRepositoryImpl instance;
 
     /**
      * Private constructor to prevent direct instantiation.
@@ -22,20 +22,20 @@ public class RaceRepositoryimpl implements RaceRepository {
      *
      * @throws SQLException if a database access error occurs
      */
-    private RaceRepositoryimpl() throws SQLException {
+    private RaceRepositoryImpl() throws SQLException {
         DriverManager.registerDriver(new org.postgresql.Driver());
     }
 
     /**
-     * Provides a singleton instance of the {@link RaceRepositoryimpl} class.
+     * Provides a singleton instance of the {@link RaceRepositoryImpl} class.
      * Ensures that only one instance of this repository exists.
      *
-     * @return the singleton instance of {@link RaceRepositoryimpl}
+     * @return the singleton instance of {@link RaceRepositoryImpl}
      * @throws SQLException if a database access error occurs
      */
-    public static synchronized RaceRepositoryimpl getInstance() throws SQLException {
+    public static synchronized RaceRepositoryImpl getInstance() throws SQLException {
         if (instance == null) {
-            instance = new RaceRepositoryimpl();
+            instance = new RaceRepositoryImpl();
         }
         return instance;
     }
