@@ -4,10 +4,10 @@ import server.model.Player;
 import server.model.User;
 import server.persistence.user.UserRepository;
 import server.persistence.user.UserRepositoryImpl;
-import shared.LoginRequest;
-import shared.LoginRespond;
-import shared.RegisterRequest;
-import shared.RegisterRespond;
+import shared.loginRegister.LoginRequest;
+import shared.loginRegister.LoginRespond;
+import shared.loginRegister.RegisterRequest;
+import shared.loginRegister.RegisterRespond;
 
 import java.util.ArrayList;
 

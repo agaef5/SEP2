@@ -1,6 +1,5 @@
-package shared;
+package shared.horse;
 
-import server.model.Horse;
 import shared.DTO.HorseDTO;
 
 public record HorseResponse(HorseDTO horse){}

@@ -1,9 +1,9 @@
 package server.services.authentication;
 
-import shared.LoginRequest;
-import shared.LoginRespond;
-import shared.RegisterRequest;
-import shared.RegisterRespond;
+import shared.loginRegister.LoginRequest;
+import shared.loginRegister.LoginRespond;
+import shared.loginRegister.RegisterRequest;
+import shared.loginRegister.RegisterRespond;
 
 /**
  * The {@code AuthentificationService} interface defines methods for user authentication services,

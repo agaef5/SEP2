@@ -1,8 +1,8 @@
 package client.networking.authentication;
 
 import client.ui.util.exceptions.InvalidMessageException;
-import shared.LoginRespond;
-import shared.RegisterRespond;
+import shared.loginRegister.LoginRespond;
+import shared.loginRegister.RegisterRespond;
 import shared.Respond;
 
 /**

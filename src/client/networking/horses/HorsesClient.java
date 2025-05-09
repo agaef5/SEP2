@@ -1,9 +1,8 @@
 package client.networking.horses;
 
-import server.model.Horse;
-import shared.CreateHorseRequest;
+import shared.horse.CreateHorseRequest;
 import shared.DTO.HorseDTO;
-import shared.HorseRequest;
+import shared.horse.HorseRequest;
 
 /**
  * Interface for communication with the server regarding horse-related operations.

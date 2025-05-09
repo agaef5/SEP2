@@ -10,8 +10,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 
-import shared.*;
 import shared.DTO.HorseDTO;
+import shared.horse.CreateHorseRequest;
+import shared.horse.CreateHorseResponse;
+import shared.horse.HorseListResponse;
 
 import java.util.ArrayList;
 

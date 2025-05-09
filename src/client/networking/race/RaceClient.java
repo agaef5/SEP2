@@ -1,8 +1,8 @@
 package client.networking.race;
 
-import shared.CreateRaceRequest;
-import shared.GetRaceListRequest;
-import shared.GetRaceTracksRequest;
+import shared.race.CreateRaceRequest;
+import shared.race.GetRaceListRequest;
+import shared.race.GetRaceTracksRequest;
 
 /**
  * Interface for interacting with race-related requests in the system.

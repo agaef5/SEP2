@@ -71,13 +71,23 @@ public class RaceManager implements Runnable {
   public void run() {
     while (true) {
       try {
-        Race race = raceQueue.take();
-        race.run();
-        // TODO after the race is done add it to the database
+        Race race;
+
+        // Wait until there's something in the queue
+        while ((race = raceQueue.peek()) == null) {
+          Thread.sleep(100); // small delay to avoid busy waiting
+        }
+
+        race.run();         // Run the race (still in the queue)
+        raceQueue.take();   // Now remove it from the queue
+
+        // TODO: Add race to the database
+
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         break;
       }
     }
   }
+
 }

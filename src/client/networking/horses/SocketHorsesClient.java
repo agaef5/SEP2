@@ -6,6 +6,9 @@ import com.google.gson.Gson;
 
 import shared.*;
 import shared.DTO.HorseDTO;
+import shared.horse.CreateHorseRequest;
+import shared.horse.HorseListRequest;
+import shared.horse.HorseRequest;
 
 /**
  * Implementation of the {@link HorsesClient} interface using socket communication.

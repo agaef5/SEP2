@@ -8,9 +8,9 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import shared.*;
 import shared.DTO.RaceDTO;
 import shared.DTO.RaceTrackDTO;
+import shared.race.*;
 
 /**
  * ViewModel for the Create Race view.
