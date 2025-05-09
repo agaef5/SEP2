@@ -41,7 +41,9 @@ public class LoginController implements MessageListener, Controller
   }
 
   public void onLogin () {
+//            TODO: authenticate user, to check if its user or admin in order to navigate further!!!!
         mainWindowController.loadUserLandingPage();
+        mainWindowController.loadAdminPanel();
   }
 
   public void onBack ()
