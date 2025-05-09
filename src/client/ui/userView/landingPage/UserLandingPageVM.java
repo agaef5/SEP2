@@ -158,23 +158,29 @@ public class UserLandingPageVM implements MessageListener {
         });
     }
 
-    // Override the update method to handle additional message types
+
+// Override the update method to handle additional message types
     @Override
     public void update(String type, String payload) {
-        if ("getRaceList".equals(type)) {
-            GetRaceListResponse response = gson.fromJson(payload, GetRaceListResponse.class);
-            updateRaceInfo(response.races());
-        }
-        // Add handlers for balance updates and bet history as needed
-        else if ("userBalance".equals(type)) {
-            // Parse balance update from server and update userBalance
-            // This is a placeholder for when you implement this feature
-            // userBalance = parsedBalanceValue;
-            // updateBalanceDisplay();
-        }
-        else if ("betHistory".equals(type)) {
-            // Parse bet history from server and update the list
-            // This is a placeholder for when you implement this feature
+        switch (type) {
+            case "getRaceList" -> {
+                GetRaceListResponse response = gson.fromJson(payload, GetRaceListResponse.class);
+                updateRaceInfo(response.races());
+            }
+            case "userBalance" -> {
+                //TODO create this case
+                // Parse balance update from server and update userBalance
+                // userBalance = parsedBalanceValue;
+                // updateBalanceDisplay();
+            }
+            case "betHistory" -> {
+                //TODO create this case
+                // Parse bet history from server and update the list
+            }
+            default -> {
+                // Optionally handle unknown message types
+                System.out.println("Received unknown message type: " + type);
+            }
         }
     }
 }
