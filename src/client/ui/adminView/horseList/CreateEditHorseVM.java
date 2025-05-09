@@ -3,6 +3,7 @@ package client.ui.adminView.horseList;
 import client.networking.SocketService;
 import client.networking.horses.HorsesClient;
 import client.ui.MessageListener;
+import client.ui.adminView.BaseViewModel;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.*;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  * Handles communication with the server via HorsesClient and processes responses.
  * Implements MessageListener to receive updates from the server.
  */
-public class CreateEditHorseVM implements MessageListener {
+public class CreateEditHorseVM implements BaseViewModel, MessageListener {
 
   /** Client for communicating with horse-related server endpoints */
   private final HorsesClient horseClient;

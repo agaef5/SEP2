@@ -3,6 +3,7 @@ package client.ui.adminView.adminPanel;
 import client.networking.SocketService;
 import client.networking.race.RaceClient;
 import client.ui.MessageListener;
+import client.ui.adminView.BaseViewModel;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,7 +19,7 @@ import java.util.List;
  * Handles business logic and data processing for displaying upcoming race information.
  * Implements MessageListener to receive updates from the server.
  */
-public class AdminPanelVM implements MessageListener
+public class AdminPanelVM implements BaseViewModel, MessageListener
 {
   /** Client for communicating with race-related server endpoints */
   private RaceClient raceClient;

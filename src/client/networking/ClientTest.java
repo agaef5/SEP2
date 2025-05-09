@@ -3,6 +3,8 @@ package client.networking;
 import client.networking.authentication.SocketAuthenticationClient;
 import client.networking.horses.SocketHorsesClient;
 import client.networking.race.SocketRaceClient;
+import client.ui.adminView.AdminTabbedWindowController;
+import client.ui.adminView.adminPanel.AdminPanelController;
 import client.ui.adminView.horseList.CreateEditHorseController;
 import client.ui.adminView.horseList.CreateEditHorseVM;
 import client.ui.adminView.race.CreateRaceController;
@@ -14,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import server.model.Admin;
 
 import java.io.IOException;
 
@@ -21,7 +24,7 @@ public class ClientTest extends Application
 {
   public static void main(String[] args) throws IOException
   {
-                launch();
+    launch();
   }
 
   @Override public void start(Stage primaryStage) throws Exception
@@ -31,8 +34,29 @@ public class ClientTest extends Application
     SocketHorsesClient socketRacersClient = new SocketHorsesClient(socketservice);
     SocketRaceClient socketRaceClient = new SocketRaceClient(socketservice);
 
-//    === CREATE HORSE VIEW - ADMIN
+//    ADMIN PANEL
+//    Loading main window that will display pages
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/adminView/AdminTabbedWindow.fxml"));
+    Parent root = loader.load();
+    AdminTabbedWindowController tabbedWindowController = loader.getController();
 
+
+//    Loading landing page, that will be displayed in main window
+    FXMLLoader startPageLoader = new FXMLLoader(getClass().getResource("/client/ui/adminView/adminPanel/AdminPanel.fxml"));
+    Parent startPageRoot = startPageLoader.load();
+    AdminPanelController startPageController = startPageLoader.getController();
+
+//    Initializing window with loaded landing page
+    tabbedWindowController.initialize(socketservice, socketauth, startPageController);
+
+//    Show the window
+    primaryStage.setTitle("Manage VIAPets");
+    primaryStage.setScene(new Scene(root));
+    primaryStage.sizeToScene();
+    primaryStage.show();
+
+
+//    === CREATE HORSE VIEW - ADMIN
 //    CreateEditHorseVM createEditRacerVM = new CreateEditHorseVM(socketRacersClient,socketservice);
 //    socketservice.addListener(createEditRacerVM);
 //    FXMLLoader loader = new FXMLLoader(getClass().getResource(
@@ -43,16 +67,12 @@ public class ClientTest extends Application
 
 
 //    === CREATE RACE VIEW - ADMIN
-    CreateRaceVM createRaceVM = new CreateRaceVM(socketRaceClient,socketservice);
-    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-        "/client/ui/adminView/race/CreateRace.fxml") );
-    Parent root = loader.load();
-    CreateRaceController createRaceController = loader.getController();
-    createRaceController.initialize(createRaceVM);
-
-
-
-
+//    CreateRaceVM createRaceVM = new CreateRaceVM(socketRaceClient,socketservice);
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+//        "/client/ui/adminView/race/CreateRace.fxml") );
+//    Parent root = loader.load();
+//    CreateRaceController createRaceController = loader.getController();
+//    createRaceController.initialize(createRaceVM);
 
 //    === HORSE LIST VIEW - USER
 //    HorseListVM horseListVM = new HorseListVM(socketRacersClient,socketservice);
@@ -63,11 +83,8 @@ public class ClientTest extends Application
 //    HorseListViewController controller = loader.getController();
 //    controller.initialize(horseListVM);
 
-    Stage stage = new Stage();
-    stage.setScene(new Scene(root));
-    stage.show();
-
-
-
+//    Stage stage = new Stage();
+//    stage.setScene(new Scene(root));
+//    stage.show();
   }
 }
