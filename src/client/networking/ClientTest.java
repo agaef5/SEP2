@@ -7,6 +7,8 @@ import client.ui.adminView.horseList.CreateEditHorseController;
 import client.ui.adminView.horseList.CreateEditHorseVM;
 import client.ui.userView.bettingPage.UserBettingViewController;
 import client.ui.userView.bettingPage.UserBettingViewVM;
+import client.ui.userView.landingPage.UserLandingPageController;
+import client.ui.userView.landingPage.UserLandingPageVM;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -50,22 +52,28 @@ public class ClientTest extends Application
 
 
 
-
-
-//    === HORSE LIST VIEW - USER
-    UserBettingViewVM userBettingViewVM = new UserBettingViewVM(socketRacersClient,socketservice);
-    socketservice.addListener(userBettingViewVM);
+//    ===USER LANDING PAGE ===
+    UserLandingPageVM userLandingPageVM = new UserLandingPageVM(socketRaceClient, socketservice);
+    socketservice.addListener(userLandingPageVM);
     FXMLLoader loader = new FXMLLoader(getClass().getResource(
-        "/client/ui/userView/UserBettingView.fxml"));
+            "/client/ui/userView/landingPage/userLandingPage.fxml"));
     Parent root = loader.load();
-    UserBettingViewController controller = loader.getController();
-    controller.initialize(userBettingViewVM);
+    UserLandingPageController controller = loader.getController();
+    controller.initialize(userLandingPageVM, socketRacersClient, socketservice, socketRaceClient);
+
+
+//    === USER BETTING VIEW ===
+//    UserBettingViewVM userBettingViewVM = new UserBettingViewVM(socketRacersClient,socketservice);
+//    socketservice.addListener(userBettingViewVM);
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+//        "/client/ui/userView//bettingPage/UserBettingView.fxml"));
+//    Parent root = loader.load();
+//    UserBettingViewController controller = loader.getController();
+//    controller.initialize(userBettingViewVM);
 
     Stage stage = new Stage();
     stage.setScene(new Scene(root));
     stage.show();
-
-
 
   }
 }

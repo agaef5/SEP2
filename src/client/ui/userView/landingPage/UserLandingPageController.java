@@ -5,66 +5,49 @@ import client.networking.race.RaceClient;
 import client.ui.userView.bettingPage.UserBettingViewController;
 import client.ui.userView.bettingPage.UserBettingViewVM;
 import client.networking.horses.HorsesClient;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-/**
- * Controller for the user landing page view.
- * Manages user interactions and displays upcoming race information
- * following the MVVM pattern.
- */
 public class UserLandingPageController {
 
-    /** Label displaying the next race information */
     @FXML private Label raceLabel;
-
-    /** Button to navigate to the betting stage */
     @FXML private Button enterBettingStage;
+    @FXML private Button quitButton;
+    @FXML private Label balance;
+    @FXML private ListView<String> betStats;
 
-    /** ViewModel that provides data and operations for this view */
     private UserLandingPageVM viewModel;
-
-    /** The horse client needed for the betting view */
     private HorsesClient horsesClient;
-
-    /** Socket service for communication with the server */
     private SocketService socketService;
+    private RaceClient raceClient;
 
-    /**
-     * Default empty constructor required by FXML loader.
-     */
     public UserLandingPageController() {}
 
-    /**
-     * Initializes the controller with the provided dependencies.
-     * Sets up bindings between UI components and ViewModel properties,
-     * and configures action handlers for buttons.
-     *
-     * @param raceClient The client for race-related server operations
-     * @param horsesClient The client for horse-related server operations
-     * @param socketService The service for socket communication
-     */
-    public void initialize(RaceClient raceClient, HorsesClient horsesClient, SocketService socketService) {
+    public void initialize(UserLandingPageVM viewModel, HorsesClient horsesClient, SocketService socketService, RaceClient raceClient) {
+        this.viewModel = viewModel;
         this.horsesClient = horsesClient;
-        this.socketService = socketService;  // Store socketService as a field
+        this.socketService = socketService;
+        this.raceClient = raceClient;
 
-        // Initialize the ViewModel with required dependencies
-        this.viewModel = new UserLandingPageVM(raceClient, socketService);
-
-        // Bind UI components to ViewModel properties
+        // Bind properties to UI components
         raceLabel.textProperty().bind(viewModel.raceInfoProperty());
+        balance.textProperty().bind(viewModel.balanceInfoProperty());
+        betStats.setItems(viewModel.getBetHistory());
 
-        // Set up action handlers
+        // Set up button actions
         enterBettingStage.setOnAction(e -> handleButtonClick());
+        quitButton.setOnAction(e -> handleQuitButton());
 
-        // Listen for navigation requests from the ViewModel
+        // Listen for navigation requests
         viewModel.navigateToBettingProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue) {
                 navigateToBettingPage();
@@ -73,39 +56,31 @@ public class UserLandingPageController {
         });
     }
 
-    /**
-     * Handles the click event on the "Enter Betting Stage" button.
-     * Delegates to the ViewModel to initiate navigation.
-     */
     @FXML
     public void handleButtonClick() {
         viewModel.enterBettingStage();
     }
 
-    /**
-     * Navigates to the betting page by loading the appropriate FXML
-     * and initializing its controller.
-     */
-    /**
-     * Navigates to the betting page by loading the appropriate FXML
-     * and initializing its controller.
-     */
+    @FXML
+    public void handleQuitButton() {
+        // Clean up before exiting
+        viewModel.quitApplication();
+        // Exit the application
+        Platform.exit();
+    }
+
     private void navigateToBettingPage() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/client/ui/userView/bettingPage/UserBettingView.fxml"));
             Parent root = loader.load();
 
-            // Get the controller and initialize it with the ViewModel
             UserBettingViewController controller = loader.getController();
 
-            // Create the ViewModel with the current constructor signature
+            // Belangrijk: geef zowel horsesClient als socketService door
             UserBettingViewVM userBettingViewVM = new UserBettingViewVM(horsesClient, socketService);
-
-            // Initialize the controller with the ViewModel
             controller.initialize(userBettingViewVM);
 
-            // Update the scene
             Stage stage = (Stage) enterBettingStage.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Betting - " + (viewModel.getSelectedRace() != null ?
@@ -113,8 +88,7 @@ public class UserLandingPageController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            // In a production app, you would show an error dialog here
+            // Toon een foutmelding in een productieprogramma
         }
     }
-
 }
