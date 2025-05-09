@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.NumberStringConverter;
-import server.model.Horse;
 import shared.DTO.HorseDTO;
 
 /**
@@ -13,7 +12,7 @@ import shared.DTO.HorseDTO;
  * Manages the display of horse information for regular users.
  * Unlike the admin view, this view is read-only and doesn't allow modifications.
  */
-public class HorseListViewController
+public class UserBettingViewController
 {
   /** ListView displaying all available horses */
   @FXML private ListView<HorseDTO> listView;
@@ -28,7 +27,7 @@ public class HorseListViewController
   @FXML private TextField speedMax;
 
   /** ViewModel that provides data for this view */
-  private HorseListVM viewModel;
+  private UserBettingViewVM viewModel;
 
   /**
    * Initializes the controller with the provided ViewModel.
@@ -37,7 +36,7 @@ public class HorseListViewController
    *
    * @param viewModel The ViewModel that provides data for this view
    */
-  public void initialize(HorseListVM viewModel)
+  public void initialize(UserBettingViewVM viewModel)
   {
     this.viewModel = viewModel;
 

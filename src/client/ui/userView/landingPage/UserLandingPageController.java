@@ -2,8 +2,8 @@ package client.ui.userView.landingPage;
 
 import client.networking.SocketService;
 import client.networking.race.RaceClient;
-import client.ui.userView.bettingPage.HorseListViewController;
-import client.ui.userView.bettingPage.HorseListVM;
+import client.ui.userView.bettingPage.UserBettingViewController;
+import client.ui.userView.bettingPage.UserBettingViewVM;
 import client.networking.horses.HorsesClient;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -97,13 +97,13 @@ public class UserLandingPageController {
             Parent root = loader.load();
 
             // Get the controller and initialize it with the ViewModel
-            HorseListViewController controller = loader.getController();
+            UserBettingViewController controller = loader.getController();
 
             // Create the ViewModel with the current constructor signature
-            HorseListVM horseListVM = new HorseListVM(horsesClient, socketService);
+            UserBettingViewVM userBettingViewVM = new UserBettingViewVM(horsesClient, socketService);
 
             // Initialize the controller with the ViewModel
-            controller.initialize(horseListVM);
+            controller.initialize(userBettingViewVM);
 
             // Update the scene
             Stage stage = (Stage) enterBettingStage.getScene().getWindow();

@@ -5,10 +5,6 @@ import client.networking.horses.SocketHorsesClient;
 import client.networking.race.SocketRaceClient;
 import client.ui.adminView.horseList.CreateEditHorseController;
 import client.ui.adminView.horseList.CreateEditHorseVM;
-import client.ui.adminView.race.CreateRaceController;
-import client.ui.adminView.race.CreateRaceVM;
-import client.ui.userView.bettingPage.HorseListVM;
-import client.ui.userView.bettingPage.HorseListViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,22 +29,22 @@ public class ClientTest extends Application
 
 //    === CREATE HORSE VIEW - ADMIN
 
-//    CreateEditHorseVM createEditRacerVM = new CreateEditHorseVM(socketRacersClient,socketservice);
-//    socketservice.addListener(createEditRacerVM);
-//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-//        "/client/ui/adminView/horseList/CreateEditHorse.fxml"));
-//    Parent root = loader.load();
-//    CreateEditHorseController controller = loader.getController();
-//    controller.init(createEditRacerVM);
+    CreateEditHorseVM createEditRacerVM = new CreateEditHorseVM(socketRacersClient,socketservice);
+    socketservice.addListener(createEditRacerVM);
+    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+        "/client/ui/adminView/horseList/CreateEditHorse.fxml"));
+    Parent root = loader.load();
+    CreateEditHorseController controller = loader.getController();
+    controller.initialize(createEditRacerVM);
 
 
 //    === CREATE RACE VIEW - ADMIN
-    CreateRaceVM createRaceVM = new CreateRaceVM(socketRaceClient,socketservice);
-    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-        "/client/ui/adminView/race/CreateRace.fxml") );
-    Parent root = loader.load();
-    CreateRaceController createRaceController = loader.getController();
-    createRaceController.initialize(createRaceVM);
+//    CreateRaceVM createRaceVM = new CreateRaceVM(socketRaceClient,socketservice);
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+//        "/client/ui/adminView/race/CreateRace.fxml") );
+//    Parent root = loader.load();
+//    CreateRaceController createRaceController = loader.getController();
+//    createRaceController.initialize(createRaceVM);
 
 
 

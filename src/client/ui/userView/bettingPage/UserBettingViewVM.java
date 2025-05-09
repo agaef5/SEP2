@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * Unlike the admin version, this ViewModel is read-only and doesn't allow modifications.
  * Implements MessageListener to receive updates from the server.
  */
-public class HorseListVM implements MessageListener
+public class UserBettingViewVM implements MessageListener
 {
   /** Service for socket communication with the server */
   private final SocketService socketService;
@@ -45,7 +45,7 @@ public class HorseListVM implements MessageListener
    * @param horsesClient Client for horse-related server operations
    * @param socketService Service for socket communication with the server
    */
-  public HorseListVM(HorsesClient horsesClient, SocketService socketService)
+  public UserBettingViewVM(HorsesClient horsesClient, SocketService socketService)
   {
     this.horseClient = horsesClient;
     this.socketService = socketService;
