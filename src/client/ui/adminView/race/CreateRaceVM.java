@@ -149,10 +149,9 @@ public class CreateRaceVM implements MessageListener
    * @param type The type of message received
    * @param payload The JSON payload containing the message data
    */
-  @Override public void update(String type, String payload)
-  {
-    switch (type)
-    {
+  @Override
+  public void update(String type, String payload) {
+    switch (type) {
       case "getRaceTracks":
         GetRaceTrackResponse trackResponse = gson.fromJson(payload, GetRaceTrackResponse.class);
         updateAvailableRaceTracks(trackResponse);
@@ -162,13 +161,25 @@ public class CreateRaceVM implements MessageListener
         handleRaceList(raceListResponse);
         break;
       case "createRace":
-        CreateRaceResponse createRaceResponse = gson.fromJson(payload, CreateRaceResponse.class);
-        handleCreateRaceResponse(createRaceResponse);
-        raceClient.getRaceList();
-        if (createRaceResponse.Race() != null){
-          RaceDTO newRace = gson.fromJson(createRaceResponse.Race().toString(), RaceDTO.class);
-          setSelectedRace(newRace);
+        // Add null check for payload
+        if (payload != null && !payload.isEmpty()) {
+          CreateRaceResponse createRaceResponse = gson.fromJson(payload, CreateRaceResponse.class);
+          if (createRaceResponse != null) {
+            handleCreateRaceResponse(createRaceResponse);
+            raceClient.getRaceList();
+            if (createRaceResponse.Race() != null) {
+              RaceDTO newRace = gson.fromJson(createRaceResponse.Race().toString(), RaceDTO.class);
+              setSelectedRace(newRace);
+            }
+          } else {
+            System.out.println("Received null CreateRaceResponse");
+            raceClient.getRaceList(); // Still refresh the race list
+          }
+        } else {
+          System.out.println("Received empty payload for createRace");
+          raceClient.getRaceList(); // Still refresh the race list
         }
+        break;
     }
   }
 
@@ -189,11 +200,10 @@ public class CreateRaceVM implements MessageListener
    *
    * @param createRaceResponse Response object from the create race operation
    */
-  private void handleCreateRaceResponse(CreateRaceResponse createRaceResponse)
-  {
+  private void handleCreateRaceResponse(CreateRaceResponse createRaceResponse) {
     Platform.runLater(() -> {
-      // Handle the create race response
-      if (createRaceResponse.Race() != null) {
+      // Add null check here
+      if (createRaceResponse != null && createRaceResponse.Race() != null) {
         System.out.println("Race created successfully");
       } else {
         System.out.println("Failed to create race");
