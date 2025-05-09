@@ -77,7 +77,7 @@ public class UserLandingPageController {
 
             UserBettingViewController controller = loader.getController();
 
-            // Belangrijk: geef zowel horsesClient als socketService door
+            // pass both horsesClient and socketService
             UserBettingViewVM userBettingViewVM = new UserBettingViewVM(horsesClient, socketService);
             controller.initialize(userBettingViewVM);
 
@@ -88,7 +88,7 @@ public class UserLandingPageController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            // Toon een foutmelding in een productieprogramma
+
         }
     }
 }

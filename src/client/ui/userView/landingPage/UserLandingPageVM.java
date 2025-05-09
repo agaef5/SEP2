@@ -71,9 +71,7 @@ public class UserLandingPageVM implements MessageListener {
         navigateToBetting.set(false);
     }
 
-    // New methods for the updated features
-
-    /**
+     /**
      * Gets the observable property for the balance information.
      * @return Property containing formatted balance information
      */
@@ -94,7 +92,7 @@ public class UserLandingPageVM implements MessageListener {
      * Currently uses a default value, to be implemented with server communication.
      */
     private void loadUserBalance() {
-        // In a real implementation, this would fetch from server
+        // TODO: In a real implementation, this would fetch from server
         // For now, we'll use the default value
         updateBalanceDisplay();
     }
@@ -111,14 +109,14 @@ public class UserLandingPageVM implements MessageListener {
      * Currently populates with dummy data, to be implemented with server communication.
      */
     private void loadBetHistory() {
-        // In a real implementation, this would fetch from server
+        // TODO: In a real implementation, this would fetch from server
         // For now, we'll use dummy data
         Platform.runLater(() -> {
             betHistory.clear();
             betHistory.add("Example bet: $100 on Thunder - Won $200");
             betHistory.add("Example bet: $50 on Lightning - Lost");
             betHistory.add("Example bet: $200 on Blizzard - Won $400");
-            // Add more example bets as needed
+
         });
     }
 
@@ -168,13 +166,13 @@ public class UserLandingPageVM implements MessageListener {
                 updateRaceInfo(response.races());
             }
             case "userBalance" -> {
-                //TODO create this case
+                // TODO create this case
                 // Parse balance update from server and update userBalance
                 // userBalance = parsedBalanceValue;
                 // updateBalanceDisplay();
             }
             case "betHistory" -> {
-                //TODO create this case
+                // TODO create this case
                 // Parse bet history from server and update the list
             }
             default -> {

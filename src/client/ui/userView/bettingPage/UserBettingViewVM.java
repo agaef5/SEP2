@@ -55,14 +55,8 @@ public class UserBettingViewVM implements MessageListener {
   /** Property to indicate if betting UI is locked (after placing a bet) */
   private final BooleanProperty uiLocked = new SimpleBooleanProperty(false);
 
-  /** The user's actual balance value */
+//TODO connect actual user balance to this
   private int balanceValue = 1000; // Default starting balance
-
-  /** Timeline for the countdown timer */
-  private Timeline countdownTimer;
-
-  /** Count of seconds for the countdown */
-  private int countdownSeconds = 10; // 10 second countdown for demo
 
   /**
    * Constructs the ViewModel with necessary dependencies and initializes data.
@@ -210,7 +204,7 @@ public class UserBettingViewVM implements MessageListener {
       return false;
     }
 
-    // In a real application, you'd send this bet to the server
+    // TODO send this to server
     // For now, we'll just update the local balance
     balanceValue -= betAmount.get();
     balanceText.set("Balance: $" + balanceValue);
@@ -233,70 +227,10 @@ public class UserBettingViewVM implements MessageListener {
    * Updates the countdown text every second until the race starts.
    */
   private void startCountdown() {
-    // Stop any existing timer
-    if (countdownTimer != null) {
-      countdownTimer.stop();
-    }
-
-    // Reset countdown seconds
-    countdownSeconds = 10;
-    countdownText.set("Race starts in " + countdownSeconds + " seconds");
-
-    // Create a new timeline that fires every second
-    countdownTimer = new Timeline(
-            new KeyFrame(Duration.seconds(1), e -> {
-              countdownSeconds--;
-
-              if (countdownSeconds > 0) {
-                countdownText.set("Race starts in " + countdownSeconds + " seconds");
-              } else {
-                countdownTimer.stop();
-                simulateRaceResult();
-              }
-            })
-    );
-
-    countdownTimer.setCycleCount(countdownSeconds);
-    countdownTimer.play();
+    //TODO create somthing like this
   }
-
   /**
-   * Simulates a race result after the countdown ends.
-   * In a real application, this would be replaced with actual server results.
-   */
-  private void simulateRaceResult() {
-    countdownText.set("Race in progress...");
-
-    // For demo purposes, we'll just determine a winner randomly after 3 seconds
-    Timeline resultTimer = new Timeline(
-            new KeyFrame(Duration.seconds(3), e -> {
-              // Randomly determine if the selected horse won (50% chance)
-              boolean userWon = Math.random() > 0.5;
-              HorseDTO winner = userWon ? selectedHorse.get() :
-                      horses.get((int)(Math.random() * horses.size()));
-
-              if (userWon) {
-                // Calculate winnings (2x bet for demo)
-                int winnings = betAmount.get() * 2;
-                balanceValue += winnings;
-                balanceText.set("Balance: $" + balanceValue);
-                statusMessage.set("Congratulations! Your horse won! You won $" + winnings);
-              } else {
-                statusMessage.set("Sorry, " + winner.name() + " won the race. Better luck next time!");
-              }
-
-              // Race is over, reset UI lock
-              countdownText.set("Race finished. Place your next bet!");
-              uiLocked.set(false);
-              betAmount.set(0);
-            })
-    );
-
-    resultTimer.setCycleCount(1);
-    resultTimer.play();
-  }
-
-  /**
+   *
    * Updates the horse list with data received from the server.
    * Updates must be performed on the JavaFX application thread.
    *
@@ -349,11 +283,7 @@ public class UserBettingViewVM implements MessageListener {
    * Should be called when the view is closed.
    */
   public void cleanup() {
-    if (countdownTimer != null) {
-      countdownTimer.stop();
-    }
-
-    // Remove listener from socket service
+     // Remove listener from socket service
     socketService.removeListener(this);
   }
 }
