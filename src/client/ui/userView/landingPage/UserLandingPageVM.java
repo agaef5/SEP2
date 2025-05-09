@@ -3,6 +3,7 @@ package client.ui.userView.landingPage;
 import client.networking.SocketService;
 import client.networking.race.RaceClient;
 import client.ui.MessageListener;
+import client.ui.common.ViewModel;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -20,7 +21,7 @@ import java.util.List;
  * in accordance with MVVM pattern.
  * Implements MessageListener to receive updates from the server.
  */
-public class UserLandingPageVM implements MessageListener {
+public class UserLandingPageVM implements MessageListener, ViewModel {
 
     /** Service for socket communication with the server */
     private final SocketService socketService;

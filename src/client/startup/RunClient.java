@@ -4,6 +4,8 @@ import client.networking.SocketService;
 import client.networking.authentication.SocketAuthenticationClient;
 import client.ui.adminView.AdminViewController;
 import client.ui.adminView.adminPanel.AdminPanelController;
+import client.ui.authentication.register.RegisterController;
+import client.ui.navigation.MainWindowController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,32 +24,53 @@ public class RunClient extends Application
   @Override public void start(Stage primaryStage) throws Exception
   {
     SocketService socketservice = new SocketService("localhost",2910 );
-    SocketAuthenticationClient socketAuth = new SocketAuthenticationClient(socketservice);
 
-//    TODO: start with the authentication instead of admin view, after authenticating, redirect user to given tabbedwindow (Admin or User)
-
-//    ADMIN VIEW
+//  MAIN WINDOW VIEW
 //    Loading main window that will display pages
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/adminView/AdminViewWindow.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/navigation/MainWindow.fxml"));
     Parent root = loader.load();
-    AdminViewController tabbedWindowController = loader.getController();
+    MainWindowController mainWindowController = loader.getController();
 
-//    Loading landing page, that will be displayed in main window
-    FXMLLoader startPageLoader = new FXMLLoader(getClass().getResource("/client/ui/adminView/adminPanel/AdminPanel.fxml"));
-    Parent startPageRoot = startPageLoader.load();
-    AdminPanelController startPageController = startPageLoader.getController();
+//    Loading register page, that will be displayed in main window
+    FXMLLoader registerPageLoader = new FXMLLoader(getClass().getResource("/client/ui/authentication/register/Register.fxml"));
+    Parent registerPageRoot = registerPageLoader.load();
+    RegisterController registerPageController = registerPageLoader.getController();
 
-//    Initializing window with loaded landing page
-    tabbedWindowController.initialize(socketservice, socketAuth, startPageController);
+//    Initializing window with loaded register page
+    mainWindowController.initialize(socketservice, registerPageController);
 
 //    Show the window
     primaryStage.setTitle("Saddle Up and Sell Your Soul");
     primaryStage.setScene(new Scene(root));
     primaryStage.sizeToScene();
     primaryStage.show();
+//    ______________________________________________
 
 
-//    === HORSE LIST VIEW - USER
+//    ADMIN VIEW ______________________
+//    Loading main window that will display pages
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/adminView/AdminViewWindow.fxml"));
+//    Parent root = loader.load();
+//    AdminViewController tabbedWindowController = loader.getController();
+
+//    Loading landing page, that will be displayed in main window
+//    FXMLLoader startPageLoader = new FXMLLoader(getClass().getResource("/client/ui/adminView/adminPanel/AdminPanel.fxml"));
+//    Parent startPageRoot = startPageLoader.load();
+//    AdminPanelController startPageController = startPageLoader.getController();
+
+//    Initializing window with loaded landing page
+//    SocketAuthenticationClient socketAuth = new SocketAuthenticationClient(socketservice);
+//    tabbedWindowController.initialize(socketservice, socketAuth, startPageController);
+
+//    Show the window
+//    primaryStage.setTitle("Saddle Up and Sell Your Soul");
+//    primaryStage.setScene(new Scene(root));
+//    primaryStage.sizeToScene();
+//    primaryStage.show();
+//    ________________________________________________
+
+
+//    === HORSE LIST VIEW - USER __________________________
 //    SocketHorsesClient socketRacersClient = new SocketHorsesClient(socketservice);
 //    HorseListVM horseListVM = new HorseListVM(socketRacersClient,socketservice);
 //    socketservice.addListener(horseListVM);
@@ -59,5 +82,6 @@ public class RunClient extends Application
 //    Stage stage = new Stage();
 //    stage.setScene(new Scene(root));
 //    stage.show();
+//    _________________________________________________
   }
 }

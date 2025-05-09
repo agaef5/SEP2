@@ -65,7 +65,7 @@
             <Font name="Centaur" size="13.0" />
          </font>
       </Text>
-      <Text fx:id="messageLabel" fill="#a90101" layoutX="115.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="571.9610137939453">
+      <Text fx:id="" fill="#a90101" layoutX="115.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="571.9610137939453">
          <font>
             <Font name="Centaur" size="18.0" />
          </font>

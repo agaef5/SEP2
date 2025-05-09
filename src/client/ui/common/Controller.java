@@ -1,5 +1,8 @@
 package client.ui.common;
 
+import client.ui.navigation.MainWindowController;
+import javafx.event.ActionEvent;
+
 /**
  * The {@code Controller} interface defines the contract for UI controllers that manage navigation
  * between different pages in an application. Implementing this interface allows controllers to change
@@ -10,14 +13,8 @@ package client.ui.common;
  */
 public interface Controller
 {
-  /**
-   * Changes the current page to the specified new page.
-   * <p>
-   * The method is expected to perform the necessary operations to switch from the current page to the
-   * new page. This might include hiding the current page, displaying the new page, and updating any
-   * related UI components.
-   *
-   * @param page the {@code Controller} instance representing the new page to display
-   */
-  void changePage(Controller page);
+
+  void initialize(ViewModel viewModel);
+
+  void setWindowController(MainWindowController mainWindowController);
 }

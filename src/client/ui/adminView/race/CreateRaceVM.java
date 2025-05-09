@@ -3,7 +3,7 @@ package client.ui.adminView.race;
 import client.networking.SocketService;
 import client.networking.race.RaceClient;
 import client.ui.MessageListener;
-import client.ui.adminView.base.BaseViewModel;
+import client.ui.common.ViewModel;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.*;
@@ -19,7 +19,7 @@ import shared.DTO.RaceTrackDTO;
  * Handles communication with the server via RaceClient and processes responses.
  * Implements MessageListener to receive updates from the server.
  */
-public class CreateRaceVM implements BaseViewModel, MessageListener
+public class CreateRaceVM implements ViewModel, MessageListener
 {
   /** Service for socket communication with the server */
   private final SocketService socketService;

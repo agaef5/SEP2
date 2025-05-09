@@ -1,8 +1,7 @@
 package client.ui.adminView.horseList;
 
-import client.ui.adminView.AdminViewController;
-import client.ui.adminView.base.BaseAdminController;
-import client.ui.adminView.base.BaseViewModel;
+import client.ui.adminView.base.AdminViewBaseController;
+import client.ui.common.ViewModel;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -15,7 +14,7 @@ import shared.DTO.HorseDTO;
  * Manages user interactions for creating, editing, and removing horse entries.
  * Connects UI components to the corresponding ViewModel.
  */
-public class CreateEditHorseController implements BaseAdminController
+public class CreateEditHorseController implements AdminViewBaseController
 {
   /** ListView displaying all available horses */
   @FXML private ListView<HorseDTO> listView;
@@ -42,7 +41,7 @@ public class CreateEditHorseController implements BaseAdminController
   private CreateEditHorseVM viewModel;
 
   /** Controller that allows to control changing the view inside the main window*/
-  private AdminViewController adminViewController;
+  private client.ui.adminView.AdminViewController adminViewController;
 
 
   /**
@@ -52,7 +51,7 @@ public class CreateEditHorseController implements BaseAdminController
    *
    * @param createEditHorseVM The ViewModel that provides data and operations for this view
    */
-  public void initialize(BaseViewModel createEditHorseVM) {
+  public void initialize(ViewModel createEditHorseVM) {
     this.viewModel = (CreateEditHorseVM) createEditHorseVM;
 
     // Bind the ListView to the horse list in the ViewModel
@@ -98,8 +97,11 @@ public class CreateEditHorseController implements BaseAdminController
    * @param adminViewController - the main window controller that changes tabs
    */
   @Override
-  public void setTabbedWindowController(AdminViewController adminViewController) {
+  public void setAdminViewController(client.ui.adminView.AdminViewController adminViewController) {
     if(adminViewController != null)
       this.adminViewController = adminViewController;
   }
+
+
+
 }

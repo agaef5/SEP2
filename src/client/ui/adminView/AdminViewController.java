@@ -8,8 +8,8 @@ import client.networking.race.RaceClient;
 import client.networking.race.SocketRaceClient;
 import client.ui.adminView.adminPanel.AdminPanelController;
 import client.ui.adminView.adminPanel.AdminPanelVM;
-import client.ui.adminView.base.BaseAdminController;
-import client.ui.adminView.base.BaseViewModel;
+import client.ui.adminView.base.AdminViewBaseController;
+import client.ui.common.ViewModel;
 import client.ui.adminView.horseList.CreateEditHorseController;
 import client.ui.adminView.horseList.CreateEditHorseVM;
 import client.ui.adminView.race.CreateRaceController;
@@ -33,7 +33,6 @@ public class AdminViewController {
     private HorsesClient horsesClient;
     private RaceClient raceClient;
 
-
     public void initialize(SocketService socketService, AuthenticationClient authenticationClient, AdminPanelController adminPanelController) {
         this.socketService = socketService;
         this.authenticationClient = authenticationClient;
@@ -41,7 +40,7 @@ public class AdminViewController {
         raceClient = new SocketRaceClient(socketService);
 
         if (adminPanelController != null) {
-            adminPanelController.setTabbedWindowController(this);
+            adminPanelController.setAdminViewController(this);
         }
         try
         {
@@ -62,33 +61,30 @@ public class AdminViewController {
     private void loadPage(String fxmlFile) throws IOException {
         try {
             mainPane.getChildren().clear();
-            System.out.println(getClass().getResource("/client/ui/adminView/adminPanel/AdminPanel.fxml"));
 
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlFile));
-
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Pane newContent = loader.load();
 
-            BaseViewModel viewModel = null;
+            ViewModel viewModel = null;
             Object controller = loader.getController();
 
             if (controller instanceof AdminPanelController) {
                 viewModel = new AdminPanelVM(raceClient, socketService);
-                ((AdminPanelController) controller).setTabbedWindowController(this);
+                ((AdminPanelController) controller).setAdminViewController(this);
             }
 
             if (controller instanceof CreateEditHorseController)
             {
                 viewModel = new CreateEditHorseVM(horsesClient, socketService);
-                ((CreateEditHorseController) controller).setTabbedWindowController(this);}
+                ((CreateEditHorseController) controller).setAdminViewController(this);}
 
             if (controller instanceof CreateRaceController) {
                 viewModel = new CreateRaceVM(raceClient, socketService);
-                ((CreateRaceController) controller).setTabbedWindowController(this);
+                ((CreateRaceController) controller).setAdminViewController(this);
             }
 
-            if(controller instanceof BaseAdminController){
-                ((BaseAdminController)controller).initialize(viewModel);
+            if(controller instanceof AdminViewBaseController){
+                ((AdminViewBaseController)controller).initialize(viewModel);
             }
 
             mainPane.getChildren().add(newContent);

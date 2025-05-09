@@ -1,8 +1,7 @@
 package client.ui.adminView.race;
 
-import client.ui.adminView.AdminViewController;
-import client.ui.adminView.base.BaseAdminController;
-import client.ui.adminView.base.BaseViewModel;
+import client.ui.adminView.base.AdminViewBaseController;
+import client.ui.common.ViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,7 +19,7 @@ import java.sql.SQLException;
  * Manages user interactions for creating new races and displaying the race queue.
  * Connects UI components to the corresponding ViewModel.
  */
-public class CreateRaceController implements BaseAdminController
+public class CreateRaceController implements AdminViewBaseController
 {
   /** Text field for entering the number of horses in the race */
   @FXML private TextField nrOfHorses;
@@ -44,7 +43,7 @@ public class CreateRaceController implements BaseAdminController
   private CreateRaceVM viewModel;
 
   /** Controller that allows to control changing the view inside the main window*/
-  private AdminViewController adminViewController;
+  private client.ui.adminView.AdminViewController adminViewController;
 
   /**
    * Default empty constructor required by FXML loader.
@@ -58,7 +57,7 @@ public class CreateRaceController implements BaseAdminController
    *
    * @param createRaceVM The ViewModel that provides data and operations for this view
    */
-  public void initialize(BaseViewModel createRaceVM)
+  public void initialize(ViewModel createRaceVM)
   {
     viewModel = (CreateRaceVM) createRaceVM;
 
@@ -99,7 +98,7 @@ public class CreateRaceController implements BaseAdminController
    * @param adminViewController - the main window controller that changes tabs
    */
   @Override
-  public void setTabbedWindowController(AdminViewController adminViewController) {
+  public void setAdminViewController(client.ui.adminView.AdminViewController adminViewController) {
     if(adminViewController != null)
       this.adminViewController = adminViewController;
   }

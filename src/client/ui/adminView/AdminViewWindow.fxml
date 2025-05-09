@@ -15,11 +15,6 @@
                         <Label  text="Main menu" onMouseClicked="#loadAdminPanel"/>
                     </graphic>
                 </Menu>
-<!--                <Menu mnemonicParsing="false" >-->
-<!--                    <graphic>-->
-<!--                        <Label  text="Users" onMouseClicked="#loa"/>-->
-<!--                    </graphic>-->
-<!--                </Menu>-->
                 <Menu mnemonicParsing="false" >
                     <graphic>
                         <Label  text="Horses" onMouseClicked="#loadHorsePage"/>

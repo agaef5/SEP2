@@ -1,8 +1,11 @@
 package client.ui.adminView.adminPanel;
 
 import client.ui.adminView.AdminViewController;
-import client.ui.adminView.base.BaseAdminController;
-import client.ui.adminView.base.BaseViewModel;
+import client.ui.adminView.base.AdminViewBaseController;
+import client.ui.common.Controller;
+import client.ui.common.ViewModel;
+import client.ui.util.ErrorHandler;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,7 +16,7 @@ import java.io.IOException;
  * Controller class for the admin panel view.
  * Handles user interactions and manages the display of upcoming race information.
  */
-public class AdminPanelController implements BaseAdminController
+public class AdminPanelController implements AdminViewBaseController
 {
   /** Button to navigate to the Add Horse screen */
   @FXML private Button addHorse;
@@ -31,7 +34,7 @@ public class AdminPanelController implements BaseAdminController
   private AdminPanelVM viewModel;
 
   /** Controller that allows to control changing the view inside the main window*/
-  private AdminViewController adminViewController;
+  private client.ui.adminView.AdminViewController adminViewController;
 
   /**
    * Default empty constructor required by FXML loader.
@@ -46,7 +49,7 @@ public class AdminPanelController implements BaseAdminController
    * @param viewModel The ViewModel that provides data and business logic for this view
    */
   @FXML
-  public void initialize(BaseViewModel viewModel)
+  public void initialize(ViewModel viewModel)
   {
     this.viewModel = (AdminPanelVM) viewModel;
 
@@ -67,36 +70,32 @@ public class AdminPanelController implements BaseAdminController
    * @param adminViewController - the main window controller that changes tabs
    */
   @Override
-  public void setTabbedWindowController(AdminViewController adminViewController) {
+  public void setAdminViewController(AdminViewController adminViewController) {
     if(adminViewController != null)
       this.adminViewController = adminViewController;
   }
 
 
   /**
-   * Loads a new scene and sets it as the current scene in the application window.
+   * Loads a new scene and sets it as the current scene in the application window, using the Window controller.
    *
    * @param event - "event" triggered by clicking on one of the buttons on the AdminController
    */
-  public void loadPage(javafx.event.ActionEvent event) throws IOException {
+  public void loadPage(ActionEvent event){
 
-    if(event.getSource() == addHorse){
-      adminViewController.loadHorsePage();
+    try {
+      if (event.getSource() == addHorse) {
+        adminViewController.loadHorsePage();
+      }
+
+      if (event.getSource() == addRace) {
+        adminViewController.loadRacePage();
+      }
     }
-
-    if(event.getSource() == addRace){
-      adminViewController.loadRacePage();
+    catch (IOException e)
+    {
+//      Only IllegalArgumentExceptions are handled as "Client errors"
+      ErrorHandler.handleError(new IllegalArgumentException(e), "Error loading the page");
     }
-
-//    try
-//    {
-//      FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-//      Parent root = loader.load();
-//      Stage stage = (Stage) addRace.getScene().getWindow();
-//      stage.setScene(new Scene(root));
-//    } catch (IOException e)
-//    {
-//      e.printStackTrace();
-//    }
   }
 }
