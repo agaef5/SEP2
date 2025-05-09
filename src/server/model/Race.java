@@ -114,7 +114,7 @@ public class Race implements Runnable {
     }
     status = RaceState.IN_PROGRESS;
     System.out.println("Race " + name + " Started!");
-    updateListenersOnRaeStarted();
+    updateListenersOnRaceStarted();
 
     // TODO: Finish the rest of the race logic (e.g., horse movement, race end conditions)
   }

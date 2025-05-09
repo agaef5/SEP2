@@ -5,6 +5,8 @@ import client.networking.horses.SocketHorsesClient;
 import client.networking.race.SocketRaceClient;
 import client.ui.adminView.horseList.CreateEditHorseController;
 import client.ui.adminView.horseList.CreateEditHorseVM;
+import client.ui.userView.bettingPage.UserBettingViewController;
+import client.ui.userView.bettingPage.UserBettingViewVM;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,13 +31,13 @@ public class ClientTest extends Application
 
 //    === CREATE HORSE VIEW - ADMIN
 
-    CreateEditHorseVM createEditRacerVM = new CreateEditHorseVM(socketRacersClient,socketservice);
-    socketservice.addListener(createEditRacerVM);
-    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-        "/client/ui/adminView/horseList/CreateEditHorse.fxml"));
-    Parent root = loader.load();
-    CreateEditHorseController controller = loader.getController();
-    controller.initialize(createEditRacerVM);
+//    CreateEditHorseVM createEditRacerVM = new CreateEditHorseVM(socketRacersClient,socketservice);
+//    socketservice.addListener(createEditRacerVM);
+//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+//        "/client/ui/adminView/horseList/CreateEditHorse.fxml"));
+//    Parent root = loader.load();
+//    CreateEditHorseController controller = loader.getController();
+//    controller.initialize(createEditRacerVM);
 
 
 //    === CREATE RACE VIEW - ADMIN
@@ -51,13 +53,13 @@ public class ClientTest extends Application
 
 
 //    === HORSE LIST VIEW - USER
-//    HorseListVM horseListVM = new HorseListVM(socketRacersClient,socketservice);
-//    socketservice.addListener(horseListVM);
-//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-//        "/client/ui/userView/UserBettingView.fxml"));
-//    Parent root = loader.load();
-//    HorseListViewController controller = loader.getController();
-//    controller.initialize(horseListVM);
+    UserBettingViewVM userBettingViewVM = new UserBettingViewVM(socketRacersClient,socketservice);
+    socketservice.addListener(userBettingViewVM);
+    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+        "/client/ui/userView/UserBettingView.fxml"));
+    Parent root = loader.load();
+    UserBettingViewController controller = loader.getController();
+    controller.initialize(userBettingViewVM);
 
     Stage stage = new Stage();
     stage.setScene(new Scene(root));

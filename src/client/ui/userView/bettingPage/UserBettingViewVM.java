@@ -13,7 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.util.Duration;
 import shared.DTO.HorseDTO;
 import shared.DTO.RaceDTO;
-import shared.HorseListResponse;
+import shared.horse.HorseListResponse;
 
 /**
  * ViewModel for the User Betting View with race countdown functionality.
