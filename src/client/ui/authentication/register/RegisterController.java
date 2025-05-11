@@ -40,12 +40,7 @@ public class RegisterController implements MessageListener, Controller
 
   public void onRegister ()
   {
-      mainWindowController.loadAdminPanel();
-  }
-
-  public void onBack ()
-  {
-
+    viewModel.registerUser();
   }
 
     @Override
@@ -57,6 +52,10 @@ public class RegisterController implements MessageListener, Controller
 
     @Override
     public void update(String type, String payload) {
-
+      if(mainWindowController.authenticateAdmin()){
+        mainWindowController.loadAdminPanel();
+      }else {
+        mainWindowController.loadUserLandingPage();
+      }
     }
 }

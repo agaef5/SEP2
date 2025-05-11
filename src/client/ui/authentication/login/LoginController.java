@@ -42,15 +42,12 @@ public class LoginController implements MessageListener, Controller
   }
 
   public void onLogin () {
-//            TODO: authenticate user, to check if its user or admin in order to navigate further!!!!
-//        mainWindowController.loadUserLandingPage();
-    System.out.println("ADMIN PANEL LOADING");
-        mainWindowController.loadAdminPanel();
+    viewModel.loginUser();
   }
 
   public void onBack ()
   {
-        mainWindowController.loadRegisterPage();
+    mainWindowController.loadRegisterPage();
   }
 
   @Override public void setWindowController(MainWindowController mainWindowController) {
@@ -61,6 +58,10 @@ public class LoginController implements MessageListener, Controller
 
     @Override
     public void update(String type, String payload) {
-
+      if(mainWindowController.authenticateAdmin()){
+        mainWindowController.loadAdminPanel();
+      }else {
+        mainWindowController.loadUserLandingPage();
+      }
     }
 }
