@@ -7,6 +7,8 @@ import client.networking.horses.HorsesClient;
 import client.networking.horses.SocketHorsesClient;
 import client.networking.race.RaceClient;
 import client.networking.race.SocketRaceClient;
+import client.ui.adminView.AdminViewController;
+import client.ui.adminView.adminPanel.AdminPanelVM;
 import client.ui.adminView.race.CreateRaceVM;
 import client.ui.adminView.race.CreateRaceController;
 import client.ui.authentication.login.LoginController;
@@ -19,6 +21,7 @@ import client.ui.userView.landingPage.UserLandingPageController;
 import client.ui.userView.landingPage.UserLandingPageVM;
 import client.ui.util.ErrorHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.MenuBar;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -27,6 +30,7 @@ import java.io.IOException;
 
 public class MainWindowController {
     public StackPane mainPane;
+    public MenuBar adminMenu;
 
     private Stage stage;
 
@@ -34,6 +38,7 @@ public class MainWindowController {
     private AuthenticationClient authenticationClient;
     private HorsesClient horsesClient;
     private RaceClient raceClient;
+    private boolean isAdminView = false;
 
     public void initialize(SocketService socketService, RegisterController registerController) {
         this.socketService = socketService;
@@ -61,6 +66,12 @@ public class MainWindowController {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlFile));
             Pane newContent = loader.load();
 
+            if(isAdminView && !adminMenu.isVisible()){
+                adminMenu.setPrefHeight(25.0);
+                adminMenu.setVisible(true);
+                adminMenu.setDisable(false);
+            }
+
             ViewModel viewModel = null;
             Controller controller = loader.getController();
             controller.setWindowController(this);
@@ -72,6 +83,10 @@ public class MainWindowController {
             if (controller instanceof RegisterController)
             {
                 viewModel = new RegisterVM(authenticationClient, socketService);
+            }
+
+            if (controller instanceof AdminViewController) {
+                viewModel = new AdminPanelVM(raceClient, socketService);
             }
 
             if (controller instanceof UserLandingPageController) {
@@ -99,15 +114,21 @@ public class MainWindowController {
     }
 
     public void loadAdminPanel(){
-        loadPage("client/ui/adminView/adminPanel/AdminPanel.fxml");
+        if(authenticateAdmin()) loadPage("client/ui/adminView/adminPanel/AdminPanel.fxml");
     }
 
     public void loadHorsePage(){
-        loadPage("client/ui/adminView/horseList/CreateEditHorse.fxml");
+        if(authenticateAdmin()) loadPage("client/ui/adminView/horseList/CreateEditHorse.fxml");
     }
 
     public void loadRacePage(){
-        loadPage("client/ui/adminView/race/CreateRace.fxml");
+        if(authenticateAdmin()) loadPage("client/ui/adminView/race/CreateRace.fxml");
+    }
+
+    public boolean authenticateAdmin(){
+//        TODO: get user and check if its an admin
+//        authenticationClient.
+        return isAdminView;
     }
 
 }

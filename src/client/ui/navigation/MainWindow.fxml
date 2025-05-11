@@ -4,8 +4,30 @@
 <?import javafx.scene.layout.StackPane?>
 
 
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.Label?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.navigation.MainWindowController">
    <children>
+      <MenuBar fx:id="adminMenu" prefHeight="-Infinity" visible="false" disable="true" prefWidth="600.0">
+         <menus>
+            <Menu mnemonicParsing="false" >
+               <graphic>
+                  <Label text="Main menu" onMouseClicked="#loadAdminPanel"/>
+               </graphic>
+            </Menu>
+            <Menu mnemonicParsing="false" >
+               <graphic>
+                  <Label  text="Horses" onMouseClicked="#loadHorsePage"/>
+               </graphic>
+            </Menu>
+            <Menu mnemonicParsing="false" >
+               <graphic>
+                  <Label  text="Races" onMouseClicked="#loadRacePage"/>
+               </graphic>
+            </Menu>
+         </menus>
+      </MenuBar>
       <StackPane fx:id="mainPane" prefHeight="400.0" prefWidth="600.0" />
    </children>
 </AnchorPane>
