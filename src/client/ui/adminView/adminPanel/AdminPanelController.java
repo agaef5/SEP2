@@ -1,12 +1,12 @@
 package client.ui.adminView.adminPanel;
 
+import client.ui.common.Controller;
+import client.ui.common.ViewModel;
+import client.ui.navigation.MainWindowController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import java.io.IOException;
  * Controller class for the admin panel view.
  * Handles user interactions and manages the display of upcoming race information.
  */
-public class AdminPanelController
+public class AdminPanelController implements Controller
 {
   /** Button to navigate to the Add Horse screen */
   @FXML private Button addHorse;
@@ -31,6 +31,9 @@ public class AdminPanelController
   /** ViewModel that provides data and business logic for this view */
   private AdminPanelVM viewModel;
 
+  /** Controller that allows to control changing the view inside the main window*/
+  private MainWindowController mainWindowController;
+
   /**
    * Default empty constructor required by FXML loader.
    */
@@ -44,36 +47,37 @@ public class AdminPanelController
    * @param viewModel The ViewModel that provides data and business logic for this view
    */
   @FXML
-  private void initialize(AdminPanelVM viewModel)
+  public void initialize(ViewModel viewModel)
   {
-    this.viewModel = viewModel;
+    this.viewModel = (AdminPanelVM) viewModel;
 
     // Bind the race info label to the ViewModel property
-    raceInfo.textProperty().bind(viewModel.getNextRaceInfo());
+    raceInfo.textProperty().bind(this.viewModel.getNextRaceInfo());
 
-    // Set up navigation actions for buttons
-    addRace.setOnAction(e -> loadScene(
-        "/client/ui/adminView/race/CreateRace.fxml"));
-    addHorse.setOnAction(e -> loadScene("/client/ui/racerList/adminView/racer/CreateEditRacer.fxml"));
-    //    editUser.setOnAction(e -> loadScene("/client/ui/racerList/adminView/user/EditUser.fxml"));
+//    // Set up navigation actions for buttons
+//    addRace.setOnAction(e -> loadScene(
+//        "/client/ui/adminView/race/CreateRace.fxml"));
+//    addHorse.setOnAction(e -> loadScene("/client/ui/racerList/adminView/racer/CreateEditRacer.fxml"));
+//    //    editUser.setOnAction(e -> loadScene("/client/ui/racerList/adminView/user/EditUser.fxml"));
+  }
+  @Override
+  public void setWindowController(MainWindowController mainWindowController) {
+    if(mainWindowController != null)
+      this.mainWindowController = mainWindowController;
   }
 
   /**
-   * Loads a new scene and sets it as the current scene in the application window.
+   * Loads a new scene and sets it as the current scene in the application window, using the Window controller.
    *
-   * @param fxmlPath The resource path to the FXML file to be loaded
+   * @param event - "event" triggered by clicking on one of the buttons on the AdminController
    */
-  private void loadScene(String fxmlPath)
-  {
-    try
-    {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-      Parent root = loader.load();
-      Stage stage = (Stage) addRace.getScene().getWindow();
-      stage.setScene(new Scene(root));
-    } catch (IOException e)
-    {
-      e.printStackTrace();
-    }
+  public void loadPage(ActionEvent event){
+      if (event.getSource() == addHorse) {
+        mainWindowController.loadHorsePage();
+      }
+
+      if (event.getSource() == addRace) {
+        mainWindowController.loadRacePage();
+      }
   }
 }

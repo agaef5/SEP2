@@ -1,9 +1,11 @@
 package client.ui.adminView.horseList;
 
+import client.ui.common.Controller;
+import client.ui.common.ViewModel;
+import client.ui.navigation.MainWindowController;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.util.converter.BooleanStringConverter;
 import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import shared.DTO.HorseDTO;
@@ -13,7 +15,7 @@ import shared.DTO.HorseDTO;
  * Manages user interactions for creating, editing, and removing horse entries.
  * Connects UI components to the corresponding ViewModel.
  */
-public class CreateEditHorseController
+public class CreateEditHorseController implements Controller
 {
   /** ListView displaying all available horses */
   @FXML private ListView<HorseDTO> listView;
@@ -39,15 +41,18 @@ public class CreateEditHorseController
   /** ViewModel that provides data and operations for this view */
   private CreateEditHorseVM viewModel;
 
+  /** Controller that allows to control changing the view inside the main window*/
+  private MainWindowController mainWindowController;
+
   /**
    * Initializes the controller with the provided ViewModel.
    * Sets up bindings between UI components and ViewModel properties,
    * configures cell rendering for the horse list, and attaches event handlers.
    *
-   * @param viewModel The ViewModel that provides data and operations for this view
+   * @param createEditHorseVM The ViewModel that provides data and operations for this view
    */
-  public void initialize(CreateEditHorseVM viewModel) {
-    this.viewModel = viewModel;
+  public void initialize(ViewModel createEditHorseVM) {
+    this.viewModel = (CreateEditHorseVM) createEditHorseVM;
 
     // Bind the ListView to the horse list in the ViewModel
     listView.setItems(viewModel.getHorseList());
@@ -83,5 +88,15 @@ public class CreateEditHorseController
     create.setOnAction(e -> viewModel.setHorseCreationMode());
     edit.setOnAction(e -> viewModel.updateHorse());
     remove.setOnAction(e -> viewModel.removeHorse());
+  }
+
+  /**
+   * Allows to change tabs inside the main window within the tab
+   *
+   * @param mainWindowController - the main window controller that changes tabs
+   */
+  @Override
+  public void setWindowController(MainWindowController mainWindowController) {
+    if(mainWindowController != null) this.mainWindowController = mainWindowController;
   }
 }

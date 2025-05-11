@@ -1,5 +1,8 @@
 package client.ui.adminView.race;
 
+import client.ui.common.Controller;
+import client.ui.common.ViewModel;
+import client.ui.navigation.MainWindowController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +20,7 @@ import java.sql.SQLException;
  * Manages user interactions for creating new races and displaying the race queue.
  * Connects UI components to the corresponding ViewModel.
  */
-public class CreateRaceController
+public class CreateRaceController implements Controller
 {
   /** Text field for entering the number of horses in the race */
   @FXML private TextField nrOfHorses;
@@ -38,7 +41,10 @@ public class CreateRaceController
   @FXML private ListView<RaceDTO> raceQueueList;
 
   /** ViewModel that provides data and operations for this view */
-  private CreateRaceVM createRaceVM;
+  private CreateRaceVM viewModel;
+
+  /** Controller that allows to control changing the view inside the main window*/
+  private MainWindowController mainWindowController;
 
   /**
    * Default empty constructor required by FXML loader.
@@ -50,19 +56,18 @@ public class CreateRaceController
    * Sets up bindings between UI components and ViewModel properties,
    * configures cell rendering for the race queue list, and attaches event handlers.
    *
-   * @param viewModel The ViewModel that provides data and operations for this view
-   * @throws SQLException If there is an error accessing the database
+   * @param createRaceVM The ViewModel that provides data and operations for this view
    */
-  public void initialize(CreateRaceVM viewModel) throws SQLException
+  public void initialize(ViewModel createRaceVM)
   {
-    this.createRaceVM = viewModel;
+    viewModel = (CreateRaceVM) createRaceVM;
 
-    // Bind the choice box to the available race tracks in the ViewModel
-    raceTrack.setItems(createRaceVM.getAvailableRaceTracks());
-    createRaceVM.selectedRaceTrackProperty().bind(raceTrack.getSelectionModel().selectedItemProperty());
+    // Bind the choice box to the available racetracks in the ViewModel
+    raceTrack.setItems(this.viewModel.getAvailableRaceTracks());
+    this.viewModel.selectedRaceTrackProperty().bind(raceTrack.getSelectionModel().selectedItemProperty());
 
     // Configure the race queue ListView with data from the ViewModel
-    raceQueueList.setItems(createRaceVM.getRaceQueue());
+    raceQueueList.setItems(this.viewModel.getRaceQueue());
     raceQueueList.setCellFactory(param -> new ListCell<>() {
       @Override
       protected void updateItem(RaceDTO race, boolean empty) {
@@ -78,14 +83,25 @@ public class CreateRaceController
     // Update the horse count in the ViewModel when the text field changes
     nrOfHorses.textProperty().addListener((obs, oldVal, newVal) -> {
       try {
-        createRaceVM.horseCountProperty().set(Integer.parseInt(newVal));
+        this.viewModel.horseCountProperty().set(Integer.parseInt(newVal));
       } catch (NumberFormatException e) {
-        createRaceVM.horseCountProperty().set(0); // Default to 0 on invalid input
+        this.viewModel.horseCountProperty().set(0); // Default to 0 on invalid input
       }
     });
 
     // Bind the race name text field to the ViewModel property
-    raceName.textProperty().bindBidirectional(createRaceVM.raceNameProperty());
+    raceName.textProperty().bindBidirectional(this.viewModel.raceNameProperty());
+  }
+
+  /**
+   * Allows to change tabs inside the main window within the tab
+   *
+   * @param mainWindowController - the main window controller that changes tabs
+   */
+  @Override
+  public void setWindowController(MainWindowController mainWindowController) {
+    if(mainWindowController != null)
+      this.mainWindowController = mainWindowController;
   }
 
   /**
@@ -96,8 +112,8 @@ public class CreateRaceController
    */
   @FXML private void onCreateRaceClicked() throws SQLException
   {
-    if(createRaceVM.isValid()){
-      createRaceVM.createRace();
+    if(viewModel.isValid()){
+      viewModel.createRace();
     }
     else {
       showAlert("Incorrect input", "Make sure all the fields are filled.");
@@ -118,6 +134,9 @@ public class CreateRaceController
     Stage stage = (Stage) back.getScene().getWindow();
     stage.setScene(new Scene(root));
   }
+
+
+
 
   /**
    * Displays an alert dialog with the specified title and content.

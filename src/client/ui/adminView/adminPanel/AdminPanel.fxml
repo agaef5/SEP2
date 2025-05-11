@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.adminView.adminPanel.AdminPanelController">
    <children>
-      <Button fx:id="addHorse" layoutX="236.0" layoutY="35.0" mnemonicParsing="false" text="Add Horse">
+      <Button fx:id="addHorse" layoutX="236.0" layoutY="35.0" mnemonicParsing="false" onAction="#loadPage" text="Add Horse">
          <font>
             <Font size="20.0" />
          </font>
@@ -17,7 +17,7 @@
             <Font size="20.0" />
          </font>
       </Button>
-      <Button fx:id="addRace" layoutX="245.0" layoutY="121.0" mnemonicParsing="false" text="Add Race">
+      <Button fx:id="addRace" layoutX="245.0" layoutY="121.0" mnemonicParsing="false" onAction="#loadPage" text="Add Race">
          <font>
             <Font size="20.0" />
          </font>

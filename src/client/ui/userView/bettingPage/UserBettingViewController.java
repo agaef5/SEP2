@@ -1,5 +1,8 @@
 package client.ui.userView.bettingPage;
 
+import client.ui.common.Controller;
+import client.ui.common.ViewModel;
+import client.ui.navigation.MainWindowController;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -12,7 +15,7 @@ import shared.DTO.HorseDTO;
  * Controller for the User Betting View.
  * Manages user interactions for placing bets on horses.
  */
-public class UserBettingViewController {
+public class UserBettingViewController implements Controller {
 
   /** TableView displaying all available horses */
   @FXML private TableView<HorseDTO> horseTableView;
@@ -47,6 +50,9 @@ public class UserBettingViewController {
   /** ViewModel that provides data and operations for this view */
   private UserBettingViewVM viewModel;
 
+  private MainWindowController mainWindowController;
+
+
   /**
    * Default empty constructor required by FXML loader.
    */
@@ -57,10 +63,10 @@ public class UserBettingViewController {
    * Sets up bindings between UI components and ViewModel properties,
    * configures cell factories for the table view, and attaches event handlers.
    *
-   * @param viewModel The ViewModel that provides data and operations for this view
+   * @param userBettingVM The ViewModel that provides data and operations for this view
    */
-  public void initialize(UserBettingViewVM viewModel) {
-    this.viewModel = viewModel;
+  public void initialize(ViewModel userBettingVM) {
+    this.viewModel = (UserBettingViewVM) userBettingVM;
 
     // Configure table columns
     nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -131,6 +137,12 @@ public class UserBettingViewController {
       // The UI will be locked by the ViewModel
       // No need to clear fields as they'll be reset when the race ends
     }
+  }
+
+
+  @Override
+  public void setWindowController(MainWindowController mainWindowController) {
+      if(mainWindowController != null) this.mainWindowController = mainWindowController;
   }
 
   /**

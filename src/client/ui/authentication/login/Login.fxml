@@ -50,12 +50,12 @@
             <Font name="Castellar" size="48.0" />
          </font>
       </Text>
-      <Button fx:id="buttonLogin" layoutX="263.0" layoutY="378.0" mnemonicParsing="false" text="Beware Hayburners!">
+      <Button fx:id="buttonLogin" onAction="#onLogin" layoutX="263.0" layoutY="378.0" mnemonicParsing="false" text="Beware Hayburners!">
          <font>
             <Font name="Castellar" size="24.0" />
          </font>
       </Button>
-      <Button fx:id="createNewAccountB" layoutX="336.0" layoutY="463.0" mnemonicParsing="false" text="Become One Of Us!">
+      <Button fx:id="createNewAccountB" onAction="#onBack" layoutX="336.0" layoutY="463.0" mnemonicParsing="false" text="Become One Of Us!">
          <font>
             <Font name="Castellar" size="14.0" />
          </font>
@@ -65,7 +65,7 @@
             <Font name="Centaur" size="13.0" />
          </font>
       </Text>
-      <Text fx:id="messageLabel" fill="#a90101" layoutX="115.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="571.9610137939453">
+      <Text fx:id="" fill="#a90101" layoutX="115.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="571.9610137939453">
          <font>
             <Font name="Centaur" size="18.0" />
          </font>

@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="522.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.authentication.register.RegisterVM">
+<AnchorPane prefHeight="522.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.authentication.register.RegisterController">
    <children>
       <Text layoutX="306.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to" textAlignment="CENTER" wrappingWidth="203.16094970703125">
          <font>
@@ -63,7 +63,7 @@
             <Font name="Castellar" size="48.0" />
          </font>
       </Text>
-      <Button fx:id="buttonRegister" layoutX="289.0" layoutY="441.0" mnemonicParsing="false" text="Ready Cowboy?">
+      <Button fx:id="buttonRegister" onAction="#onRegister" layoutX="289.0" layoutY="441.0" mnemonicParsing="false" text="Ready Cowboy?">
          <font>
             <Font name="Castellar" size="27.0" />
          </font>

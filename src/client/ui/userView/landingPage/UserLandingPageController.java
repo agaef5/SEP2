@@ -2,6 +2,9 @@ package client.ui.userView.landingPage;
 
 import client.networking.SocketService;
 import client.networking.race.RaceClient;
+import client.ui.common.Controller;
+import client.ui.common.ViewModel;
+import client.ui.navigation.MainWindowController;
 import client.ui.userView.bettingPage.UserBettingViewController;
 import client.ui.userView.bettingPage.UserBettingViewVM;
 import client.networking.horses.HorsesClient;
@@ -17,7 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class UserLandingPageController {
+public class UserLandingPageController implements Controller {
 
     @FXML private Label raceLabel;
     @FXML private Button enterBettingStage;
@@ -26,17 +29,20 @@ public class UserLandingPageController {
     @FXML private ListView<String> betStats;
 
     private UserLandingPageVM viewModel;
-    private HorsesClient horsesClient;
-    private SocketService socketService;
-    private RaceClient raceClient;
+//    private HorsesClient horsesClient;
+//    private SocketService socketService;
+//    private RaceClient raceClient;
+
+    private MainWindowController mainWindowController;
 
     public UserLandingPageController() {}
 
-    public void initialize(UserLandingPageVM viewModel, HorsesClient horsesClient, SocketService socketService, RaceClient raceClient) {
-        this.viewModel = viewModel;
-        this.horsesClient = horsesClient;
-        this.socketService = socketService;
-        this.raceClient = raceClient;
+    @Override
+    public void initialize(ViewModel userLandingPageVM) {
+        this.viewModel = (UserLandingPageVM) userLandingPageVM;
+//        this.horsesClient = horsesClient;
+//        this.socketService = socketService;
+//        this.raceClient = raceClient;
 
         // Bind properties to UI components
         raceLabel.textProperty().bind(viewModel.raceInfoProperty());
@@ -56,6 +62,13 @@ public class UserLandingPageController {
         });
     }
 
+    @Override
+    public void setWindowController(MainWindowController mainWindowController) {
+        if(mainWindowController != null){
+            this.mainWindowController = mainWindowController;
+        }
+    }
+
     @FXML
     public void handleButtonClick() {
         viewModel.enterBettingStage();
@@ -70,6 +83,9 @@ public class UserLandingPageController {
     }
 
     private void navigateToBettingPage() {
+//        String windowTitle = ("Betting - " + (viewModel.getSelectedRace() != null ? viewModel.getSelectedRace().name() : "No Race Selected"));
+//        mainWindowController.loadBettingPage(windowTitle);
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/client/ui/userView/bettingPage/UserBettingView.fxml"));
@@ -78,7 +94,7 @@ public class UserLandingPageController {
             UserBettingViewController controller = loader.getController();
 
             // pass both horsesClient and socketService
-            UserBettingViewVM userBettingViewVM = new UserBettingViewVM(horsesClient, socketService);
+            UserBettingViewVM userBettingViewVM = new UserBettingViewVM(mainWindowController.getHorsesClient(), mainWindowController.getSocketService());
             controller.initialize(userBettingViewVM);
 
             Stage stage = (Stage) enterBettingStage.getScene().getWindow();
