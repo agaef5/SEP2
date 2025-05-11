@@ -1,7 +1,8 @@
 package client.ui.adminView.race;
 
-import client.ui.adminView.base.AdminViewBaseController;
+import client.ui.common.Controller;
 import client.ui.common.ViewModel;
+import client.ui.navigation.MainWindowController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +20,7 @@ import java.sql.SQLException;
  * Manages user interactions for creating new races and displaying the race queue.
  * Connects UI components to the corresponding ViewModel.
  */
-public class CreateRaceController implements AdminViewBaseController
+public class CreateRaceController implements Controller
 {
   /** Text field for entering the number of horses in the race */
   @FXML private TextField nrOfHorses;
@@ -43,7 +44,7 @@ public class CreateRaceController implements AdminViewBaseController
   private CreateRaceVM viewModel;
 
   /** Controller that allows to control changing the view inside the main window*/
-  private client.ui.adminView.AdminViewController adminViewController;
+  private MainWindowController mainWindowController;
 
   /**
    * Default empty constructor required by FXML loader.
@@ -95,12 +96,12 @@ public class CreateRaceController implements AdminViewBaseController
   /**
    * Allows to change tabs inside the main window within the tab
    *
-   * @param adminViewController - the main window controller that changes tabs
+   * @param mainWindowController - the main window controller that changes tabs
    */
   @Override
-  public void setAdminViewController(client.ui.adminView.AdminViewController adminViewController) {
-    if(adminViewController != null)
-      this.adminViewController = adminViewController;
+  public void setWindowController(MainWindowController mainWindowController) {
+    if(mainWindowController != null)
+      this.mainWindowController = mainWindowController;
   }
 
   /**

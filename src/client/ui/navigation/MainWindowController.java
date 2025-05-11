@@ -7,8 +7,10 @@ import client.networking.horses.HorsesClient;
 import client.networking.horses.SocketHorsesClient;
 import client.networking.race.RaceClient;
 import client.networking.race.SocketRaceClient;
-import client.ui.adminView.AdminViewController;
+import client.ui.adminView.adminPanel.AdminPanelController;
 import client.ui.adminView.adminPanel.AdminPanelVM;
+import client.ui.adminView.horseList.CreateEditHorseController;
+import client.ui.adminView.horseList.CreateEditHorseVM;
 import client.ui.adminView.race.CreateRaceVM;
 import client.ui.adminView.race.CreateRaceController;
 import client.ui.authentication.login.LoginController;
@@ -21,7 +23,7 @@ import client.ui.userView.landingPage.UserLandingPageController;
 import client.ui.userView.landingPage.UserLandingPageVM;
 import client.ui.util.ErrorHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.MenuBar;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -30,7 +32,7 @@ import java.io.IOException;
 
 public class MainWindowController {
     public StackPane mainPane;
-    public MenuBar adminMenu;
+    public HBox adminMenu;
 
     private Stage stage;
 
@@ -40,16 +42,16 @@ public class MainWindowController {
     private RaceClient raceClient;
     private boolean isAdminView = false;
 
-    public void initialize(SocketService socketService, RegisterController registerController) {
+    public void initialize(SocketService socketService, LoginController loginController) {
         this.socketService = socketService;
         authenticationClient = new SocketAuthenticationClient(socketService);
         horsesClient = new SocketHorsesClient(socketService);
         raceClient = new SocketRaceClient(socketService);
 
-        if (registerController != null) {
-            registerController.setWindowController(this);
+        if (loginController != null) {
+            loginController.setWindowController(this);
         }
-        loadRegisterPage();
+        loadLoginPage();
 
         mainPane.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
             Stage stage = (Stage) mainPane.getScene().getWindow();
@@ -66,7 +68,7 @@ public class MainWindowController {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlFile));
             Pane newContent = loader.load();
 
-            if(isAdminView && !adminMenu.isVisible()){
+            if(isAdminView){
                 adminMenu.setPrefHeight(25.0);
                 adminMenu.setVisible(true);
                 adminMenu.setDisable(false);
@@ -85,8 +87,16 @@ public class MainWindowController {
                 viewModel = new RegisterVM(authenticationClient, socketService);
             }
 
-            if (controller instanceof AdminViewController) {
+            if (controller instanceof AdminPanelController) {
                 viewModel = new AdminPanelVM(raceClient, socketService);
+            }
+
+            if(controller instanceof CreateEditHorseController){
+                viewModel = new CreateEditHorseVM(horsesClient, socketService);
+            }
+
+            if(controller instanceof CreateRaceController){
+                viewModel = new CreateRaceVM(raceClient, socketService);
             }
 
             if (controller instanceof UserLandingPageController) {
@@ -94,7 +104,6 @@ public class MainWindowController {
             }
 
             controller.initialize(viewModel);
-
             mainPane.getChildren().add(newContent);
         } catch (IOException e) {
             ErrorHandler.handleError(new IllegalArgumentException(e), "Error loading page");
@@ -114,14 +123,19 @@ public class MainWindowController {
     }
 
     public void loadAdminPanel(){
+//        test purposes only ---------
+        isAdminView = true;
+//        ----------------------------
         if(authenticateAdmin()) loadPage("client/ui/adminView/adminPanel/AdminPanel.fxml");
     }
 
     public void loadHorsePage(){
+        System.out.println("lOad horse page");
         if(authenticateAdmin()) loadPage("client/ui/adminView/horseList/CreateEditHorse.fxml");
     }
 
     public void loadRacePage(){
+        System.out.println("load race page");
         if(authenticateAdmin()) loadPage("client/ui/adminView/race/CreateRace.fxml");
     }
 

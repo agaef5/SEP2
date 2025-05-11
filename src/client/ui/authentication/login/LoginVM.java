@@ -23,7 +23,7 @@ public class LoginVM implements ViewModel
     this.socketService = socketService;
   }
 
-  public void loginUser ()
+  public void loginUser()
   {
     if ( usernameProp.get() == null || usernameProp.get().isEmpty() )
     {

@@ -15,9 +15,10 @@ import java.io.IOException;
 
 public class LoginController implements MessageListener, Controller
 {
+  public Button createNewAccountB;
   @FXML private TextField usernameNameInput;
   @FXML private TextField passwordInput;
-  @FXML private Label messageLabel;
+//  @FXML private Label messageLabel;
   @FXML private Button buttonLogin;
 
   private LoginVM viewModel;
@@ -33,8 +34,8 @@ public class LoginController implements MessageListener, Controller
 
     usernameNameInput.textProperty()
         .bindBidirectional(viewModel.userNamePropriety());
-    messageLabel.textProperty()
-        .bindBidirectional(viewModel.userNamePropriety());
+//    messageLabel.textProperty()
+//        .bindBidirectional(viewModel.userNamePropriety());
     passwordInput.textProperty()
         .bindBidirectional(viewModel.passwordPropriety());
     buttonLogin.disableProperty().bind(viewModel.disableLoginButtonPropriety());
@@ -42,13 +43,14 @@ public class LoginController implements MessageListener, Controller
 
   public void onLogin () {
 //            TODO: authenticate user, to check if its user or admin in order to navigate further!!!!
-        mainWindowController.loadUserLandingPage();
+//        mainWindowController.loadUserLandingPage();
+    System.out.println("ADMIN PANEL LOADING");
         mainWindowController.loadAdminPanel();
   }
 
   public void onBack ()
   {
-
+        mainWindowController.loadRegisterPage();
   }
 
   @Override public void setWindowController(MainWindowController mainWindowController) {

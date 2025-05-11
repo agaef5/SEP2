@@ -1,9 +1,7 @@
 package client.startup;
 
 import client.networking.SocketService;
-import client.networking.authentication.SocketAuthenticationClient;
-import client.ui.adminView.AdminViewController;
-import client.ui.adminView.adminPanel.AdminPanelController;
+import client.ui.authentication.login.LoginController;
 import client.ui.authentication.register.RegisterController;
 import client.ui.navigation.MainWindowController;
 import javafx.application.Application;
@@ -32,12 +30,12 @@ public class RunClient extends Application
     MainWindowController mainWindowController = loader.getController();
 
 //    Loading register page, that will be displayed in main window
-    FXMLLoader registerPageLoader = new FXMLLoader(getClass().getResource("/client/ui/authentication/register/Register.fxml"));
-    Parent registerPageRoot = registerPageLoader.load();
-    RegisterController registerPageController = registerPageLoader.getController();
+    FXMLLoader loginPageLoader = new FXMLLoader(getClass().getResource("/client/ui/authentication/login/Login.fxml"));
+    Parent loginPageRoot = loginPageLoader.load();
+    LoginController loginController = loginPageLoader.getController();
 
 //    Initializing window with loaded register page
-    mainWindowController.initialize(socketservice, registerPageController);
+    mainWindowController.initialize(socketservice, loginController);
 
 //    Show the window
     primaryStage.setTitle("Saddle Up and Sell Your Soul");
@@ -45,29 +43,6 @@ public class RunClient extends Application
     primaryStage.sizeToScene();
     primaryStage.show();
 //    ______________________________________________
-
-
-//    ADMIN VIEW ______________________
-//    Loading main window that will display pages
-//    FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/adminView/AdminViewWindow.fxml"));
-//    Parent root = loader.load();
-//    AdminViewController tabbedWindowController = loader.getController();
-
-//    Loading landing page, that will be displayed in main window
-//    FXMLLoader startPageLoader = new FXMLLoader(getClass().getResource("/client/ui/adminView/adminPanel/AdminPanel.fxml"));
-//    Parent startPageRoot = startPageLoader.load();
-//    AdminPanelController startPageController = startPageLoader.getController();
-
-//    Initializing window with loaded landing page
-//    SocketAuthenticationClient socketAuth = new SocketAuthenticationClient(socketservice);
-//    tabbedWindowController.initialize(socketservice, socketAuth, startPageController);
-
-//    Show the window
-//    primaryStage.setTitle("Saddle Up and Sell Your Soul");
-//    primaryStage.setScene(new Scene(root));
-//    primaryStage.sizeToScene();
-//    primaryStage.show();
-//    ________________________________________________
 
 
 //    === HORSE LIST VIEW - USER __________________________

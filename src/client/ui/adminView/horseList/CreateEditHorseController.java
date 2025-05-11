@@ -1,7 +1,8 @@
 package client.ui.adminView.horseList;
 
-import client.ui.adminView.base.AdminViewBaseController;
+import client.ui.common.Controller;
 import client.ui.common.ViewModel;
+import client.ui.navigation.MainWindowController;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -14,7 +15,7 @@ import shared.DTO.HorseDTO;
  * Manages user interactions for creating, editing, and removing horse entries.
  * Connects UI components to the corresponding ViewModel.
  */
-public class CreateEditHorseController implements AdminViewBaseController
+public class CreateEditHorseController implements Controller
 {
   /** ListView displaying all available horses */
   @FXML private ListView<HorseDTO> listView;
@@ -41,8 +42,7 @@ public class CreateEditHorseController implements AdminViewBaseController
   private CreateEditHorseVM viewModel;
 
   /** Controller that allows to control changing the view inside the main window*/
-  private client.ui.adminView.AdminViewController adminViewController;
-
+  private MainWindowController mainWindowController;
 
   /**
    * Initializes the controller with the provided ViewModel.
@@ -90,18 +90,13 @@ public class CreateEditHorseController implements AdminViewBaseController
     remove.setOnAction(e -> viewModel.removeHorse());
   }
 
-
   /**
    * Allows to change tabs inside the main window within the tab
    *
-   * @param adminViewController - the main window controller that changes tabs
+   * @param mainWindowController - the main window controller that changes tabs
    */
   @Override
-  public void setAdminViewController(client.ui.adminView.AdminViewController adminViewController) {
-    if(adminViewController != null)
-      this.adminViewController = adminViewController;
+  public void setWindowController(MainWindowController mainWindowController) {
+    if(mainWindowController != null) this.mainWindowController = mainWindowController;
   }
-
-
-
 }

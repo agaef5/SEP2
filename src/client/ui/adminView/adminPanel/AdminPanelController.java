@@ -1,10 +1,8 @@
 package client.ui.adminView.adminPanel;
 
-import client.ui.adminView.AdminViewController;
-import client.ui.adminView.base.AdminViewBaseController;
 import client.ui.common.Controller;
 import client.ui.common.ViewModel;
-import client.ui.util.ErrorHandler;
+import client.ui.navigation.MainWindowController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,7 +14,7 @@ import java.io.IOException;
  * Controller class for the admin panel view.
  * Handles user interactions and manages the display of upcoming race information.
  */
-public class AdminPanelController implements AdminViewBaseController
+public class AdminPanelController implements Controller
 {
   /** Button to navigate to the Add Horse screen */
   @FXML private Button addHorse;
@@ -34,7 +32,7 @@ public class AdminPanelController implements AdminViewBaseController
   private AdminPanelVM viewModel;
 
   /** Controller that allows to control changing the view inside the main window*/
-  private client.ui.adminView.AdminViewController adminViewController;
+  private MainWindowController mainWindowController;
 
   /**
    * Default empty constructor required by FXML loader.
@@ -62,19 +60,11 @@ public class AdminPanelController implements AdminViewBaseController
 //    addHorse.setOnAction(e -> loadScene("/client/ui/racerList/adminView/racer/CreateEditRacer.fxml"));
 //    //    editUser.setOnAction(e -> loadScene("/client/ui/racerList/adminView/user/EditUser.fxml"));
   }
-
-
-  /**
-   * Allows to change tabs inside the main window within the tab
-   *
-   * @param adminViewController - the main window controller that changes tabs
-   */
   @Override
-  public void setAdminViewController(AdminViewController adminViewController) {
-    if(adminViewController != null)
-      this.adminViewController = adminViewController;
+  public void setWindowController(MainWindowController mainWindowController) {
+    if(mainWindowController != null)
+      this.mainWindowController = mainWindowController;
   }
-
 
   /**
    * Loads a new scene and sets it as the current scene in the application window, using the Window controller.
@@ -82,20 +72,12 @@ public class AdminPanelController implements AdminViewBaseController
    * @param event - "event" triggered by clicking on one of the buttons on the AdminController
    */
   public void loadPage(ActionEvent event){
-
-    try {
       if (event.getSource() == addHorse) {
-        adminViewController.loadHorsePage();
+        mainWindowController.loadHorsePage();
       }
 
       if (event.getSource() == addRace) {
-        adminViewController.loadRacePage();
+        mainWindowController.loadRacePage();
       }
-    }
-    catch (IOException e)
-    {
-//      Only IllegalArgumentExceptions are handled as "Client errors"
-      ErrorHandler.handleError(new IllegalArgumentException(e), "Error loading the page");
-    }
   }
 }
