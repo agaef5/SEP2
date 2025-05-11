@@ -42,6 +42,10 @@ public class LoginController implements MessageListener, Controller
   }
 
   public void onLogin () {
+    //    TODO: only for test purposes - delete later
+    mainWindowController.authenticateAdmin(true);
+    mainWindowController.loadUserLandingPage();
+//    _______________________________________________
     viewModel.loginUser();
   }
 

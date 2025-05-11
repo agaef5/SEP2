@@ -19,6 +19,8 @@ import client.ui.authentication.register.RegisterController;
 import client.ui.authentication.register.RegisterVM;
 import client.ui.common.Controller;
 import client.ui.common.ViewModel;
+import client.ui.userView.bettingPage.UserBettingViewController;
+import client.ui.userView.bettingPage.UserBettingViewVM;
 import client.ui.userView.landingPage.UserLandingPageController;
 import client.ui.userView.landingPage.UserLandingPageVM;
 import client.ui.util.ErrorHandler;
@@ -103,6 +105,10 @@ public class MainWindowController {
                 viewModel = new UserLandingPageVM(raceClient, socketService);
             }
 
+            if(controller instanceof UserBettingViewController){
+                viewModel = new UserBettingViewVM(horsesClient, socketService);
+            }
+
             controller.initialize(viewModel);
             mainPane.getChildren().add(newContent);
         } catch (IOException e) {
@@ -119,8 +125,12 @@ public class MainWindowController {
     }
 
     public void loadUserLandingPage(){
-        loadPage("client/ui/userView/landingPage/UserLandingPageController.java");
+        loadPage("client/ui/userView/landingPage/userLandingPage.fxml");
     }
+
+    public void loadBettingPage(String windowTitle){
+        stage.setTitle(windowTitle);
+        loadPage("client/ui/userView/bettingPage/UserBettingView.fxml");}
 
     public void loadAdminPanel(){
 //        test purposes only ---------
@@ -145,4 +155,25 @@ public class MainWindowController {
         return isAdminView;
     }
 
+
+    public boolean authenticateAdmin(boolean bool){
+//        TODO: get user and check if its an admin
+        return isAdminView = bool;
+    }
+
+    public HorsesClient getHorsesClient() {
+        return horsesClient;
+    }
+
+    public RaceClient getRaceClient() {
+        return raceClient;
+    }
+
+    public AuthenticationClient getAuthenticationClient() {
+        return authenticationClient;
+    }
+
+    public SocketService getSocketService() {
+        return socketService;
+    }
 }

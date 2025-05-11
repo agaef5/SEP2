@@ -3,6 +3,7 @@ package client.ui.userView.bettingPage;
 import client.networking.SocketService;
 import client.networking.horses.HorsesClient;
 import client.ui.MessageListener;
+import client.ui.common.ViewModel;
 import com.google.gson.Gson;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -20,7 +21,7 @@ import shared.horse.HorseListResponse;
  * Manages data and operations for the betting functionality.
  * Implements MessageListener to receive updates from the server.
  */
-public class UserBettingViewVM implements MessageListener {
+public class UserBettingViewVM implements MessageListener, ViewModel {
 
   /** Service for socket communication with the server */
   private final SocketService socketService;

@@ -4,7 +4,7 @@ import client.networking.SocketService;
 import client.networking.authentication.AuthenticationClient;
 import client.ui.common.ViewModel;
 import javafx.beans.property.*;
-import shared.LoginRequest;
+import shared.loginRegister.LoginRequest;
 
 public class LoginVM implements ViewModel
 {
