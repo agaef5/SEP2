@@ -1,6 +1,5 @@
-package shared;
+package shared.race;
 
-import server.model.Race;
 import shared.DTO.RaceDTO;
 
 public record RaceResponse(RaceDTO race)

@@ -1,6 +1,4 @@
-package shared;
-
-import server.model.Horse;
+package shared.horse;
 
 public record CreateHorseResponse(Object horse)
 {

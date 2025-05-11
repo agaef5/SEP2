@@ -5,8 +5,8 @@ import server.persistence.horses.HorseRepository;
 import server.persistence.horses.HorseRepositoryImpl;
 import server.validation.baseValidation.BaseVal;
 import shared.DTO.HorseDTO;
-import shared.HorseListResponse;
-import shared.HorseResponse;
+import shared.horse.HorseListResponse;
+import shared.horse.HorseResponse;
 
 import java.sql.SQLException;
 import java.util.List;

@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import server.services.authentication.AuthServiceImpl;
 import server.services.authentication.AuthentificationService;
-import shared.LoginRequest;
-import shared.LoginRespond;
-import shared.RegisterRequest;
-import shared.RegisterRespond;
+import shared.loginRegister.LoginRequest;
+import shared.loginRegister.LoginRespond;
+import shared.loginRegister.RegisterRequest;
+import shared.loginRegister.RegisterRespond;
 
 /**
  * {@code RegisterAndLoginHandler} processes user authentication-related requests such as

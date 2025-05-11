@@ -6,8 +6,8 @@ import com.google.gson.JsonElement;
 
 import server.services.horseList.HorseListServiceImpl;
 import server.services.horseList.HorseListService;
-import shared.*;
 import shared.DTO.HorseDTO;
+import shared.horse.*;
 
 /**
  * {@code HorseHandler} is responsible for processing horse-related requests from clients.

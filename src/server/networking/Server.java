@@ -1,6 +1,9 @@
 package server.networking;
 
+import com.google.gson.Gson;
 import server.networking.socketHandling.ClientHandler;
+import shared.Respond;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,20 +19,32 @@ public class Server {
   // Thread-safe list to store the connected clients.
   private static final List<ClientHandler> clients = new CopyOnWriteArrayList<>();
 
+
   /**
    * Broadcasts a message to all connected clients.
+   * <p>
+   * This method wraps the given type and payload into a {@link Respond} object,
+   * serializes it to JSON, and sends it to each client using their {@link ClientHandler}.
+   * </p>
    *
-   * @param message The message to be sent to all clients.
+   * @param type    the type of the message (e.g., "race_finished", "error", "broadcast")
+   * @param payload the data to be sent as the message payload (must be serializable by Gson)
+   * @throws RuntimeException if an {@link IOException} occurs while sending to any client
    */
-  public static void broadcast(String message) {
+  public static void broadcast(String type, Object payload) {
+    Respond response = new Respond(type, payload);
+    String json = new Gson().toJson(response);
+
     for (ClientHandler client : clients) {
       try {
-        client.send(message);
+        client.send(json); // send JSON-formatted response
       } catch (IOException e) {
         throw new RuntimeException("Error broadcasting message: " + e.getMessage(), e);
       }
     }
   }
+
+
 
   /**
    * Adds a client to the list of connected clients.

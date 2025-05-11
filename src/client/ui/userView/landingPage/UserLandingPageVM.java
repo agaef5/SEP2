@@ -6,57 +6,44 @@ import client.ui.MessageListener;
 import client.ui.common.ViewModel;
 import com.google.gson.Gson;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import shared.DTO.RaceDTO;
-import shared.GetRaceListResponse;
+import shared.race.GetRaceListResponse;
 
 import java.util.List;
 
-/**
- * ViewModel for the User Landing Page.
- * Manages data and operations for displaying upcoming race information
- * in accordance with MVVM pattern.
- * Implements MessageListener to receive updates from the server.
- */
 public class UserLandingPageVM implements MessageListener, ViewModel {
 
-    /** Service for socket communication with the server */
     private final SocketService socketService;
-
-    /** Client for communicating with race-related server endpoints */
     private final RaceClient raceClient;
-
-    /** JSON parser for handling server responses */
     private final Gson gson;
 
-    /** Observable property containing information about the upcoming race */
+    // Existing properties
     private final StringProperty raceInfo = new SimpleStringProperty("No upcoming races");
-
-    /** Property to indicate if betting stage should be navigated to */
     private final BooleanProperty navigateToBetting = new SimpleBooleanProperty(false);
-
-    /** The currently selected race */
     private RaceDTO selectedRace;
 
-    /**
-     * Constructs the ViewModel with necessary dependencies and initializes data.
-     *
-     * @param raceClient Client for race-related server operations
-     * @param socketService Service for socket communication with the server
-     */
+
+
+    // New properties
+    private final StringProperty balanceInfo = new SimpleStringProperty("Balance: $1000"); // Default value
+    private final ObservableList<String> betHistory = FXCollections.observableArrayList();
+    private int userBalance = 1000; // Default starting balance
+
     public UserLandingPageVM(RaceClient raceClient, SocketService socketService) {
         this.raceClient = raceClient;
         this.socketService = socketService;
         this.gson = new Gson();
 
-        // Register this ViewModel as a listener for socket messages
+        // Register as listener
         this.socketService.addListener(this);
 
-        // Request the current race list from the server
+        // Initialize data
         refreshRaceList();
+        loadUserBalance();
+        loadBetHistory();
     }
 
     /**
@@ -113,19 +100,62 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
         navigateToBetting.set(false);
     }
 
-    /**
-     * Handles messages received from the server via the socket connection.
-     * Processes different message types and updates the ViewModel state accordingly.
-     *
-     * @param type The type of message received
-     * @param payload The JSON payload containing the message data
+     /**
+     * Gets the observable property for the balance information.
+     * @return Property containing formatted balance information
      */
-    @Override
-    public void update(String type, String payload) {
-        if ("getRaceList".equals(type)) {
-            GetRaceListResponse response = gson.fromJson(payload, GetRaceListResponse.class);
-            updateRaceInfo(response.races());
-        }
+    public StringProperty balanceInfoProperty() {
+        return balanceInfo;
+    }
+
+    /**
+     * Gets the observable list of bet history entries.
+     * @return Observable list of bet history entries
+     */
+    public ObservableList<String> getBetHistory() {
+        return betHistory;
+    }
+
+    /**
+     * Loads the user's current balance from the server.
+     * Currently uses a default value, to be implemented with server communication.
+     */
+    private void loadUserBalance() {
+        // TODO: In a real implementation, this would fetch from server
+        // For now, we'll use the default value
+        updateBalanceDisplay();
+    }
+
+    /**
+     * Updates the balance display based on the current balance value.
+     */
+    private void updateBalanceDisplay() {
+        balanceInfo.set("Balance: $" + userBalance);
+    }
+
+    /**
+     * Loads the bet history from the server.
+     * Currently populates with dummy data, to be implemented with server communication.
+     */
+    private void loadBetHistory() {
+        // TODO: In a real implementation, this would fetch from server
+        // For now, we'll use dummy data
+        Platform.runLater(() -> {
+            betHistory.clear();
+            betHistory.add("Example bet: $100 on Thunder - Won $200");
+            betHistory.add("Example bet: $50 on Lightning - Lost");
+            betHistory.add("Example bet: $200 on Blizzard - Won $400");
+
+        });
+    }
+
+    /**
+     * Quit the application.
+     */
+    public void quitApplication() {
+        // Perform any cleanup before exit
+        socketService.removeListener(this);
+        // The actual exit will be handled by the controller
     }
 
     /**
@@ -153,5 +183,31 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
                 selectedRace = null;
             }
         });
+    }
+
+
+// Override the update method to handle additional message types
+    @Override
+    public void update(String type, String payload) {
+        switch (type) {
+            case "getRaceList" -> {
+                GetRaceListResponse response = gson.fromJson(payload, GetRaceListResponse.class);
+                updateRaceInfo(response.races());
+            }
+            case "userBalance" -> {
+                // TODO create this case
+                // Parse balance update from server and update userBalance
+                // userBalance = parsedBalanceValue;
+                // updateBalanceDisplay();
+            }
+            case "betHistory" -> {
+                // TODO create this case
+                // Parse bet history from server and update the list
+            }
+            default -> {
+                // Optionally handle unknown message types
+                System.out.println("Received unknown message type: " + type);
+            }
+        }
     }
 }

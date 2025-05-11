@@ -1,4 +1,4 @@
-package shared;
+package shared.loginRegister;
 
 import java.io.Serializable;
 

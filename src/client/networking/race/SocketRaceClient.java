@@ -3,9 +3,9 @@ package client.networking.race;
 import client.networking.SocketService;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import shared.CreateRaceRequest;
-import shared.GetRaceListRequest;
-import shared.GetRaceTracksRequest;
+import shared.race.CreateRaceRequest;
+import shared.race.GetRaceListRequest;
+import shared.race.GetRaceTracksRequest;
 import shared.Request;
 
 /**

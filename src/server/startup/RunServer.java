@@ -1,5 +1,6 @@
 package server.startup;
 
+import server.model.RaceManager;
 import server.networking.Server;
 import java.io.IOException;
 
@@ -20,8 +21,10 @@ public class RunServer
   {
     // Create an instance of the server
     Server server = new Server();
+    Thread managerThread = new Thread(RaceManager.getInstance());
 
     // Start the server
+    managerThread.start();
     server.start();
   }
 }

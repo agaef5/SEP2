@@ -47,6 +47,11 @@ public class Race implements Runnable {
   /** @return the race's current status */
   public RaceState getStatus() { return status; }
 
+  public void setStatus(RaceState raceState)
+  {
+    this.status=status;
+  }
+
   /** @return the scheduled start time of the race */
   public Timestamp getDateTime() { return dateTime; }
 
@@ -58,6 +63,7 @@ public class Race implements Runnable {
 
   /** @return the race track on which is the race located */
   public RaceTrack getRaceTrack() {return raceTrack; }
+
   /**
    * Registers a listener to be notified when the race starts.
    *
@@ -101,7 +107,7 @@ public class Race implements Runnable {
     try {
       dateTime = Timestamp.valueOf(LocalDateTime.now());
       // Wait until the scheduled start time
-      Thread.sleep(100000); // Simulating the delay before race starts
+      Thread.sleep(10000); // Simulating the delay before race starts
     } catch (InterruptedException e) {
       e.printStackTrace();
       return;

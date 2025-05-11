@@ -1,8 +1,8 @@
 package client.networking.authentication;
 
 import client.networking.SocketService;
-import shared.LoginRequest;
-import shared.RegisterRequest;
+import shared.loginRegister.LoginRequest;
+import shared.loginRegister.RegisterRequest;
 import shared.Request;
 import com.google.gson.JsonElement;
 import com.google.gson.Gson;

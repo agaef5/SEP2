@@ -1,4 +1,4 @@
-package shared;
+package shared.race;
 
 public record GetRaceTracksRequest()
 {

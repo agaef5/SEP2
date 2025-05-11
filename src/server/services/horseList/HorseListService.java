@@ -1,8 +1,8 @@
 package server.services.horseList;
 
 import shared.DTO.HorseDTO;
-import shared.HorseListResponse;
-import shared.HorseResponse;
+import shared.horse.HorseListResponse;
+import shared.horse.HorseResponse;
 
 /**
  * The {@code HorseListService} interface defines methods for managing the list of horses

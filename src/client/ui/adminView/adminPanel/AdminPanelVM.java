@@ -9,7 +9,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import shared.DTO.RaceDTO;
-import shared.GetRaceListResponse;
+import shared.race.GetRaceListResponse;
 
 import java.util.List;
 

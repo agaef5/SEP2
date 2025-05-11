@@ -1,7 +1,7 @@
 package client.networking.authentication;
 
-import shared.LoginRequest;
-import shared.RegisterRequest;
+import shared.loginRegister.LoginRequest;
+import shared.loginRegister.RegisterRequest;
 
 /**
  * Interface for handling user authentication-related operations.
