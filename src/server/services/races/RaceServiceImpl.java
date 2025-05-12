@@ -18,6 +18,7 @@ import java.util.List;
 
 public class RaceServiceImpl implements RacesService {
 
+
   @Override
   public RaceDTO createRace(String name, RaceTrackDTO raceTrackDTO,Integer capacity) {
     if (BaseVal.validate(name)) {
@@ -74,17 +75,16 @@ public class RaceServiceImpl implements RacesService {
     // Convert RaceTrack and HorseList to appropriate DTOs
     List<HorseDTO> horseDTOs = new ArrayList<>();
     for (Horse horse : race.getHorseList().getList()) {
-      horseDTOs.add(new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax()));
+      horseDTOs.add(new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax(), horse.getPosition()));
     }
 
     List<HorseDTO> finalPositionDTOs = new ArrayList<>();
     for (Horse horse : race.getFinalPositionlist().getList()) {
-      finalPositionDTOs.add(new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax()));
+      finalPositionDTOs.add(new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax(), horse.getPosition()));
     }
 
     return new RaceDTO(
             race.getName(),
-            race.getStatus(),
             race.getDateTime(),
             horseDTOs,
             finalPositionDTOs,

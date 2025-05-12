@@ -35,7 +35,7 @@ public interface RaceTrackRep {
      * @return a list of {@code RaceTrack} entries with the specified name
      * @throws SQLException if the database operation fails
      */
-    List<RaceTrack> readByName(String name) throws SQLException;
+    RaceTrack readByName(String name) throws SQLException;
 
     /**
      * Retrieves a race track by its length.

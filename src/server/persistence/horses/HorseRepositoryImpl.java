@@ -55,7 +55,7 @@ public class HorseRepositoryImpl implements HorseRepository {
   @Override
   public Horse create(String name, int speedMin, int speedMax) throws SQLException {
     try (Connection connection = getConnection()) {
-      String query = "INSERT INTO horse (name, speedMin, speedMax) VALUES (?, ?, ?)";
+      String query = "INSERT INTO sep2.horse (name, speedMin, speedMax) VALUES (?, ?, ?)";
       PreparedStatement statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
       statement.setString(1, name);
       statement.setInt(2, speedMin);
@@ -68,7 +68,7 @@ public class HorseRepositoryImpl implements HorseRepository {
         throw new SQLException("Failed to generate key for new horse");
       }
     } catch (SQLException e) {
-      System.err.println("Error executing create query for horse:name: " + name);
+      System.err.println("Error executing create query for horse: " + name);
       throw new SQLException("Error creating horse", e);
     }
   }
@@ -117,7 +117,7 @@ public class HorseRepositoryImpl implements HorseRepository {
   @Override
   public ArrayList<Horse> readAll() throws SQLException {
     try (Connection connection = getConnection()) {
-      String query = "SELECT * FROM horse";
+      String query = "SELECT * FROM sep2.horse";
       PreparedStatement statement = connection.prepareStatement(query);
       ResultSet resultSet = statement.executeQuery();
       ArrayList<Horse> result = new ArrayList<>();

@@ -103,20 +103,19 @@ public class RaceTrackRepImpl implements RaceTrackRep {
      * @throws SQLException if the query fails
      */
     @Override
-    public List<RaceTrack> readByName(String name) throws SQLException {
+    public RaceTrack readByName(String name) throws SQLException {
         try (Connection connection = getConnection()) {
-            String query = "SELECT * FROM raceTrack WHERE name ILIKE ?";
+            String query = "SELECT * FROM raceTrack WHERE name LIKE ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, "%" + name + "%");
             ResultSet resultSet = statement.executeQuery();
-            ArrayList<RaceTrack> result = new ArrayList<>();
-            while (resultSet != null && resultSet.next()) {
-                int length = resultSet.getInt("raceLength");
-                String resultSetName = resultSet.getString("name");
+
+            if (resultSet.next()){
+                int length = resultSet.getInt("length");
                 String location = resultSet.getString("location");
-                result.add(new RaceTrack(resultSetName, length, location));
+                return new RaceTrack(name, length, location);
             }
-            return result;
+            return null;
         }
     }
 
