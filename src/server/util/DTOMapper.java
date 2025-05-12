@@ -18,7 +18,7 @@ public class DTOMapper
         return new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax());
     }
 
-    public static RaceDTO racetoDTO(Race race) {
+    public static RaceDTO raceToDTO(Race race) {
         // Convert RaceTrack and HorseList to appropriate DTOs
         List<HorseDTO> horseDTOs = new ArrayList<>();
         for (Horse horse : race.getHorseList().getList()) {
