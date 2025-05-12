@@ -93,7 +93,7 @@ public class HorseListServiceImpl implements HorseListService {
 
   // Helpers to convert between domain and DTO
   private HorseDTO toDTO(Horse horse) {
-    return new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax());
+    return new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax(), horse.getPosition());
   }
 
   private Horse fromDTO(HorseDTO dto) {

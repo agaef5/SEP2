@@ -4,6 +4,7 @@ import server.model.Race;
 import server.model.RaceTrack;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -18,14 +19,16 @@ public interface RaceRepository {
     /**
      * Creates a new {@link Race} entry in the repository.
      *
-     * @param name the name of the race
-     * @param time the scheduled start time of the race
+     * @param name      the name of the race
+     *
+     * @param time      the scheduled start time of the race
      * @param raceTrack the {@link RaceTrack} associated with the race
      * @return the created {@link Race} object
      * @throws SQLException if there is an error during the database operation
      */
-    Race create(String name, Date time, RaceTrack raceTrack) throws SQLException;
+    Race create(String name, Timestamp time, RaceTrack raceTrack) throws SQLException;
 
+    Race save(Race race) throws SQLException;
     /**
      * Retrieves a race by its unique identifier.
      *
@@ -59,7 +62,7 @@ public interface RaceRepository {
      * @return the {@link Race} object scheduled for the given time, or {@code null} if not found
      * @throws SQLException if there is an error during the database operation
      */
-    Race readByTime(Date time) throws SQLException;
+    Race readByTime(Timestamp time) throws SQLException;
 
     /**
      * Retrieves a race based on its status.
@@ -68,7 +71,6 @@ public interface RaceRepository {
      * @return the {@link Race} object that matches the given status, or {@code null} if not found
      * @throws SQLException if there is an error during the database operation
      */
-    Race readByStatus(String status) throws SQLException;
 
     /**
      * Updates an existing race in the repository.

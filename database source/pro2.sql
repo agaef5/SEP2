@@ -37,11 +37,10 @@ CREATE TABLE sep2.raceTrack(
 
 CREATE TABLE sep2.race(
     id INT PRIMARY KEY,
-    admin_id INT REFERENCES sep2.admin(id),
     racetrack_id INT REFERENCES sep2.raceTrack(id),
+    horse_id INT REFERENCES sep2.horse(id)
     name VARCHAR,
-    status VARCHAR,
-    startTime DATE
+    startTime TIMESTAMP
 );
 
 
