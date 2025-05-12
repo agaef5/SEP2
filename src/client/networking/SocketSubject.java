@@ -1,7 +1,6 @@
 package client.networking;
 
-import client.ui.MessageListener;
-import com.google.gson.JsonElement;
+import client.ui.common.MessageListener;
 
 /**
  * The {@code SocketSubject} interface defines the contract for objects that are capable of notifying listeners

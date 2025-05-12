@@ -2,7 +2,7 @@ package client.ui.adminView.adminPanel;
 
 import client.networking.SocketService;
 import client.networking.race.RaceClient;
-import client.ui.MessageListener;
+import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import com.google.gson.Gson;
 import javafx.application.Platform;

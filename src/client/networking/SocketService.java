@@ -1,6 +1,6 @@
 package client.networking;
 
-import client.ui.MessageListener;
+import client.ui.common.MessageListener;
 import client.ui.util.ErrorHandler;
 import client.ui.util.RespondValidate;
 import com.google.gson.Gson;
