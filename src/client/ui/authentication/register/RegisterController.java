@@ -1,11 +1,9 @@
 package client.ui.authentication.register;
 
-import client.networking.SocketService;
-import client.ui.MessageListener;
+import client.ui.common.MessageListener;
 import client.ui.common.Controller;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 

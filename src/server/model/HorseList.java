@@ -130,4 +130,27 @@ public class HorseList
   {
     return capacity;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("HorseList");
+    if (capacity != null) {
+      sb.append(" (Capacity: ").append(capacity).append(")");
+    } else {
+      sb.append(" (No capacity limit)");
+    }
+    sb.append("\nHorses:\n");
+
+    if (horses.isEmpty()) {
+      sb.append("  [No horses in the list]");
+    } else {
+      for (Horse horse : horses) {
+        sb.append("  ").append(horse).append("\n");
+      }
+    }
+
+    return sb.toString();
+  }
+
 }

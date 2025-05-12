@@ -2,16 +2,13 @@ package client.ui.userView.bettingPage;
 
 import client.networking.SocketService;
 import client.networking.horses.HorsesClient;
-import client.ui.MessageListener;
+import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import com.google.gson.Gson;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.util.Duration;
 import shared.DTO.HorseDTO;
 import shared.DTO.RaceDTO;
 import shared.horse.HorseListResponse;

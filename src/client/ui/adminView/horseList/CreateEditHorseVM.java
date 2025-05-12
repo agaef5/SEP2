@@ -2,7 +2,7 @@ package client.ui.adminView.horseList;
 
 import client.networking.SocketService;
 import client.networking.horses.HorsesClient;
-import client.ui.MessageListener;
+import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import com.google.gson.Gson;
 import javafx.application.Platform;

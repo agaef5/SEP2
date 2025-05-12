@@ -228,7 +228,6 @@ public class Race implements Runnable {
    //   e.printStackTrace();
    // }
     printFinalResults();
-
   }
 
   /**
