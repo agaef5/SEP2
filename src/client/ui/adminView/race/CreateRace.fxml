@@ -9,14 +9,13 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.adminView.race.CreateRaceController">
    <children>
-      <Button fx:id="createRace" layoutX="420.0" layoutY="306.0" mnemonicParsing="false" onAction="#onCreateRaceClicked" text="Create Race" />
-      <Button fx:id="back" layoutX="116.0" layoutY="306.0" mnemonicParsing="false" onAction="#onBackClicked" text="Back" />
+      <Button fx:id="createRace" layoutX="410.0" layoutY="319.0" mnemonicParsing="false" onAction="#onCreateRaceClicked" text="Create Race" />
       <TextField fx:id="nrOfHorses" layoutX="410.0" layoutY="44.0" />
       <ChoiceBox fx:id="raceTrack" layoutX="410.0" layoutY="101.0" prefWidth="150.0" />
       <Label layoutX="286.0" layoutY="48.0" text="Input nr of horses" />
       <Label layoutX="286.0" layoutY="105.0" text="Choose race track" />
       <TextField fx:id="raceName" layoutX="410.0" layoutY="158.0" />
       <Label layoutX="289.0" layoutY="162.0" text="Give race a name" />
-      <ListView fx:id="raceQueueList" layoutX="16.0" layoutY="35.0" prefHeight="225.0" prefWidth="247.0" />
+      <ListView fx:id="raceQueueList" layoutX="16.0" layoutY="35.0" prefHeight="310.0" prefWidth="256.0" />
    </children>
 </AnchorPane>
