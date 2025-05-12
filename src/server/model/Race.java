@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +38,17 @@ public class Race implements Runnable {
     this.finalpositionlist = new HorseList(raceCapacity);
     this.status = RaceState.NOT_STARTED;
     assignRandomHorsesFromDatabase();
+  }
+
+
+  public Race (String name,Timestamp timestamp,HorseList finalpositionlist,RaceTrack raceTrack)
+  {
+    this.name=name;
+    this.status=RaceState.FINISHED;
+    this.dateTime=timestamp;
+    this.horseList = finalpositionlist;
+    this.finalpositionlist=finalpositionlist;
+    this.raceTrack=raceTrack;
   }
 
   /** @return the race's name */
