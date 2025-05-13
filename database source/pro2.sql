@@ -14,11 +14,6 @@ CREATE TABLE sep2.player(
     balance INT
 );
 
-CREATE TABLE sep2.admin(
-    username VARCHAR(10) REFERENCES sep2.user(username),
-    id INT PRIMARY KEY
-);
-
 
 CREATE TABLE sep2.horse(
     id SERIAL PRIMARY KEY,
