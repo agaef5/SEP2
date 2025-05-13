@@ -18,18 +18,20 @@ import client.ui.authentication.login.LoginVM;
 import client.ui.authentication.register.RegisterController;
 import client.ui.authentication.register.RegisterVM;
 import client.ui.common.Controller;
+import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import client.ui.userView.bettingPage.UserBettingViewController;
 import client.ui.userView.bettingPage.UserBettingViewVM;
 import client.ui.userView.landingPage.UserLandingPageController;
 import client.ui.userView.landingPage.UserLandingPageVM;
 import client.ui.util.ErrorHandler;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import server.model.Player;
+import shared.DTO.UserDTO;
 
 import java.io.IOException;
 
@@ -44,17 +46,17 @@ public class MainWindowController {
     private HorsesClient horsesClient;
     private RaceClient raceClient;
     private boolean isAdminView = false;
-    private static String username;
+    private String username;
 
     public void initialize(SocketService socketService, LoginController loginController) {
         this.socketService = socketService;
         authenticationClient = new SocketAuthenticationClient(socketService);
         horsesClient = new SocketHorsesClient(socketService);
-        raceClient = new SocketRaceClient(socketService);
-
+        raceClient = new SocketRaceClient(socketService);;
 
         if (loginController != null) {
             loginController.setWindowController(this);
+            socketService.addListener(loginController);
         }
         loadLoginPage();
 
@@ -67,6 +69,7 @@ public class MainWindowController {
     }
 
     private void loadPage(String fxmlFile) {
+        Platform.runLater(() -> {
         try {
             mainPane.getChildren().clear();
 
@@ -90,6 +93,7 @@ public class MainWindowController {
             if (controller instanceof RegisterController)
             {
                 viewModel = new RegisterVM(authenticationClient, socketService);
+                socketService.addListener((MessageListener) controller);
             }
 
             if (controller instanceof AdminPanelController) {
@@ -116,7 +120,7 @@ public class MainWindowController {
             mainPane.getChildren().add(newContent);
         } catch (IOException e) {
             ErrorHandler.handleError(new IllegalArgumentException(e), "Error loading page");
-        }
+        }});
     }
 
     public void loadRegisterPage(){
@@ -136,46 +140,36 @@ public class MainWindowController {
         loadPage("client/ui/userView/bettingPage/UserBettingView.fxml");}
 
     public void loadAdminPanel(){
-//        test purposes only ---------
-        isAdminView = true;
-//        ----------------------------
-        if(authenticateAdmin()) loadPage("client/ui/adminView/adminPanel/AdminPanel.fxml");
+        if(isAdminView) loadPage("client/ui/adminView/adminPanel/AdminPanel.fxml");
     }
 
     public void loadHorsePage(){
-        System.out.println("lOad horse page");
-        if(authenticateAdmin()) loadPage("client/ui/adminView/horseList/CreateEditHorse.fxml");
+        if(isAdminView) loadPage("client/ui/adminView/horseList/CreateEditHorse.fxml");
     }
 
     public void loadRacePage(){
-        System.out.println("load race page");
-        if(authenticateAdmin()) loadPage("client/ui/adminView/race/CreateRace.fxml");
+        if(isAdminView) loadPage("client/ui/adminView/race/CreateRace.fxml");
     }
 
-    public boolean authenticateAdmin(){
-//        TODO: get user and check if its an admin
-//        authenticationClient.
-        return isAdminView;
+    public void authorizeUser(UserDTO userDTO){
+        Platform.runLater(() -> {
+            if (userDTO.username() != null) setUsername(userDTO.username());
+            if (authenticateAdmin(userDTO)) loadAdminPanel();
+            else loadUserLandingPage();
+        });
     }
 
-    public boolean authenticateAdmin(boolean bool){
-//        TODO: get user and check if its an admin
-        isAdminView = bool;
-        return isAdminView;
+    public boolean authenticateAdmin(UserDTO userDTO){
+        return isAdminView = userDTO.isAdmin();
     }
 
-//    public void setUsername(String string){
-//
-//    }
-
+    public void setUsername(String username){
+        this.username = username;
+    }
 
     public String getUsername(){
         return username;
     }
-
-//    public Player getPlayer(){
-//        authenticationClient.c
-//    }
 
     public HorsesClient getHorsesClient() {
         return horsesClient;

@@ -6,6 +6,8 @@ import shared.loginRegister.RegisterRequest;
 import shared.Request;
 import com.google.gson.JsonElement;
 import com.google.gson.Gson;
+import shared.user.BalanceUpdateRequest;
+import shared.user.UserRequest;
 
 /**
  * Implementation of {@link AuthenticationClient} that sends authentication-related requests
@@ -47,5 +49,15 @@ public class SocketAuthenticationClient implements AuthenticationClient {
     JsonElement payload = gson.toJsonTree(loginRequest);
     Request request = new Request("auth", "login", payload);
     socketService.sendRequest(request);
+  }
+
+  public void getUser(UserRequest userRequest){
+    JsonElement payload = gson.toJsonTree(userRequest);
+    Request request = new Request("auth", "getUser", payload);
+  }
+
+  public void updateBalance(BalanceUpdateRequest balanceUpdateRequest){
+    JsonElement payload = gson.toJsonTree(balanceUpdateRequest);
+    Request request = new Request("auth", "updateBalance", payload);
   }
 }

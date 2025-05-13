@@ -2,15 +2,11 @@ CREATE SCHEMA sep2;
 SET search_path TO sep2;
 
 
-CREATE TABLE sep2.user(
+CREATE TABLE sep2.game_user(
     username VARCHAR(10) PRIMARY KEY,
     password_hash VARCHAR,
     email VARCHAR,
-    isAdmin BIT
-);
-
-CREATE TABLE sep2.player(
-    username VARCHAR(10) REFERENCES sep2.user(username),
+    isAdmin BOOLEAN,
     balance INT
 );
 

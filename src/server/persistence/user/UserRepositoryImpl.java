@@ -2,14 +2,12 @@ package server.persistence.user;
 
 import client.ui.util.ErrorHandler;
 //import server.model.Admin;
-import server.model.Player;
-import server.model.Race;
+import server.model.Balance;
 import server.model.User;
+import shared.DTO.UserDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -60,12 +58,11 @@ public class UserRepositoryImpl implements UserRepository {
    * Establishes a connection to the PostgreSQL database.
    *
    * @return a {@link Connection} object to interact with the database
-   * @throws SQLException if a database access error occurs
    */
   private Connection getConnection() throws SQLException {
-    return DriverManager.getConnection(
-            "jdbc:postgresql://localhost:5432/postgres?currentSchema=sep2",
-            "postgres", "1234");
+      return DriverManager.getConnection(
+              "jdbc:postgresql://localhost:5432/postgres?currentSchema=sep2",
+              "postgres", "1234");
   }
 
   /**
@@ -76,131 +73,104 @@ public class UserRepositoryImpl implements UserRepository {
   @Override
   public User createUser(String username, String email, String password, boolean isAdmin) {
     try (Connection connection = getConnection()) {
-      String query = "INSERT INTO user (username, password_hash, email, role_id) VALUES (?, ?, ?, ?)";
-      PreparedStatement statement = connection.prepareStatement(
-              query,
-              PreparedStatement.RETURN_GENERATED_KEYS);
+      String query = "INSERT INTO game_user (username, password_hash, email, isAdmin, balance) VALUES (?, ?, ?, ?, ?)";
+      PreparedStatement statement = connection.prepareStatement(query);
       statement.setString(1, username);
       statement.setString(2, password);
       statement.setString(3, email);
-      statement.setInt(4, isAdmin ? 1 : 0);
-      statement.executeUpdate();
-      ResultSet resultSet = statement.getGeneratedKeys();
+      statement.setBoolean(4, isAdmin);
+      statement.setInt(5, 1000);
 
-      if (!resultSet.next()) {
-        throw new SQLException("No keys generated");
+      int rowsInserted = statement.executeUpdate();
+
+      if (rowsInserted != 1) {
+        throw new SQLException("User insert failed");
       }
 
-      String dbsUsername = resultSet.getString("username");
-      String dbsEmail = resultSet.getString("email");
-      String dbsPassword = resultSet.getString("password_hash");
-      Boolean dbsIsAdmin = resultSet.getInt(resultSet.getByte("isAdmin")) == 1;
-
-      if(isAdmin){
-        return new User(dbsUsername, dbsEmail, dbsPassword, dbsIsAdmin);
-      }
-
-    }catch (SQLException sqlException){
-      ErrorHandler.handleError(sqlException, "Error connecting to database");
+      // After successful insert, fetch the user back from DB
+      return readByUsername(username);
+    } catch (SQLException e) {
+      ErrorHandler.handleError(e, "Cannot connect to database");
     }
     return null;
   }
-
-//  public Player createPlayer(String username, String email, String password){
-//    try (Connection connection = getConnection()) {
-//    String query = "INSERT INTO player (username, balance) VALUES (?, ?)";
-//    PreparedStatement statement = connection.prepareStatement(
-//            query,
-//            PreparedStatement.RETURN_GENERATED_KEYS);
-//    statement.setString(1, username);
-//    statement.setInt(2, 1000);
-//    statement.executeUpdate();
-//    ResultSet resultSet = statement.getGeneratedKeys();
-//
-//      if (!resultSet.next()) {
-//        throw new SQLException("No keys generated");
-//      }
-//      return new Player(resultSet.getString("username"),
-//              resultSet.getString("email"),
-//              resultSet.getString("password_hash"), dbs);
-//
-//    }catch (SQLException sqlException){
-//      ErrorHandler.handleError(sqlException, "Error connecting to database");
-//    }
-//    return null;
-//  }
 
   /**
    * Retrieves a single user by their email or username.
    * Searches both email and username if the provided string contains an "@" symbol.
    *
-   * @param string the username or email of the user to retrieve
+   * @param username the username or email of the user to retrieve
    * @return the {@link User} object matching the provided identifier, or {@code null} if not found
    */
   @Override
-  public User getSingle(String string) {
-    UserRepository userRepository = UserRepositoryImpl.getInstance();
-    if(userRepository == null) return null;
-    ArrayList<User> userArrayList = userRepository.getMany(Integer.MAX_VALUE, Integer.MAX_VALUE, null);
-
-    if(string.contains("@")) {
-      for(User user : userArrayList) {
-        if(user.getEmail().equals(string)) return user;
-        else if(user.getUsername().equals(string)) return user;
+  public User readByUsername(String username) {
+    try (Connection connection = getConnection()) {
+      String query = "SELECT * FROM game_user  WHERE username = ?";
+      PreparedStatement statement = connection.prepareStatement(query);
+      statement.setString(1, username);
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next()) {
+        return resultToUser(resultSet);
+      } else {
+        return null;
       }
+    } catch (SQLException e) {
+        ErrorHandler.handleError(e, "Error - issue with database");
     }
     return null;
   }
 
-  /**
-   * Deletes a user from the repository.
-   * Currently, this method does nothing as deletion functionality is not yet implemented.
-   *
-   * @param user the {@link User} object to be deleted
-   */
   @Override
-  public void delete(User user) {
-    // Deletion functionality not implemented
-  }
-
-  /**
-   * Saves the changes made to a user.
-   * This method currently does not modify anything in the repository.
-   *
-   * @param user the {@link User} object to be saved
-   */
-  @Override
-  public void save(User user) {
-    // Save functionality not implemented
-  }
-
-  /**
-   * Retrieves a list of users with pagination and optional filtering by username or email.
-   *
-   * @param pageIndex the index of the page to retrieve (starting from 0)
-   * @param pageSize  the number of users to return per page
-   * @param string    a string used to filter users by username or email (optional)
-   * @return a list of {@link User} objects matching the filter and pagination criteria
-   */
-  @Override
-  public ArrayList<User> getMany(int pageIndex, int pageSize, String string) {
-    ArrayList<User> result = new ArrayList<>();
-    for (int i = 0; pageIndex * pageSize + i < users.size(); i++) {
-      // This is an attempt at implementing paging
-      User user = users.get(i);
-
-      // Filter by username or email if 'string' is provided
-      if (string != null && !string.isEmpty() &&
-              (user.getUsername().contains(string) || user.getEmail().contains(string))) {
-        result.add(user);
+  public User readByEmail(String email){
+    try (Connection connection = getConnection()) {
+      String query = "SELECT * FROM game_user WHERE email = ?";
+      PreparedStatement statement = connection.prepareStatement(query);
+      statement.setString(1, email);
+      ResultSet resultSet = statement.executeQuery();
+      if (resultSet.next()) {
+        return resultToUser(resultSet);
+      } else {
+        return null;
       }
+    } catch (SQLException e) {
+      ErrorHandler.handleError(e, "Error - issue with database");
     }
-    return result;
+    return null;
   }
 
   @Override
-  public void add(User newUser) {
+  public void updateBalance(String username, int newBalance) {
+    User user = readByUsername(username);
 
+    Balance balance = user.getBalance();
+    balance.setAmount(newBalance);
   }
+
+  @Override
+  public int getBalance(String username) {
+    User user = readByUsername(username);
+    return user.getBalance().getAmount();
+  }
+
+  public UserDTO resultToDTO(ResultSet resultSet) throws SQLException {
+    String dbsUsername = resultSet.getString("username");
+    String dbsEmail = resultSet.getString("email");
+    String dbsPassword = resultSet.getString("password_hash");
+    boolean dbsIsAdmin = (resultSet.getByte("isAdmin")) == 1;
+    int balance = resultSet.getInt("balance");
+
+    return new UserDTO(dbsUsername, dbsEmail, dbsPassword, dbsIsAdmin, balance);
+  }
+
+  public User resultToUser(ResultSet resultSet) throws SQLException {
+    String dbsUsername = resultSet.getString("username");
+    String dbsEmail = resultSet.getString("email");
+    String dbsPassword = resultSet.getString("password_hash");
+    boolean dbsIsAdmin = resultSet.getBoolean("isAdmin");
+    int balance = resultSet.getInt("balance");
+
+    return new User(dbsUsername, dbsEmail, dbsPassword, dbsIsAdmin, balance);
+  }
+
 }
 
