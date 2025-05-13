@@ -16,6 +16,6 @@
       <Button fx:id="quitButton" layoutX="137.0" layoutY="302.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="117.0" text="Quit" />
       <Label fx:id="balance" layoutX="397.0" layoutY="192.0" text="Current Balance" />
       <ListView fx:id="betStats" layoutX="94.0" layoutY="140.0" prefHeight="121.0" prefWidth="203.0" />
-      <Label layoutX="182.0" layoutY="201.0" text="bet stats" />
+      <Label layoutX="173.0" layoutY="192.0" text="bet stats" />
     </children>
 </AnchorPane>

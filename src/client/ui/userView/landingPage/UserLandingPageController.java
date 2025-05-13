@@ -53,6 +53,8 @@ public class UserLandingPageController implements Controller {
         enterBettingStage.setOnAction(e -> handleButtonClick());
         quitButton.setOnAction(e -> handleQuitButton());
 
+
+
         // Listen for navigation requests
         viewModel.navigateToBettingProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue) {

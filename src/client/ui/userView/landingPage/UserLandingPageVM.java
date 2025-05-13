@@ -10,6 +10,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import shared.DTO.RaceDTO;
+import shared.DTO.RaceState;
 import shared.race.GetRaceListResponse;
 
 import java.util.List;
@@ -24,8 +25,6 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
     private final StringProperty raceInfo = new SimpleStringProperty("No upcoming races");
     private final BooleanProperty navigateToBetting = new SimpleBooleanProperty(false);
     private RaceDTO selectedRace;
-
-
 
     // New properties
     private final StringProperty balanceInfo = new SimpleStringProperty("Balance: $1000"); // Default value
@@ -178,12 +177,19 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
                         selectedRace.horses().size());
 
                 raceInfo.set(info);
-            } else {
-                raceInfo.set("No upcoming races");
-                selectedRace = null;
+                raceInfo.set(info);
+            } else if (selectedRace.state() == RaceState.IN_PROGRESS) {
+                raceInfo.set("This race is in progress");
+            } else if (selectedRace.state() == RaceState.FINISHED) {
+                raceInfo.set("The last race has finished. Waiting for the next race...");
             }
-        });
+        } else {
+            raceInfo.set("No upcoming races");
+            selectedRace = null;
+        }
+
     }
+
 
 
 // Override the update method to handle additional message types
