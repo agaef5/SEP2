@@ -80,7 +80,13 @@ public class UserBettingViewVM implements MessageListener, ViewModel {
     updateRaceInfo();
   }
 
- // Updates race information in the UI
+  // Overloaded constructor for when no race is selected
+  // This should only be used when the betting page is accessed without selecting a race
+  public UserBettingViewVM(HorsesClient horsesClient, SocketService socketService) {
+    this(horsesClient, socketService, null);
+  }
+
+  // Updates race information in the UI
   private void updateRaceInfo() {
     if (selectedRace != null) {
       countdownText.set("Race: " + selectedRace.name() + " - Place your bets!");
