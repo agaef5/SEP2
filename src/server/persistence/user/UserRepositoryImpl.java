@@ -1,9 +1,12 @@
 package server.persistence.user;
 
-import server.model.Admin;
+import client.ui.util.ErrorHandler;
+//import server.model.Admin;
 import server.model.Player;
+import server.model.Race;
 import server.model.User;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,17 +31,8 @@ public class UserRepositoryImpl implements UserRepository {
    * Private constructor initializes the in-memory list of users.
    * Users are added as sample data for testing purposes.
    */
-  private UserRepositoryImpl() {
-    // TODO: Replace with actual database
-    users = new ArrayList<>(Arrays.asList(
-            new Player("user1", "trmo@via.dk", "1234"),
-            new Player("user2", "jaja@gmail.com", "1234"),
-            new Player("user3", "pepe@gmail.com", "1234"),
-            new Player("user4", "jeje@gmail.com", "1234"),
-            new Player("user5", "momo@gmail.com", "1234"),
-            new Player("user6", "anan@gmail.com", "1234"),
-            new Admin("admin", "admin@gamil.com", "1234")
-    ));
+  private UserRepositoryImpl() throws SQLException {
+    DriverManager.registerDriver(new org.postgresql.Driver());
   }
 
   /**
@@ -51,7 +45,11 @@ public class UserRepositoryImpl implements UserRepository {
     if (instance == null) {
       synchronized (lock) {
         if (instance == null) {
-          instance = new UserRepositoryImpl();
+          try{
+            instance = new UserRepositoryImpl();
+          } catch (SQLException e) {
+            ErrorHandler.handleError(e, "Issue with connecting to database");
+          }
         }
       }
     }
@@ -59,14 +57,78 @@ public class UserRepositoryImpl implements UserRepository {
   }
 
   /**
+   * Establishes a connection to the PostgreSQL database.
+   *
+   * @return a {@link Connection} object to interact with the database
+   * @throws SQLException if a database access error occurs
+   */
+  private Connection getConnection() throws SQLException {
+    return DriverManager.getConnection(
+            "jdbc:postgresql://localhost:5432/postgres?currentSchema=sep2",
+            "postgres", "1234");
+  }
+
+  /**
    * Adds a new user to the repository.
    *
-   * @param user the {@link User} object to be added
+   * @param username the {@link User} object to be added
    */
   @Override
-  public void add(User user) {
-    users.add(user);
+  public User createUser(String username, String email, String password, boolean isAdmin) {
+    try (Connection connection = getConnection()) {
+      String query = "INSERT INTO user (username, password_hash, email, role_id) VALUES (?, ?, ?, ?)";
+      PreparedStatement statement = connection.prepareStatement(
+              query,
+              PreparedStatement.RETURN_GENERATED_KEYS);
+      statement.setString(1, username);
+      statement.setString(2, password);
+      statement.setString(3, email);
+      statement.setInt(4, isAdmin ? 1 : 0);
+      statement.executeUpdate();
+      ResultSet resultSet = statement.getGeneratedKeys();
+
+      if (!resultSet.next()) {
+        throw new SQLException("No keys generated");
+      }
+
+      String dbsUsername = resultSet.getString("username");
+      String dbsEmail = resultSet.getString("email");
+      String dbsPassword = resultSet.getString("password_hash");
+      Boolean dbsIsAdmin = resultSet.getInt(resultSet.getByte("isAdmin")) == 1;
+
+      if(isAdmin){
+        return new User(dbsUsername, dbsEmail, dbsPassword, dbsIsAdmin);
+      }
+
+    }catch (SQLException sqlException){
+      ErrorHandler.handleError(sqlException, "Error connecting to database");
+    }
+    return null;
   }
+
+//  public Player createPlayer(String username, String email, String password){
+//    try (Connection connection = getConnection()) {
+//    String query = "INSERT INTO player (username, balance) VALUES (?, ?)";
+//    PreparedStatement statement = connection.prepareStatement(
+//            query,
+//            PreparedStatement.RETURN_GENERATED_KEYS);
+//    statement.setString(1, username);
+//    statement.setInt(2, 1000);
+//    statement.executeUpdate();
+//    ResultSet resultSet = statement.getGeneratedKeys();
+//
+//      if (!resultSet.next()) {
+//        throw new SQLException("No keys generated");
+//      }
+//      return new Player(resultSet.getString("username"),
+//              resultSet.getString("email"),
+//              resultSet.getString("password_hash"), dbs);
+//
+//    }catch (SQLException sqlException){
+//      ErrorHandler.handleError(sqlException, "Error connecting to database");
+//    }
+//    return null;
+//  }
 
   /**
    * Retrieves a single user by their email or username.
@@ -135,4 +197,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
     return result;
   }
+
+  @Override
+  public void add(User newUser) {
+
+  }
 }
+

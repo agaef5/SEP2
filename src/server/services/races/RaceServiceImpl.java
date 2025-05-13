@@ -75,12 +75,12 @@ public class RaceServiceImpl implements RacesService {
     // Convert RaceTrack and HorseList to appropriate DTOs
     List<HorseDTO> horseDTOs = new ArrayList<>();
     for (Horse horse : race.getHorseList().getList()) {
-      horseDTOs.add(new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax(), horse.getPosition()));
+      horseDTOs.add(new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax()));
     }
 
     List<HorseDTO> finalPositionDTOs = new ArrayList<>();
     for (Horse horse : race.getFinalPositionlist().getList()) {
-      finalPositionDTOs.add(new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax(), horse.getPosition()));
+      finalPositionDTOs.add(new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax()));
     }
 
     return new RaceDTO(

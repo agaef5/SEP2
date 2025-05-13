@@ -4,7 +4,7 @@ package server.model;
  * Represents a player in the system, including login credentials and account balance.
  * Players begin with a default balance of 1000.
  */
-public class Player implements User {
+public class Player extends User {
   private Balance balance;
   private String username;
   private String email;
@@ -17,15 +17,13 @@ public class Player implements User {
    * @param email    the player's email
    * @param password the player's password
    */
-  public Player(String username, String email, String password) {
-    this.username = username;
-    this.email = email;
-    this.password = password;
+  public Player(String username, String email, String password, boolean isAdmin) {
+      super(username, email, password, isAdmin);
     balance = new Balance(1000);
   }
 
   /** @return the player's username */
-  @Override public String getUsername() { return username; }
+  @Override public String getUsername() { return super.getUsername(); }
 
   /** @param username the new username to set */
   @Override public void setUsername(String username) { this.username = username; }
