@@ -55,6 +55,7 @@ public class UserBettingViewVM implements MessageListener, ViewModel {
 
 //TODO connect actual user balance to this
   private int balanceValue = 1000; // Default starting balance
+   private RaceDTO selectedRace;
 
   /**
    * Constructs the ViewModel with necessary dependencies and initializes data.
@@ -259,6 +260,7 @@ public class UserBettingViewVM implements MessageListener, ViewModel {
     if ("getHorseList".equals(type)) {
       HorseListResponse horseListResponse = gson.fromJson(payload, HorseListResponse.class);
       updateHorseList(horseListResponse);
+      System.out.println("Received horse list with " + horses.size() + " horses");
     }
     // Add more message handlers as needed, such as race updates and results
   }
@@ -270,11 +272,32 @@ public class UserBettingViewVM implements MessageListener, ViewModel {
    * @param race The race to display information for
    */
   public void setRace(RaceDTO race) {
-    if (race != null) {
-      // Update UI with race information
+      if (race != null) {
+        this.selectedRace = race;
+
+        // Extract horses from the race and update the horses list
+        if (race.horses() != null && !race.horses().isEmpty()) {
+          Platform.runLater(() -> {
+            horses.clear();
+            horses.addAll(race.horses());
+
+            // Select the first horse by default
+            if (!horses.isEmpty()) {
+              selectedHorse.set(horses.get(0));
+            }
+
+            // Update UI with race information
+            countdownText.set("Race: " + race.name() + " - Place your bets!");
+          });
+        } else {
+          // If race has no horses, fetch them using the horse client
+          System.out.println("Race has no horses, fetching them from server...");
+          horsesClient.getHorseList();
+        }
+      }
       countdownText.set("Race: " + race.name() + " - Place your bets!");
     }
-  }
+
 
   /**
    * Cleans up resources when the ViewModel is no longer needed.

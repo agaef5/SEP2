@@ -4,6 +4,7 @@ import client.ui.common.Controller;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -67,6 +68,22 @@ public class UserBettingViewController implements Controller {
    */
   public void initialize(ViewModel userBettingVM) {
     this.viewModel = (UserBettingViewVM) userBettingVM;
+
+      // Add debug statement
+      System.out.println("Initializing UserBettingViewController");
+
+      // Configure table columns
+      nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+      minSpeedColumn.setCellValueFactory(new PropertyValueFactory<>("speedMin"));
+      maxSpeedColumn.setCellValueFactory(new PropertyValueFactory<>("speedMax"));
+
+      // Bind table data to ViewModel
+      horseTableView.setItems(viewModel.getHorses());
+
+      // Add debug listener to track changes in the horses list
+      viewModel.getHorses().addListener((ListChangeListener<HorseDTO>) change -> {
+        System.out.println("Horses list changed. New size: " + viewModel.getHorses().size());
+      });
 
     // Configure table columns
     nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));

@@ -75,7 +75,7 @@ public class RaceManager implements Runnable {
 
         // Wait until there's something in the queue
         while ((race = raceQueue.peek()) == null) {
-          Thread.sleep(100); // small delay to avoid busy waiting
+          Thread.sleep(60000); // small delay to avoid busy waiting
         }
 
         race.run();         // Run the race (still in the queue)
