@@ -25,11 +25,10 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
     private final StringProperty raceInfo = new SimpleStringProperty("No upcoming races");
     private final BooleanProperty navigateToBetting = new SimpleBooleanProperty(false);
     private RaceDTO selectedRace;
-
-    // New properties
-    private final StringProperty balanceInfo = new SimpleStringProperty("Balance: $1000"); // Default value
+    private final BooleanProperty bettingButtonDisabled = new SimpleBooleanProperty(true);
+    private final StringProperty balanceInfo = new SimpleStringProperty("Balance: $1000");
     private final ObservableList<String> betHistory = FXCollections.observableArrayList();
-    private int userBalance = 1000; // Default starting balance
+    private int userBalance = 1000;
 
     public UserLandingPageVM(RaceClient raceClient, SocketService socketService) {
         this.raceClient = raceClient;
@@ -45,97 +44,64 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
         loadBetHistory();
     }
 
-    /**
-     * Requests the current race list from the server.
-     * This will trigger an update via the MessageListener when the response is received.
-     */
+    // Request the current race list from the server
     private void refreshRaceList() {
         raceClient.getRaceList();
     }
 
-    /**
-     * Gets the observable property containing information about the upcoming race.
-     * This property can be bound to UI elements to display race information.
-     *
-     * @return StringProperty containing formatted race information
-     */
+    // Get property containing formatted race information
     public StringProperty raceInfoProperty() {
         return raceInfo;
     }
 
-    /**
-     * Gets the observable property indicating if navigation to betting stage is requested.
-     * The controller should observe this property and act accordingly when it changes.
-     *
-     * @return BooleanProperty indicating if navigation is requested
-     */
+    // Get property indicating if navigation to betting stage is requested
     public BooleanProperty navigateToBettingProperty() {
         return navigateToBetting;
     }
 
-    /**
-     * Gets the currently selected race.
-     * This can be used when navigating to the betting stage.
-     *
-     * @return The currently selected race, or null if no race is selected
-     */
+    // Get property that controls whether the betting button should be disabled
+    public BooleanProperty bettingButtonDisabledProperty() {
+        return bettingButtonDisabled;
+    }
+
+    // Get the currently selected race
     public RaceDTO getSelectedRace() {
         return selectedRace;
     }
 
-    /**
-     * Handles the request to enter the betting stage.
-     * Sets the navigateToBetting property to true, which the controller observes.
-     */
+    // Handle request to enter the betting stage
     public void enterBettingStage() {
         navigateToBetting.set(true);
     }
 
-    /**
-     * Resets the navigation request after it has been handled.
-     * This should be called by the controller after navigation occurs.
-     */
+    // Reset navigation request after it has been handled
     public void resetNavigation() {
         navigateToBetting.set(false);
     }
 
-     /**
-     * Gets the observable property for the balance information.
-     * @return Property containing formatted balance information
-     */
+    // Get property containing formatted balance information
     public StringProperty balanceInfoProperty() {
         return balanceInfo;
     }
 
-    /**
-     * Gets the observable list of bet history entries.
-     * @return Observable list of bet history entries
-     */
+    // Get observable list of bet history entries
     public ObservableList<String> getBetHistory() {
         return betHistory;
     }
 
-    /**
-     * Loads the user's current balance from the server.
-     * Currently uses a default value, to be implemented with server communication.
-     */
+    // Load the user's current balance from the server
     private void loadUserBalance() {
         // TODO: In a real implementation, this would fetch from server
         // For now, we'll use the default value
         updateBalanceDisplay();
     }
 
-    /**
-     * Updates the balance display based on the current balance value.
-     */
+    // Update the balance display based on the current balance value
     private void updateBalanceDisplay() {
         balanceInfo.set("Balance: $" + userBalance);
     }
 
-    /**
-     * Loads the bet history from the server.
-     * Currently populates with dummy data, to be implemented with server communication.
-     */
+    // Load the bet history from the server
     private void loadBetHistory() {
         // TODO: In a real implementation, this would fetch from server
         // For now, we'll use dummy data
@@ -144,24 +110,25 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
             betHistory.add("Example bet: $100 on Thunder - Won $200");
             betHistory.add("Example bet: $50 on Lightning - Lost");
             betHistory.add("Example bet: $200 on Blizzard - Won $400");
-
         });
     }
 
-    /**
-     * Quit the application.
-     */
+    // Quit the application
     public void quitApplication() {
         // Perform any cleanup before exit
         socketService.removeListener(this);
         // The actual exit will be handled by the controller
     }
 
+    // Update race information based on the received race list
     private void updateRaceInfo(List<RaceDTO> races) {
         Platform.runLater(() -> {
             if (races != null && !races.isEmpty()) {
                 // Get the first race in the queue (assume it's sorted by time)
                 selectedRace = races.get(0);
+
+                // Update button disabled state based on race state
+                bettingButtonDisabled.set(selectedRace.state() != RaceState.NOT_STARTED);
 
                 // Display different message based on the race state
                 if (selectedRace.state() == RaceState.NOT_STARTED) {
@@ -180,13 +147,12 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
             } else {
                 raceInfo.set("No upcoming races");
                 selectedRace = null;
+                bettingButtonDisabled.set(true); // Disable button when no races are available
             }
         });
     }
 
-
-
-// Override the update method to handle additional message types
+    // Handle messages received from the server
     @Override
     public void update(String type, String payload) {
         switch (type) {
