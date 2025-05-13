@@ -157,37 +157,31 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
         // The actual exit will be handled by the controller
     }
 
-    /**
-     * Updates the race information based on the received race list.
-     * If races are available, formats information about the first race in the list.
-     * Updates must be performed on the JavaFX application thread.
-     *
-     * @param races List of races received from the server
-     */
     private void updateRaceInfo(List<RaceDTO> races) {
         Platform.runLater(() -> {
             if (races != null && !races.isEmpty()) {
                 // Get the first race in the queue (assume it's sorted by time)
                 selectedRace = races.get(0);
 
-                // Format the race information
-                String info = String.format("Next race: %s - Track: %s - Horses: %d",
-                        selectedRace.name(),
-                        selectedRace.raceTrack().name(),
-                        selectedRace.horses().size());
+                // Display different message based on the race state
+                if (selectedRace.state() == RaceState.NOT_STARTED) {
+                    // Format the race information for upcoming race
+                    String info = String.format("Next race: %s - Track: %s - Horses: %d",
+                            selectedRace.name(),
+                            selectedRace.raceTrack().name(),
+                            selectedRace.horses().size());
 
-                raceInfo.set(info);
-                raceInfo.set(info);
-            } else if (selectedRace.state() == RaceState.IN_PROGRESS) {
-                raceInfo.set("This race is in progress");
-            } else if (selectedRace.state() == RaceState.FINISHED) {
-                raceInfo.set("The last race has finished. Waiting for the next race...");
+                    raceInfo.set(info);
+                } else if (selectedRace.state() == RaceState.IN_PROGRESS) {
+                    raceInfo.set("This race is in progress");
+                } else if (selectedRace.state() == RaceState.FINISHED) {
+                    raceInfo.set("The last race has finished. Waiting for the next race...");
+                }
+            } else {
+                raceInfo.set("No upcoming races");
+                selectedRace = null;
             }
-        } else {
-            raceInfo.set("No upcoming races");
-            selectedRace = null;
-        }
-
+        });
     }
 
 

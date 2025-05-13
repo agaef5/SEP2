@@ -33,7 +33,8 @@ public class DTOMapper
                 race.getDateTime(),
                 horseDTOs,
                 finalPositionDTOs,
-                raceTrackToDTO(race.getRaceTrack())
+                raceTrackToDTO(race.getRaceTrack()),
+                race.getStatus()
         );
     }
 
