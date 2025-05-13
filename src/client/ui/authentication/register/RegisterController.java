@@ -71,7 +71,7 @@ public class RegisterController implements MessageListener, Controller {
       return;
     }
 
-    UserDTO userDTO = (UserDTO) registerRespond.payload();
+    UserDTO userDTO = gson.fromJson(gson.toJson(registerRespond.payload()), UserDTO.class);
     mainWindowController.authorizeUser(userDTO);
   }
 }
