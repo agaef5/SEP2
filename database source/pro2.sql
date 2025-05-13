@@ -6,17 +6,12 @@ CREATE TABLE sep2.user(
     username VARCHAR(10) PRIMARY KEY,
     password_hash VARCHAR,
     email VARCHAR,
-    role_id INT
+    isAdmin BIT
 );
 
 CREATE TABLE sep2.player(
     username VARCHAR(10) REFERENCES sep2.user(username),
     balance INT
-);
-
-CREATE TABLE sep2.admin(
-    username VARCHAR(10) REFERENCES sep2.user(username),
-    id INT PRIMARY KEY
 );
 
 

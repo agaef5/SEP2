@@ -61,6 +61,7 @@ public class LoginController implements MessageListener, Controller
 
     @Override
     public void update(String type, String payload) {
+//      mainWindowController.setUsername(payload.get);
       if(mainWindowController.authenticateAdmin()){
         mainWindowController.loadAdminPanel();
       }else {

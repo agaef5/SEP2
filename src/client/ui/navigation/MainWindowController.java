@@ -29,6 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import server.model.Player;
 
 import java.io.IOException;
 
@@ -43,12 +44,14 @@ public class MainWindowController {
     private HorsesClient horsesClient;
     private RaceClient raceClient;
     private boolean isAdminView = false;
+    private static String username;
 
     public void initialize(SocketService socketService, LoginController loginController) {
         this.socketService = socketService;
         authenticationClient = new SocketAuthenticationClient(socketService);
         horsesClient = new SocketHorsesClient(socketService);
         raceClient = new SocketRaceClient(socketService);
+
 
         if (loginController != null) {
             loginController.setWindowController(this);
@@ -155,11 +158,24 @@ public class MainWindowController {
         return isAdminView;
     }
 
-
     public boolean authenticateAdmin(boolean bool){
 //        TODO: get user and check if its an admin
-        return isAdminView = bool;
+        isAdminView = bool;
+        return isAdminView;
     }
+
+//    public void setUsername(String string){
+//
+//    }
+
+
+    public String getUsername(){
+        return username;
+    }
+
+//    public Player getPlayer(){
+//        authenticationClient.c
+//    }
 
     public HorsesClient getHorsesClient() {
         return horsesClient;

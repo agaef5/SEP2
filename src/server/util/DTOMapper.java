@@ -30,7 +30,6 @@ public class DTOMapper
         }
         return new RaceDTO(
                 race.getName(),
-                race.getStatus(),
                 race.getDateTime(),
                 horseDTOs,
                 finalPositionDTOs,

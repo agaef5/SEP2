@@ -15,9 +15,9 @@ public interface UserRepository {
   /**
    * Adds a new user to the repository.
    *
-   * @param user the {@link User} object to be added
+   * @param username the {@link User} object to be added
    */
-  void add(User user);
+  User createUser(String username, String email, String password, boolean isAdmin);
 
   /**
    * Retrieves a single user from the repository by a unique identifier.
@@ -51,4 +51,6 @@ public interface UserRepository {
    * @return a list of {@link User} objects that match the search criteria
    */
   ArrayList<User> getMany(int pageIndex, int pageSize, String string);
+
+  void add(User newUser);
 }

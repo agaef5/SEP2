@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthentificationService
     }
 
     // Creating new user and adding to repository
-    User newUser = new Player(username, email, password);
+    User newUser = new Player(username, email, password, false);
     userRepository.add(newUser);
 
     //TODO: check if the payload has to be "null" or contain User object
