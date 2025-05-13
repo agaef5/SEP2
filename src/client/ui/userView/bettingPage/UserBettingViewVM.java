@@ -63,10 +63,11 @@ public class UserBettingViewVM implements MessageListener, ViewModel {
    * @param horsesClient Client for horse-related server operations
    * @param socketService Service for socket communication with the server
    */
-  public UserBettingViewVM(HorsesClient horsesClient, SocketService socketService) {
+  public UserBettingViewVM(HorsesClient horsesClient, SocketService socketService, RaceDTO selectedRace) {
     this.horsesClient = horsesClient;
     this.socketService = socketService;
     this.gson = new Gson();
+    this.selectedRace = selectedRace;
 
     // Register this ViewModel as a listener for socket messages
     this.socketService.addListener(this);
@@ -76,6 +77,11 @@ public class UserBettingViewVM implements MessageListener, ViewModel {
 
     // Set up validation for bet placing
     setupValidation();
+  }
+
+  public UserBettingViewVM(HorsesClient horsesClient, SocketService socketService) {
+    // Call the main constructor with null for the race
+    this(horsesClient, socketService, null);
   }
 
   /**

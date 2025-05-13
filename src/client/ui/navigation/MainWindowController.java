@@ -30,6 +30,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import server.model.Player;
+import shared.DTO.RaceDTO;
 
 import java.io.IOException;
 
