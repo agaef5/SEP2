@@ -54,10 +54,12 @@ public class SocketAuthenticationClient implements AuthenticationClient {
   public void getUser(UserRequest userRequest){
     JsonElement payload = gson.toJsonTree(userRequest);
     Request request = new Request("auth", "getUser", payload);
+    socketService.sendRequest(request);
   }
 
   public void updateBalance(BalanceUpdateRequest balanceUpdateRequest){
     JsonElement payload = gson.toJsonTree(balanceUpdateRequest);
     Request request = new Request("auth", "updateBalance", payload);
+    socketService.sendRequest(request);
   }
 }
