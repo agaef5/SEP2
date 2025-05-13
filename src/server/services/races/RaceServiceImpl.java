@@ -25,6 +25,7 @@ public class RaceServiceImpl implements RacesService {
       throw new IllegalArgumentException("Cannot create new race. Name is empty.");
     }
 
+    //TODO should these 2 be in here? They never return null
     if (raceTrackDTO == null) {
       throw new IllegalArgumentException("Start time cannot be null.");
     }
@@ -88,7 +89,8 @@ public class RaceServiceImpl implements RacesService {
             race.getDateTime(),
             horseDTOs,
             finalPositionDTOs,
-            toDTO(race.getRaceTrack())
+            toDTO(race.getRaceTrack()),
+            race.getStatus()
     );
   }
 
