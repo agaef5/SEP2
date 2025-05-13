@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
+import shared.DTO.RaceDTO;
 
 import java.io.IOException;
 
@@ -86,20 +87,21 @@ public class UserLandingPageController implements Controller {
 
             UserBettingViewController controller = loader.getController();
 
-            // Pass both horsesClient and socketService
-            UserBettingViewVM userBettingViewVM = new UserBettingViewVM(mainWindowController.getHorsesClient(), mainWindowController.getSocketService());
+            // Get the selected race from the view model
+            RaceDTO selectedRace = viewModel.getSelectedRace();
 
-            // If a race is selected, pass it to the betting view
-            if (viewModel.getSelectedRace() != null) {
-                userBettingViewVM.setRace(viewModel.getSelectedRace());
-            }
+            // Pass both horsesClient, socketService, and selectedRace
+            UserBettingViewVM userBettingViewVM = new UserBettingViewVM(
+                    mainWindowController.getHorsesClient(),
+                    mainWindowController.getSocketService(),
+                    selectedRace);
 
             controller.initialize(userBettingViewVM);
 
             Stage stage = (Stage) enterBettingStage.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Betting - " + (viewModel.getSelectedRace() != null ?
-                    viewModel.getSelectedRace().name() : "No Race Selected"));
+            stage.setTitle("Betting - " + (selectedRace != null ?
+                    selectedRace.name() : "No Race Selected"));
 
         } catch (IOException e) {
             e.printStackTrace();
