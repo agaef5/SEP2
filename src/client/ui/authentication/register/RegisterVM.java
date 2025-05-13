@@ -1,15 +1,22 @@
 package client.ui.authentication.register;
 
 import client.networking.SocketService;
+import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
+import com.google.gson.Gson;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import client.networking.authentication.AuthenticationClient;
+import shared.loginRegister.LoginRespond;
+import shared.loginRegister.RegisterRequest;
+import shared.loginRegister.RegisterRespond;
+import shared.race.GetRaceListResponse;
 
-public class RegisterVM implements ViewModel
+public class RegisterVM implements ViewModel, MessageListener
 {
   private StringProperty emailProp = new SimpleStringProperty();
   private StringProperty passwordProp = new SimpleStringProperty();
@@ -20,16 +27,18 @@ public class RegisterVM implements ViewModel
       false);
   private AuthenticationClient authClient;
   private SocketService socketService;
+  private Gson gson;
 
     public RegisterVM (AuthenticationClient authenticationClient, SocketService socketService)
   {
     this.authClient = authenticationClient;
     this.socketService = socketService;
+    gson = new Gson();
   }
 
   public void registerUser ()
   {
-    if ( emailProp.get() == null || emailProp.get().isEmpty() )
+    if ( emailProp.get() == null || emailProp.get().isEmpty() || !emailProp.get().contains("@") )
     {
       messageProp.set("Incorrect email");
       return;
@@ -49,24 +58,9 @@ public class RegisterVM implements ViewModel
       messageProp.set("Passwords do not match");
       return;
     }
-//    RegisterRequest request = new RegisterRequest(emailProp.get(),
-//        usernameProp.get(), passwordProp.get(), repeatProp.get()
-
-//    );
-    try
-    {
-//      String response = authClient.registerUser(request);
-//      messageProp.set(response);
-    }
-    catch ( Exception e )
-    {
-      messageProp.set("Registration failed: " + e.getMessage());
-    }
-
-    emailProp.set("");
-    usernameProp.set("");
-    passwordProp.set("");
-    repeatProp.set("");
+    RegisterRequest request = new RegisterRequest(emailProp.get(),
+        usernameProp.get(), passwordProp.get());
+    authClient.registerUser(request);
   }
 
   public StringProperty passwordPropriety ()
@@ -94,18 +88,25 @@ public class RegisterVM implements ViewModel
     return messageProp;
   }
 
-  public BooleanProperty disableRegisterButtonPropriety ()
-  {
-    boolean shouldDisable =
-        usernameProp.get() == null || usernameProp.get().isEmpty()
-            || passwordProp.get() == null || passwordProp.get().isEmpty();
-    disableRegisterButtonProp.set(shouldDisable);
-    System.out.println("confirmAccountState: " + shouldDisable);
+  public BooleanBinding disableRegisterButtonPropriety() {
+    return usernameProp.isEmpty()
+            .or(passwordProp.isEmpty())
+            .or(emailProp.isEmpty())
+            .or(repeatProp.isEmpty());
+  }
 
-    usernameProp.set("");
-    emailProp.set("");
-    passwordProp.set("");
-    repeatProp.set("");
-    return disableRegisterButtonProp;
+  @Override
+  public void update(String type, String payload) {
+    System.out.println("Message received: " + type);
+    if (type.equals("register")) {
+      RegisterRespond registerRespond = gson.fromJson(payload, RegisterRespond.class);
+      handleRegister(registerRespond);
+    }
+  }
+
+  public void handleRegister(RegisterRespond registerRespond){
+    if(registerRespond.message().equals("error")){
+      messageProp.set("Register failed: " + registerRespond.payload().toString());
+    }
   }
 }

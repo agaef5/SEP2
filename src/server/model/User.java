@@ -10,12 +10,14 @@ public class User
  private String email;
  private String password;
  private boolean isAdmin;
+ private Balance balance;
 
- public User(String username, String email, String password, boolean isAdmin){
+ public User(String username, String email, String password, boolean isAdmin, int balance){
      this.username = username;
      this.email = email;
      this.password = password;
      this.isAdmin = isAdmin;
+     this.balance = new Balance(balance);
  }
 
  /**
@@ -72,7 +74,13 @@ public class User
   this.password = password;
  };
 
+ public Balance getBalance() {
+  return balance;
+ }
+
  public boolean isAdmin(){
   return isAdmin;
  }
 }
+
+
