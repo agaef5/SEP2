@@ -31,6 +31,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import shared.DTO.UserDTO;
 import shared.DTO.RaceDTO;
 
@@ -67,6 +68,10 @@ public class MainWindowController {
                 stage.sizeToScene();
             }
         });
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     private void loadPage(String fxmlFile) {
@@ -194,6 +199,11 @@ public class MainWindowController {
 
     public SocketService getSocketService() {
         return socketService;
+    }
+
+    public void shutdown() {
+        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST)
+        );
     }
 }
 

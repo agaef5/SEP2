@@ -30,6 +30,7 @@ public class RunClient extends Application
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/ui/navigation/MainWindow.fxml"));
     Parent root = loader.load();
     MainWindowController mainWindowController = loader.getController();
+    mainWindowController.setStage(primaryStage);
 
 //    Loading register page, that will be displayed in main window
     FXMLLoader loginPageLoader = new FXMLLoader(getClass().getResource("/client/ui/authentication/login/Login.fxml"));

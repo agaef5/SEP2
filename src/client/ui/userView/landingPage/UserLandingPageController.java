@@ -73,10 +73,7 @@ public class UserLandingPageController implements Controller {
 
     @FXML
     public void handleQuitButton() {
-        // Clean up before exiting
-        viewModel.quitApplication();
-        // Exit the application
-        Platform.exit();
+        mainWindowController.shutdown();
     }
 
     private void navigateToBettingPage() {

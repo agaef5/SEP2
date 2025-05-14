@@ -6,6 +6,7 @@ import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
 import client.ui.util.ErrorHandler;
 import com.google.gson.Gson;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import shared.DTO.UserDTO;
@@ -62,8 +63,11 @@ public class RegisterController implements MessageListener, Controller {
   public void update(String type, String payload) {
     System.out.println("Message received: " + type);
     if (type.equals("register")) {
+
       RegisterRespond registerRespond = gson.fromJson(payload, RegisterRespond.class);
-      if (registerRespond.message().equals("success")) handleRegister(registerRespond);
+      Platform.runLater(() -> {
+        if (registerRespond.message().equals("success")) handleRegister(registerRespond);
+      });
     }
   }
 

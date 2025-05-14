@@ -5,6 +5,7 @@ import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
 import com.google.gson.Gson;
+import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -100,7 +101,9 @@ public class RegisterVM implements ViewModel, MessageListener
     System.out.println("Message received: " + type);
     if (type.equals("register")) {
       RegisterRespond registerRespond = gson.fromJson(payload, RegisterRespond.class);
-      handleRegister(registerRespond);
+      Platform.runLater(() -> {
+        handleRegister(registerRespond);
+      });
     }
   }
 
