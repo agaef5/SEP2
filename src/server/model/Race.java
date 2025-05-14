@@ -163,7 +163,7 @@ public class Race implements Runnable {
     try {
       dateTime = Timestamp.valueOf(LocalDateTime.now());
       System.out.println("Betting window opened");
-      Thread.sleep(10000);
+      Thread.sleep(5000);
       System.out.println("Betting window closed");
     } catch (InterruptedException e) {
       e.printStackTrace();
