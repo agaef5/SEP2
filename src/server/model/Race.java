@@ -129,7 +129,7 @@ public class Race implements Runnable {
    */
   public void updateListenersOnRaceStarted() {
     for (RaceListener listener : listeners) {
-      listener.onRaceStarted(name);
+      listener.onRaceStarted(this);
     }
   }
 
@@ -149,7 +149,7 @@ public class Race implements Runnable {
   {
     for (RaceListener listener : listeners)
     {
-      listener.onRaceFinished(name,finalpositionlist);
+      listener.onRaceFinished(this,finalpositionlist);
     }
   }
 
