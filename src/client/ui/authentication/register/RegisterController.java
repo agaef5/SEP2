@@ -41,6 +41,9 @@ public class RegisterController implements MessageListener, Controller {
     passwordInput.textProperty().bindBidirectional(viewModel.passwordPropriety());
     repeatPasswordInput.textProperty().bindBidirectional(viewModel.repeatPropriety());
     emailInput.textProperty().bindBidirectional(viewModel.emailPropriety());
+
+    messageLabel.textProperty()
+            .bindBidirectional(viewModel.messagePropriety());
     buttonRegister.disableProperty().bind(viewModel.disableRegisterButtonPropriety());
   }
 
@@ -67,7 +70,8 @@ public class RegisterController implements MessageListener, Controller {
   public void handleRegister(RegisterRespond registerRespond) {
     if (registerRespond.payload() == null) {
       Exception exception = new IllegalArgumentException();
-      ErrorHandler.handleError(exception, "Problems with logging in");
+      ErrorHandler.handleError(exception, "Problems with registering");
+      messageLabel.setText("Problems with registering. Try again later");
       return;
     }
 
