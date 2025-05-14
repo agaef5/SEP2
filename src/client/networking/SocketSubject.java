@@ -37,4 +37,10 @@ public interface SocketSubject
    * @param listener the listener to be removed
    */
   void removeListener(MessageListener listener);
+
+  /**
+   * Removes all listeners so that they will no longer receive notifications.
+   *
+   */
+  void removeAllListeners();
 }

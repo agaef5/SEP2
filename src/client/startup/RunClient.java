@@ -5,6 +5,7 @@ import client.ui.authentication.login.LoginController;
 import client.ui.authentication.register.RegisterController;
 import client.ui.navigation.MainWindowController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -34,14 +35,22 @@ public class RunClient extends Application
     Parent loginPageRoot = loginPageLoader.load();
     LoginController loginController = loginPageLoader.getController();
 
-//    Initializing window with loaded register page
+//  Initialize main window controller
     mainWindowController.initialize(socketservice, loginController);
+
+    // Set the close request handler
+    primaryStage.setOnCloseRequest(event -> {
+      socketservice.disconnect();
+      Platform.exit();
+    });
 
 //    Show the window
     primaryStage.setTitle("Saddle Up and Sell Your Soul");
     primaryStage.setScene(new Scene(root));
     primaryStage.sizeToScene();
     primaryStage.show();
+
+
 //    ______________________________________________
 
 

@@ -7,6 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import java.io.*;
 import java.net.Socket;
 
+import server.networking.Server;
 import shared.*;
 
 /**
@@ -21,6 +22,7 @@ public class ClientHandler implements Runnable {
   private final RequestHandler raceRequestHandler;
   private BufferedReader in;
   private BufferedWriter out;
+
 
   /**
    * Constructor to initialize the {@code ClientHandler} with the client socket.
@@ -64,11 +66,29 @@ public class ClientHandler implements Runnable {
         } catch (JsonSyntaxException e) {
           System.err.println("Failed to parse JSON: " + line);
           e.printStackTrace();
+        } catch (IOException e) {
+          System.err.println("Client disconnected: " + e.getMessage());
+        } finally {
+          Server.removeClient(this);
+          try {
+            socket.close();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         }
       }
     } catch (IOException e) {
+//    Close connection and remove disconnected client from the server
+    System.err.println("Client disconnected: " + e.getMessage());
+  } finally {
+    try {
+      Server.removeClient(this);
+      socket.close();
+      System.out.println("Closed socket for: " + socket.getInetAddress());
+    } catch (IOException e) {
       e.printStackTrace();
     }
+  }
   }
 
   /**

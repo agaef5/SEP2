@@ -18,10 +18,14 @@ import java.util.ArrayList;
  * It also supports registering and notifying listeners for events triggered by server responses.
  */
 public class SocketService implements SocketSubject {
+  private final Socket socket;
   private final BufferedWriter out;
+  private final BufferedReader in;
+  private boolean running = true;
   private final Gson gson = new Gson();
   private final ArrayList<MessageListener> listeners = new ArrayList<>();
   private ErrorHandler errorHandler;
+  private Thread receiveThread;
 
   /**
    * Constructs a new {@code SocketService} that connects to the specified server.
@@ -31,14 +35,17 @@ public class SocketService implements SocketSubject {
    * @throws IOException if an I/O error occurs when creating the socket or streams
    */
   public SocketService(String host, int port) throws IOException {
-    Socket socket = new Socket(host, port);
+    this.socket = new Socket(host, port);
+    this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+    this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+//  Initiate an error handler
     errorHandler = new ErrorHandler(this);
 
-    this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
     // Start a new thread to handle incoming messages from the server
-    new Thread(new SocketServiceReceive(this, in)).start();
+    this.receiveThread = new Thread(new SocketServiceReceive(this, in));
+    receiveThread.start();
+
   }
 
   /**
@@ -87,6 +94,25 @@ public class SocketService implements SocketSubject {
     }
   }
 
+  public boolean isRunning() {
+    return running;
+  }
+
+  public void disconnect() {
+    running = false;
+    try {
+      removeAllListeners();
+//      if (receiveThread != null && receiveThread.isAlive()) {
+//        receiveThread.interrupt();  // Optionally stop receive thread
+//      }
+      if (socket != null && !socket.isClosed()) socket.close();
+      if (in != null) in.close();
+      if (out != null) out.close();
+    } catch (IOException e) {
+      ErrorHandler.handleError(e, "Error while disconnecting from server");
+    }
+  }
+
   /**
    * Notifies all registered listeners of a new event.
    *
@@ -109,5 +135,15 @@ public class SocketService implements SocketSubject {
   @Override
   public void removeListener(MessageListener listener) {
     listeners.remove(listener);
+  }
+
+
+  /**
+   * Removes all listeners so that they will no longer receive notifications.
+   *
+   */
+  @Override
+  public void removeAllListeners(){
+    listeners.clear();
   }
 }

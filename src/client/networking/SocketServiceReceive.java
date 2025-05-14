@@ -1,5 +1,7 @@
 package client.networking;
 
+import client.ui.util.ErrorHandler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -34,13 +36,17 @@ public class SocketServiceReceive implements Runnable {
     try {
       String jsonLine;
       // Continuously read lines of JSON data from the server
-      while ((jsonLine = in.readLine()) != null) {
+      while ( socketService.isRunning() && (jsonLine = in.readLine()) != null) {
         // Forward the raw JSON string to the SocketService for further processing
         socketService.receive(jsonLine);
       }
     } catch (IOException e) {
       // Handle any IO exceptions (e.g., if the connection is lost)
-      System.err.println("Socket read error: " + e.getMessage());
+      if (socketService.isRunning()) {
+        ErrorHandler.handleError(e, "SocketServiceReceive");
+      }else{
+        ErrorHandler.handleError(e, "SocketServiceReceive");
+      }
     }
   }
 }

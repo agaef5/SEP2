@@ -54,7 +54,8 @@ public class MainWindowController {
         this.socketService = socketService;
         authenticationClient = new SocketAuthenticationClient(socketService);
         horsesClient = new SocketHorsesClient(socketService);
-        raceClient = new SocketRaceClient(socketService);;
+        raceClient = new SocketRaceClient(socketService);
+        ;
 
         if (loginController != null) {
             loginController.setWindowController(this);
@@ -72,88 +73,89 @@ public class MainWindowController {
 
     private void loadPage(String fxmlFile) {
         Platform.runLater(() -> {
-        try {
-            mainPane.getChildren().clear();
+            try {
+                mainPane.getChildren().clear();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlFile));
-            Pane newContent = loader.load();
+                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlFile));
+                Pane newContent = loader.load();
 
-            if(isAdminView){
-                adminMenu.setPrefHeight(25.0);
-                adminMenu.setVisible(true);
-                adminMenu.setDisable(false);
+                if (isAdminView) {
+                    adminMenu.setPrefHeight(25.0);
+                    adminMenu.setVisible(true);
+                    adminMenu.setDisable(false);
+                }
+
+                ViewModel viewModel = null;
+                Controller controller = loader.getController();
+                controller.setWindowController(this);
+
+                if (controller instanceof LoginController) {
+                    viewModel = new LoginVM(authenticationClient, socketService);
+                }
+
+                if (controller instanceof RegisterController) {
+                    viewModel = new RegisterVM(authenticationClient, socketService);
+                    socketService.addListener((MessageListener) controller);
+                }
+
+                if (controller instanceof AdminPanelController) {
+                    viewModel = new AdminPanelVM(raceClient, socketService);
+                }
+
+                if (controller instanceof CreateEditHorseController) {
+                    viewModel = new CreateEditHorseVM(horsesClient, socketService);
+                }
+
+                if (controller instanceof CreateRaceController) {
+                    viewModel = new CreateRaceVM(raceClient, socketService);
+                }
+
+                if (controller instanceof UserLandingPageController) {
+                    viewModel = new UserLandingPageVM(raceClient, socketService);
+                }
+
+                if (controller instanceof UserBettingViewController) {
+                    viewModel = new UserBettingViewVM(horsesClient, socketService);
+                }
+
+                controller.initialize(viewModel);
+                mainPane.getChildren().add(newContent);
+            } catch (IOException e) {
+                ErrorHandler.handleError(new IllegalArgumentException(e), "Error loading page");
             }
-
-            ViewModel viewModel = null;
-            Controller controller = loader.getController();
-            controller.setWindowController(this);
-
-            if (controller instanceof LoginController) {
-                viewModel = new LoginVM(authenticationClient, socketService);
-            }
-
-            if (controller instanceof RegisterController)
-            {
-                viewModel = new RegisterVM(authenticationClient, socketService);
-                socketService.addListener((MessageListener) controller);
-            }
-
-            if (controller instanceof AdminPanelController) {
-                viewModel = new AdminPanelVM(raceClient, socketService);
-            }
-
-            if(controller instanceof CreateEditHorseController){
-                viewModel = new CreateEditHorseVM(horsesClient, socketService);
-            }
-
-            if(controller instanceof CreateRaceController){
-                viewModel = new CreateRaceVM(raceClient, socketService);
-            }
-
-            if (controller instanceof UserLandingPageController) {
-                viewModel = new UserLandingPageVM(raceClient, socketService);
-            }
-
-            if(controller instanceof UserBettingViewController){
-                viewModel = new UserBettingViewVM(horsesClient, socketService);
-            }
-
-            controller.initialize(viewModel);
-            mainPane.getChildren().add(newContent);
-        } catch (IOException e) {
-            ErrorHandler.handleError(new IllegalArgumentException(e), "Error loading page");
-        }});
+        });
     }
 
-    public void loadRegisterPage(){
+    public void loadRegisterPage() {
         loadPage("client/ui/authentication/register/Register.fxml");
     }
 
-    public void loadLoginPage(){
+    public void loadLoginPage() {
         loadPage("client/ui/authentication/login/Login.fxml");
     }
 
-    public void loadUserLandingPage(){
+    public void loadUserLandingPage() {
         loadPage("client/ui/userView/landingPage/userLandingPage.fxml");
     }
 
-    public void loadBettingPage(String windowTitle){
+    public void loadBettingPage(String windowTitle) {
         stage.setTitle(windowTitle);
-        loadPage("client/ui/userView/bettingPage/UserBettingView.fxml");}
-
-    public void loadAdminPanel(){
-        if(isAdminView) loadPage("client/ui/adminView/adminPanel/AdminPanel.fxml");
+        loadPage("client/ui/userView/bettingPage/UserBettingView.fxml");
     }
 
-    public void loadHorsePage(){
-        if(isAdminView) loadPage("client/ui/adminView/horseList/CreateEditHorse.fxml");
+    public void loadAdminPanel() {
+        if (isAdminView) loadPage("client/ui/adminView/adminPanel/AdminPanel.fxml");
     }
 
-    public void loadRacePage(){
-        if(isAdminView) loadPage("client/ui/adminView/race/CreateRace.fxml");
+    public void loadHorsePage() {
+        if (isAdminView) loadPage("client/ui/adminView/horseList/CreateEditHorse.fxml");
     }
 
-    public void authorizeUser(UserDTO userDTO){
+    public void loadRacePage() {
+        if (isAdminView) loadPage("client/ui/adminView/race/CreateRace.fxml");
+    }
+
+    public void authorizeUser(UserDTO userDTO) {
         Platform.runLater(() -> {
             if (userDTO.username() != null) setUsername(userDTO.username());
             if (authenticateAdmin(userDTO)) loadAdminPanel();
@@ -161,15 +163,15 @@ public class MainWindowController {
         });
     }
 
-    public boolean authenticateAdmin(UserDTO userDTO){
+    public boolean authenticateAdmin(UserDTO userDTO) {
         return isAdminView = userDTO.isAdmin();
     }
 
-    public void setUsername(String username){
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 
@@ -189,3 +191,5 @@ public class MainWindowController {
         return socketService;
     }
 }
+
+

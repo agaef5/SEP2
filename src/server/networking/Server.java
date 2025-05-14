@@ -44,8 +44,6 @@ public class Server {
     }
   }
 
-
-
   /**
    * Adds a client to the list of connected clients.
    *
