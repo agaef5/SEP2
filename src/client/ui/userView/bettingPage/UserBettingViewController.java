@@ -4,6 +4,9 @@ import client.ui.common.Controller;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -68,13 +71,24 @@ public class UserBettingViewController implements Controller {
   public void initialize(ViewModel userBettingVM) {
     this.viewModel = (UserBettingViewVM) userBettingVM;
 
-    // Configure table columns
-    nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    minSpeedColumn.setCellValueFactory(new PropertyValueFactory<>("speedMin"));
-    maxSpeedColumn.setCellValueFactory(new PropertyValueFactory<>("speedMax"));
+      // Add debug statement
+      System.out.println("Initializing UserBettingViewController");
 
-    // Bind table data to ViewModel
-    horseTableView.setItems(viewModel.getHorses());
+      // Configure table columns
+    nameColumn.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().name()));
+    minSpeedColumn.setCellValueFactory(cellData ->
+            new SimpleIntegerProperty(cellData.getValue().speedMin()).asObject());
+    maxSpeedColumn.setCellValueFactory(cellData ->
+            new SimpleIntegerProperty(cellData.getValue().speedMax()).asObject());
+
+      // Bind table data to ViewModel
+      horseTableView.setItems(viewModel.getHorses());
+
+      // Add debug listener to track changes in the horses list
+      viewModel.getHorses().addListener((ListChangeListener<HorseDTO>) change -> {
+        System.out.println("Horses list changed. New size: " + viewModel.getHorses().size());
+      });
 
     // Bind selected horse to ViewModel
     horseTableView.getSelectionModel().selectedItemProperty().addListener(

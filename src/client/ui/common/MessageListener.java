@@ -1,6 +1,4 @@
-package client.ui;
-
-import com.google.gson.JsonElement;
+package client.ui.common;
 
 /**
  * The {@code MessageListener} interface is used for listening to and handling different types of messages

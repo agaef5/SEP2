@@ -1,12 +1,7 @@
 package server.util;
 
-import server.model.Horse;
-import server.model.HorseList;
-import server.model.Race;
-import server.model.RaceTrack;
-import shared.DTO.HorseDTO;
-import shared.DTO.RaceDTO;
-import shared.DTO.RaceTrackDTO;
+import server.model.*;
+import shared.DTO.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +9,10 @@ import java.util.List;
 public class DTOMapper
 {
     //-----------To DTO-----------//
+    public static UserDTO UserToDTO(User user){
+        return new UserDTO(user.getUsername(), user.getEmail(), user.getPassword(), user.isAdmin(), user.getBalance().getAmount());
+    }
+
     public static HorseDTO horseToDTO(Horse horse) {
         return new HorseDTO(horse.getId(), horse.getName(), horse.getSpeedMin(), horse.getSpeedMax());
     }
@@ -30,11 +29,11 @@ public class DTOMapper
         }
         return new RaceDTO(
                 race.getName(),
-                race.getStatus(),
                 race.getDateTime(),
                 horseDTOs,
                 finalPositionDTOs,
-                raceTrackToDTO(race.getRaceTrack())
+                raceTrackToDTO(race.getRaceTrack()),
+                race.getStatus()
         );
     }
 
@@ -53,7 +52,10 @@ public class DTOMapper
 
 
     //-----------From DTO-----------//
-
+    public static User userPlayerFromDTO(UserDTO userDTo){
+        return new User(userDTo.username(), userDTo.email(),
+                    userDTo.password(), userDTo.isAdmin(), userDTo.balance());
+    }
 
     public static Horse horseFromDTO(HorseDTO dto) {
         return new Horse(dto.id(), dto.name(), dto.speedMin(), dto.speedMax());

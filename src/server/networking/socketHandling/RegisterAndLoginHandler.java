@@ -3,11 +3,15 @@ package server.networking.socketHandling;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import server.services.authentication.AuthServiceImpl;
-import server.services.authentication.AuthentificationService;
+import server.services.authentication.AuthenticationService;
 import shared.loginRegister.LoginRequest;
 import shared.loginRegister.LoginRespond;
 import shared.loginRegister.RegisterRequest;
 import shared.loginRegister.RegisterRespond;
+import shared.user.BalanceUpdateRequest;
+import shared.user.BalanceUpdateResponse;
+import shared.user.UserRequest;
+import shared.user.UserResponse;
 
 /**
  * {@code RegisterAndLoginHandler} processes user authentication-related requests such as
@@ -15,7 +19,7 @@ import shared.loginRegister.RegisterRespond;
  * handle user authentication logic.
  */
 public class RegisterAndLoginHandler extends BaseRequestHandler {
-  private final AuthentificationService authService;
+  private final AuthenticationService authService;
   private final Gson gson = new Gson();
 
   /**
@@ -47,6 +51,14 @@ public class RegisterAndLoginHandler extends BaseRequestHandler {
         RegisterRequest registerRequest = parsePayload(payload, RegisterRequest.class);
         return handleRegister(registerRequest);
       }
+      case "updateBalance" -> {
+        BalanceUpdateRequest balanceUpdateRequest = parsePayload(payload, BalanceUpdateRequest.class);
+        return handleBalanceUpdate(balanceUpdateRequest);
+      }
+      case "getUser" -> {
+        UserRequest userRequest = parsePayload(payload, UserRequest.class);
+        return handleGetUser(userRequest);
+      }
       default -> throw new IllegalArgumentException("Invalid action: " + action);
     }
   }
@@ -69,5 +81,13 @@ public class RegisterAndLoginHandler extends BaseRequestHandler {
    */
   private RegisterRespond handleRegister(RegisterRequest registerRequest) {
     return authService.registerUser(registerRequest);
+  }
+
+  private BalanceUpdateResponse handleBalanceUpdate(BalanceUpdateRequest balanceUpdateRequest) {
+    return authService.updateBalance(balanceUpdateRequest);
+  }
+
+  private UserResponse handleGetUser(UserRequest userRequest){
+    return authService.getUser(userRequest);
   }
 }

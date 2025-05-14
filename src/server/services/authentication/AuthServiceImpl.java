@@ -1,23 +1,25 @@
 package server.services.authentication;
 
-import server.model.Player;
 import server.model.User;
 import server.persistence.user.UserRepository;
 import server.persistence.user.UserRepositoryImpl;
+import server.util.DTOMapper;
 import shared.loginRegister.LoginRequest;
 import shared.loginRegister.LoginRespond;
 import shared.loginRegister.RegisterRequest;
 import shared.loginRegister.RegisterRespond;
-
-import java.util.ArrayList;
+import shared.user.BalanceUpdateRequest;
+import shared.user.BalanceUpdateResponse;
+import shared.user.UserRequest;
+import shared.user.UserResponse;
 
 /**
- * The {@code AuthServiceImpl} class implements the {@link AuthentificationService} interface
+ * The {@code AuthServiceImpl} class implements the {@link AuthenticationService} interface
  * and provides functionality for user authentication, including user registration and login.
  * It interacts with the {@link UserRepository} to manage user data and performs validation
  * of the provided credentials during registration and login processes.
  */
-public class AuthServiceImpl implements AuthentificationService
+public class AuthServiceImpl implements AuthenticationService
 {
   /**
    * Registers a new user based on the provided {@link RegisterRequest}.
@@ -37,25 +39,21 @@ public class AuthServiceImpl implements AuthentificationService
       return new RegisterRespond("error", "Register data are empty");
     }
 
-    // Checking and validating the UserRepository
-    UserRepository userRepository = fetchUserRepository();
-    ArrayList<User> userArrayList = fetchUserArrayList();
-    if (userRepository == null || userArrayList == null || userArrayList.isEmpty())
-      return new RegisterRespond("error", "Error with fetching UserRepository");
+    // Getting UserRepository to work with
+    UserRepository userRepository = UserRepositoryImpl.getInstance();
 
     // Checking if such username does not exist already
-    for(User user : userArrayList){
-      if(user.getUsername().equals(username)){
+    if(userRepository.readByUsername(username) != null || userRepository.readByEmail(email) != null){
         return new RegisterRespond("error", "User with such username already exists");
       }
-    }
 
     // Creating new user and adding to repository
-    User newUser = new Player(username, email, password);
-    userRepository.add(newUser);
+    User newUser = userRepository.createUser(username, email, password, false);
+    if(newUser == null){
+      return new RegisterRespond("error", "Error with creating user");
+    }
 
-    //TODO: check if the payload has to be "null" or contain User object
-    return new RegisterRespond("success", newUser);
+    return new RegisterRespond("success", DTOMapper.UserToDTO(newUser));
   }
 
   /**
@@ -69,54 +67,56 @@ public class AuthServiceImpl implements AuthentificationService
   @Override public LoginRespond loginUser(LoginRequest request)
   {
     // Check if none of the data are null
-    String username = request.username();
+    String identifier = request.username();
     String password = request.password();
-    if(username.isEmpty() || password.isEmpty()){
+    if(identifier.isEmpty() || password.isEmpty()){
       return new LoginRespond("error", "Login data are empty");
     }
 
     // Get UserRepository and pull a list of Users
-    ArrayList<User> userArrayList = fetchUserArrayList();
-    if (userArrayList == null || userArrayList.isEmpty())
-      return new LoginRespond("error", "Error with fetching UserRepository");
-
-    // Iterate through the list to find matching user
-    for(User user : userArrayList){
-      if(user.getUsername().equals(username)){
-        if(user.getPassword().equals(password)){
-          //TODO: check if the payload has to be "null" or contain User object
-          return new LoginRespond("success", user);
-        }
-        else{
-          return new LoginRespond("error", "Username and password do not match");
-        }
-      }
+    UserRepository userRepository = UserRepositoryImpl.getInstance();
+    User user;
+    if(identifier.contains("@")){
+      user = userRepository.readByEmail(identifier);
+    }else{
+      user = userRepository.readByUsername(identifier);
     }
 
-    // If no user found, return an error
-    return new LoginRespond("error", "No such user exists");
+//    if no user is found, return an error
+    if(user == null)
+      return new LoginRespond("error", "No such user exists");
+
+//    check if the passwords are matching and return the LoginResponse
+    if(password.equals(user.getPassword())) {
+        return new LoginRespond("success", DTOMapper.UserToDTO(user));
+    } else{
+      return new LoginRespond("error", "Username and password do not match");
+    }
   }
 
-  /**
-   * Fetches the {@link UserRepository} instance.
-   *
-   * @return The {@link UserRepository} instance.
-   */
-  private UserRepository fetchUserRepository(){
-    return UserRepositoryImpl.getInstance();
+  @Override
+  public UserResponse getUser(UserRequest userRequest){
+    UserRepository userRepository = UserRepositoryImpl.getInstance();
+    User user;
+    if(userRequest.identifier().contains("@")){
+      user = userRepository.readByEmail(userRequest.identifier());
+    }else {
+      user = userRepository.readByUsername(userRequest.identifier());
+    }
+
+    if(user != null){
+      return new UserResponse("success", DTOMapper.UserToDTO(user));
+    }else{
+      return new UserResponse("error", "No such user exists");
+    }
   }
 
-  /**
-   * Fetches the list of users from the {@link UserRepository}.
-   *
-   * @return An {@link ArrayList} of users, or {@code null} if no users are found.
-   */
-  private ArrayList<User> fetchUserArrayList(){
-    UserRepository userRepository = fetchUserRepository();
-    if(userRepository == null) return null;
-    ArrayList<User> userArrayList = userRepository.getMany(Integer.MAX_VALUE, Integer.MAX_VALUE, null);
-    if(userArrayList == null || userArrayList.isEmpty()) return null;
+  @Override
+  public BalanceUpdateResponse updateBalance(BalanceUpdateRequest balanceUpdateRequest){
+    UserRepository userRepository = UserRepositoryImpl.getInstance();
+    userRepository.updateBalance(balanceUpdateRequest.name(), balanceUpdateRequest.balance());
+    Object payload = userRepository.getBalance(balanceUpdateRequest.name());
 
-    return userArrayList;
+    return new BalanceUpdateResponse("success", payload);
   }
 }
