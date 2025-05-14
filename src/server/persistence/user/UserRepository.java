@@ -3,6 +3,8 @@ package server.persistence.user;
 import server.model.User;
 import shared.DTO.UserDTO;
 
+import java.sql.SQLException;
+
 /**
  * The {@link UserRepository} interface defines methods for managing {@link User} objects in a repository.
  * It provides methods for adding, retrieving, saving, and deleting user records. Additionally, it supports
@@ -15,7 +17,7 @@ public interface UserRepository {
    *
    * @param username the {@link User} object to be added
    */
-  User createUser(String username, String email, String password, boolean isAdmin);
+  User createUser(String username, String email, String password, boolean isAdmin) throws SQLException;
 
   /**
    * Retrieves a single user from the repository by username.
@@ -24,7 +26,7 @@ public interface UserRepository {
    * @return the {@link User} object associated with the given identifier, or {@code null} if no user exists
    *         with the specified identifier
    */
-  User readByUsername(String username);
+  User readByUsername(String username) throws SQLException;
 
   /**
    * Retrieves a single user from the repository by email.
@@ -33,10 +35,8 @@ public interface UserRepository {
    * @return the {@link User} object associated with the given identifier, or {@code null} if no user exists
    *         with the specified identifier
    */
-  User readByEmail(String email);
+  User readByEmail(String email)  throws SQLException;
 
-  void updateBalance(String username, int newBalance);
-
-  int getBalance(String username);
+  void updateBalance(String username, int newBalance)  throws SQLException;
 
 }

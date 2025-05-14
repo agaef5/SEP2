@@ -32,7 +32,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import shared.DTO.UserDTO;
-import server.model.Player;
 import shared.DTO.RaceDTO;
 
 

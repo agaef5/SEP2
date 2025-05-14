@@ -71,7 +71,7 @@ public class UserRepositoryImpl implements UserRepository {
    * @param username the {@link User} object to be added
    */
   @Override
-  public User createUser(String username, String email, String password, boolean isAdmin) {
+  public User createUser(String username, String email, String password, boolean isAdmin) throws SQLException{
     try (Connection connection = getConnection()) {
       String query = "INSERT INTO game_user (username, password_hash, email, isAdmin, balance) VALUES (?, ?, ?, ?, ?)";
       PreparedStatement statement = connection.prepareStatement(query);
@@ -89,10 +89,7 @@ public class UserRepositoryImpl implements UserRepository {
 
       // After successful insert, fetch the user back from DB
       return readByUsername(username);
-    } catch (SQLException e) {
-      ErrorHandler.handleError(e, "Cannot connect to database");
     }
-    return null;
   }
 
   /**
@@ -103,7 +100,7 @@ public class UserRepositoryImpl implements UserRepository {
    * @return the {@link User} object matching the provided identifier, or {@code null} if not found
    */
   @Override
-  public User readByUsername(String username) {
+  public User readByUsername(String username) throws SQLException{
     try (Connection connection = getConnection()) {
       String query = "SELECT * FROM game_user  WHERE username = ?";
       PreparedStatement statement = connection.prepareStatement(query);
@@ -114,14 +111,11 @@ public class UserRepositoryImpl implements UserRepository {
       } else {
         return null;
       }
-    } catch (SQLException e) {
-        ErrorHandler.handleError(e, "Error - issue with database");
     }
-    return null;
   }
 
   @Override
-  public User readByEmail(String email){
+  public User readByEmail(String email) throws SQLException{
     try (Connection connection = getConnection()) {
       String query = "SELECT * FROM game_user WHERE email = ?";
       PreparedStatement statement = connection.prepareStatement(query);
@@ -132,34 +126,26 @@ public class UserRepositoryImpl implements UserRepository {
       } else {
         return null;
       }
-    } catch (SQLException e) {
-      ErrorHandler.handleError(e, "Error - issue with database");
     }
-    return null;
   }
 
   @Override
-  public void updateBalance(String username, int newBalance) {
+  public void updateBalance(String username, int newBalance) throws SQLException{
     User user = readByUsername(username);
 
-    Balance balance = user.getBalance();
-    balance.setAmount(newBalance);
-  }
+    try (Connection connection = getConnection()) {
+      String query = "UPDATE game_user SET balance = ? WHERE username = ?";
+      PreparedStatement statement = connection.prepareStatement(query);
+      statement.setInt(1, newBalance);
+      statement.setString(2, username);
 
-  @Override
-  public int getBalance(String username) {
-    User user = readByUsername(username);
-    return user.getBalance().getAmount();
-  }
+      int rowsUpdated = statement.executeUpdate();
 
-  public UserDTO resultToDTO(ResultSet resultSet) throws SQLException {
-    String dbsUsername = resultSet.getString("username");
-    String dbsEmail = resultSet.getString("email");
-    String dbsPassword = resultSet.getString("password_hash");
-    boolean dbsIsAdmin = (resultSet.getByte("isAdmin")) == 1;
-    int balance = resultSet.getInt("balance");
+      if (rowsUpdated != 1) {
+        throw new SQLException("Update failed");
+      }
 
-    return new UserDTO(dbsUsername, dbsEmail, dbsPassword, dbsIsAdmin, balance);
+    }
   }
 
   public User resultToUser(ResultSet resultSet) throws SQLException {

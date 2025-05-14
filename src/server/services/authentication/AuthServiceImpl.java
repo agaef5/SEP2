@@ -13,6 +13,8 @@ import shared.user.BalanceUpdateResponse;
 import shared.user.UserRequest;
 import shared.user.UserResponse;
 
+import java.sql.SQLException;
+
 /**
  * The {@code AuthServiceImpl} class implements the {@link AuthenticationService} interface
  * and provides functionality for user authentication, including user registration and login.
@@ -42,18 +44,23 @@ public class AuthServiceImpl implements AuthenticationService
     // Getting UserRepository to work with
     UserRepository userRepository = UserRepositoryImpl.getInstance();
 
-    // Checking if such username does not exist already
-    if(userRepository.readByUsername(username) != null || userRepository.readByEmail(email) != null){
+    try {
+      // Checking if such username does not exist already
+      if (userRepository.readByUsername(username) != null || userRepository.readByEmail(email) != null) {
         return new RegisterRespond("error", "User with such username already exists");
       }
 
-    // Creating new user and adding to repository
-    User newUser = userRepository.createUser(username, email, password, false);
-    if(newUser == null){
+      // Creating new user and adding to repository
+      User newUser = userRepository.createUser(username, email, password, false);
+      if (newUser == null) {
+        return new RegisterRespond("error", "Error with creating user");
+      }
+
+      return new RegisterRespond("success", DTOMapper.UserToDTO(newUser));
+    }
+    catch (SQLException sqlException){
       return new RegisterRespond("error", "Error with creating user");
     }
-
-    return new RegisterRespond("success", DTOMapper.UserToDTO(newUser));
   }
 
   /**
@@ -73,6 +80,7 @@ public class AuthServiceImpl implements AuthenticationService
       return new LoginRespond("error", "Login data are empty");
     }
 
+    try{
     // Get UserRepository and pull a list of Users
     UserRepository userRepository = UserRepositoryImpl.getInstance();
     User user;
@@ -81,10 +89,9 @@ public class AuthServiceImpl implements AuthenticationService
     }else{
       user = userRepository.readByUsername(identifier);
     }
-
 //    if no user is found, return an error
     if(user == null)
-      return new LoginRespond("error", "No such user exists");
+      return new LoginRespond("error", "Error with getting user credentials");
 
 //    check if the passwords are matching and return the LoginResponse
     if(password.equals(user.getPassword())) {
@@ -92,21 +99,25 @@ public class AuthServiceImpl implements AuthenticationService
     } else{
       return new LoginRespond("error", "Username and password do not match");
     }
+    }catch (SQLException sqlException){
+      return new LoginRespond("error", "Error with logging in the user");
+    }
   }
 
   @Override
   public UserResponse getUser(UserRequest userRequest){
     UserRepository userRepository = UserRepositoryImpl.getInstance();
-    User user;
-    if(userRequest.identifier().contains("@")){
-      user = userRepository.readByEmail(userRequest.identifier());
-    }else {
-      user = userRepository.readByUsername(userRequest.identifier());
-    }
-
-    if(user != null){
-      return new UserResponse("success", DTOMapper.UserToDTO(user));
-    }else{
+    try {
+      User user;
+      if (userRequest.identifier().contains("@")) {
+        user = userRepository.readByEmail(userRequest.identifier());
+      } else {
+        user = userRepository.readByUsername(userRequest.identifier());
+      }
+      if(user != null) {
+        return new UserResponse("success", DTOMapper.UserToDTO(user));
+      }else throw new SQLException("User is null");
+    }catch (SQLException sqlException){
       return new UserResponse("error", "No such user exists");
     }
   }
@@ -114,9 +125,14 @@ public class AuthServiceImpl implements AuthenticationService
   @Override
   public BalanceUpdateResponse updateBalance(BalanceUpdateRequest balanceUpdateRequest){
     UserRepository userRepository = UserRepositoryImpl.getInstance();
-    userRepository.updateBalance(balanceUpdateRequest.name(), balanceUpdateRequest.balance());
-    Object payload = userRepository.getBalance(balanceUpdateRequest.name());
 
-    return new BalanceUpdateResponse("success", payload);
+    try {
+      userRepository.updateBalance(balanceUpdateRequest.name(), balanceUpdateRequest.balance());
+      User user = userRepository.readByUsername(balanceUpdateRequest.name());
+      return new BalanceUpdateResponse("success", DTOMapper.UserToDTO(user));
+
+    }catch (SQLException sqlException){
+      return new BalanceUpdateResponse("error", "Error with updating balance");
+    }
   }
 }
