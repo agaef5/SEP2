@@ -20,9 +20,8 @@ public class RunClient extends Application
     launch();
   }
 
-  @Override public void start(Stage primaryStage) throws Exception
-  {
-    SocketService socketservice = new SocketService("localhost",2910 );
+  @Override public void start(Stage primaryStage) throws Exception {
+    SocketService socketservice = new SocketService("localhost", 2910);
 
 //  MAIN WINDOW VIEW
 //    Loading main window that will display pages
@@ -49,23 +48,5 @@ public class RunClient extends Application
     primaryStage.setScene(new Scene(root));
     primaryStage.sizeToScene();
     primaryStage.show();
-
-
-//    ______________________________________________
-
-
-//    === HORSE LIST VIEW - USER __________________________
-//    SocketHorsesClient socketRacersClient = new SocketHorsesClient(socketservice);
-//    HorseListVM horseListVM = new HorseListVM(socketRacersClient,socketservice);
-//    socketservice.addListener(horseListVM);
-//    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-//        "/client/ui/userView/HorseListView.fxml"));
-//    Parent root = loader.load();
-//    HorseListViewController controller = loader.getController();
-//    controller.initialize(horseListVM);
-//    Stage stage = new Stage();
-//    stage.setScene(new Scene(root));
-//    stage.show();
-//    _________________________________________________
   }
 }
