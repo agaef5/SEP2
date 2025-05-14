@@ -2,6 +2,7 @@ package server.networking.listener;
 
 import server.model.Horse;
 import server.model.HorseList;
+import server.model.Race;
 import server.model.RaceListener;
 import server.networking.Server;
 import server.networking.socketHandling.ClientHandler;
@@ -16,6 +17,10 @@ import java.util.List;
 public class RaceListenerImpl implements RaceListener {
 
 
+    @Override
+    public void bettingOpen(Race race) {
+
+    }
 
     @Override
     public void onHorseFinished(Horse  horse, int position)
@@ -26,18 +31,18 @@ public class RaceListenerImpl implements RaceListener {
     }
 
     @Override
-    public void onRaceStarted(String raceName)
+    public void onRaceStarted(Race race)
     {
-        OnRaceStarted payload = new OnRaceStarted(raceName);
+        OnRaceStarted payload = new OnRaceStarted(race.getName());
         Server.broadcast("onRaceStarted",payload);
 
     }
 
     @Override
-    public void onRaceFinished(String raceName, HorseList finalPositions)
+    public void onRaceFinished(Race race, HorseList finalPositions)
     {
         List<HorseDTO> finalPositionsDTO = DTOMapper.horseListToDTO(finalPositions);
-        OnRaceFinished payload = new OnRaceFinished(raceName,finalPositionsDTO);
+        OnRaceFinished payload = new OnRaceFinished(race.getName(),finalPositionsDTO);
         Server.broadcast("onRaceFinished",payload);
 
     }

@@ -10,6 +10,9 @@ package server.model;
  */
 public interface RaceListener {
 
+
+  void bettingOpen(Race race);
+
   /**
    * This method is called when a horse finishes the race.
    *
@@ -21,16 +24,16 @@ public interface RaceListener {
   /**
    * This method is called when the race starts.
    *
-   * @param raceName The name of the race that has started.
+   * @param race The name of the race that has started.
    */
-  void onRaceStarted(String raceName);
+  void onRaceStarted(Race race);
 
   /**
    * This method is called when the race finishes.
    *
-   * @param raceName The name of the race that has finished.
+   * @param race The name of the race that has finished.
    * @param finalPositions The list of horses with their final positions in the race.
    */
-  void onRaceFinished(String raceName, HorseList finalPositions);
+  void onRaceFinished(Race race, HorseList finalPositions);
 
 }
