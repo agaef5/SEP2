@@ -52,11 +52,8 @@ public class ClientHandler implements Runnable {
       String line;
       while ((line = in.readLine()) != null) {
         try {
-          // Deserialize the incoming line into a JsonObject first
           JsonObject json = gson.fromJson(line, JsonObject.class);
-
           if (json.has("handler") && json.has("action") && json.has("payload")) {
-            // Now create the Request object with handler, action, and payload
             System.out.println(line);
             Request request = gson.fromJson(line, Request.class);
             handleClientRequest(request);
@@ -66,29 +63,11 @@ public class ClientHandler implements Runnable {
         } catch (JsonSyntaxException e) {
           System.err.println("Failed to parse JSON: " + line);
           e.printStackTrace();
-        } catch (IOException e) {
-          System.err.println("Client disconnected: " + e.getMessage());
-        } finally {
-          Server.removeClient(this);
-          try {
-            socket.close();
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
         }
       }
     } catch (IOException e) {
-//    Close connection and remove disconnected client from the server
-    System.err.println("Client disconnected: " + e.getMessage());
-  } finally {
-    try {
-      Server.removeClient(this);
-      socket.close();
-      System.out.println("Closed socket for: " + socket.getInetAddress());
-    } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println("Client disconnected or error: " + e.getMessage());
     }
-  }
   }
 
   /**
@@ -115,6 +94,11 @@ public class ClientHandler implements Runnable {
         case "race" -> {
           responsePayload = raceRequestHandler.handle(request.action(), request.payload());
         }
+        case "disconnect" -> {
+          handleClientDisconnect();
+          Server.removeClient(this);
+          return;
+        }
         default -> throw new IllegalArgumentException("Unknown handler: " + request.handler());
       }
     } catch (Exception e) {
@@ -126,6 +110,17 @@ public class ClientHandler implements Runnable {
     // Send back the response
     response = wrapResponse(responseType, responsePayload);
     send(response);
+  }
+
+  private void handleClientDisconnect(){
+    try {
+      System.out.println("Client requested disconnect: " + socket.getInetAddress());
+      send(new Respond("disconnect", "Goodbye!"));
+      if (!socket.isClosed()) socket.close();
+      System.out.println("Closed socket for: " + socket.getInetAddress());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -149,6 +144,8 @@ public class ClientHandler implements Runnable {
    * @throws IOException if an I/O error occurs while sending the message.
    */
   public void send(Object message) throws IOException {
+    System.out.println("Sending message...");
+    System.out.println("Socket closed? " + socket.isClosed());
     String json = gson.toJson(message); // Convert the response object to JSON string
     out.write(json); // Write the JSON to output stream
     out.newLine();   // Send a newline to signal the end of the message

@@ -87,6 +87,7 @@ public class SocketService implements SocketSubject {
       Respond respond = gson.fromJson(jsonResponse, Respond.class);
       Respond respondDecoded = RespondValidate.decode(respond);
       System.out.println("Respond decoded: " + respondDecoded);
+      if(respondDecoded.type().equals("disconnect")) return;
       // Notify listeners with the response type and payload
       notifyListener(respondDecoded.type(), (String) respondDecoded.payload());
     } catch (InvalidMessageException e) {
@@ -101,14 +102,18 @@ public class SocketService implements SocketSubject {
   public void disconnect() {
     running = false;
     try {
+      Request disconnectRequest = new Request("disconnect", "disconnect",
+              new Gson().toJsonTree("disconnect"));
+      sendRequest(disconnectRequest);
+
+      Thread.sleep(1000);
+
       removeAllListeners();
-//      if (receiveThread != null && receiveThread.isAlive()) {
-//        receiveThread.interrupt();  // Optionally stop receive thread
-//      }
+      System.out.println("Client is disconnecting from the server...");
       if (socket != null && !socket.isClosed()) socket.close();
       if (in != null) in.close();
       if (out != null) out.close();
-    } catch (IOException e) {
+    } catch (IOException | InterruptedException e) {
       ErrorHandler.handleError(e, "Error while disconnecting from server");
     }
   }

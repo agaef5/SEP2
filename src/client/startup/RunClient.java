@@ -4,12 +4,14 @@ import client.networking.SocketService;
 import client.ui.authentication.login.LoginController;
 import client.ui.authentication.register.RegisterController;
 import client.ui.navigation.MainWindowController;
+import com.google.gson.Gson;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import shared.Request;
 
 import java.io.IOException;
 
@@ -41,6 +43,7 @@ public class RunClient extends Application
     primaryStage.setOnCloseRequest(event -> {
       socketservice.disconnect();
       Platform.exit();
+      System.out.println("Client disconnected and closed");
     });
 
 //    Show the window

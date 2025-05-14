@@ -2,9 +2,13 @@ package client.ui.authentication.login;
 
 import client.networking.SocketService;
 import client.networking.authentication.AuthenticationClient;
+import client.startup.RunClient;
 import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
+import client.ui.util.ErrorHandler;
 import com.google.gson.Gson;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.BooleanExpression;
 import javafx.beans.property.*;
 import shared.DTO.HorseDTO;
 import shared.horse.CreateHorseResponse;
@@ -38,12 +42,12 @@ public class LoginVM implements ViewModel, MessageListener
 
     if ( usernameProp.get() == null || usernameProp.get().isEmpty() )
     {
-      messageProp.set("Username is empty"); //if usernam is a PK in database?
+      messageProp.set("Username is empty");
       return;
     }
     if ( passwordProp.get() == null || passwordProp.get().isEmpty() )
     {
-      messageProp.set("Password is empty"); //if rules?
+      messageProp.set("Password is empty");
       return;
     }
     LoginRequest request = new LoginRequest(usernameProp.get(),
@@ -51,21 +55,9 @@ public class LoginVM implements ViewModel, MessageListener
     authClient.loginUser(request);
   }
 
-  public void disableLoginButtonProprietyLogic()
+  public BooleanBinding disableLoginButtonPropriety ()
   {
-    boolean shouldDisable =
-        usernameProp.get() == null || usernameProp.get().isEmpty()
-            || passwordProp.get() == null || passwordProp.get().isEmpty();
-    disableLoginButtonProp.set(shouldDisable);
-    System.out.println("confirmLoginState: " + shouldDisable);
-
-    usernameProp.set("");
-    passwordProp.set("");
-  }
-
-  public BooleanProperty disableLoginButtonPropriety ()
-  {
-    return disableLoginButtonProp;
+    return usernameProp.isEmpty().or(passwordProp.isEmpty());
   }
 
   public StringProperty userNamePropriety ()
@@ -78,9 +70,13 @@ public class LoginVM implements ViewModel, MessageListener
     return passwordProp;
   }
 
+  public StringProperty messageProperty(){
+      return messageProp;
+  }
+
   @Override
   public void update(String type, String payload) {
-    System.out.println("Message received: " + type);
+    System.out.println("Message received in LoginVM: " + type);
       if (type.equals("login")) {
           LoginRespond loginRespond = gson.fromJson(payload, LoginRespond.class);
           handleLogin(loginRespond);
@@ -89,7 +85,8 @@ public class LoginVM implements ViewModel, MessageListener
 
   public void handleLogin(LoginRespond loginRespond){
       if(loginRespond.message().equals("error")){
-        messageProp.set("Login failed: " + loginRespond.payload().toString());
+        ErrorHandler.handleError(new Exception(""),loginRespond.payload().toString());
+        messageProp.set("Login failed");
       }
   }
 }

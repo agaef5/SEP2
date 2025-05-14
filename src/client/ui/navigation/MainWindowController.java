@@ -55,11 +55,9 @@ public class MainWindowController {
         authenticationClient = new SocketAuthenticationClient(socketService);
         horsesClient = new SocketHorsesClient(socketService);
         raceClient = new SocketRaceClient(socketService);
-        ;
 
         if (loginController != null) {
             loginController.setWindowController(this);
-            socketService.addListener(loginController);
         }
         loadLoginPage();
 
@@ -95,7 +93,6 @@ public class MainWindowController {
 
                 if (controller instanceof RegisterController) {
                     viewModel = new RegisterVM(authenticationClient, socketService);
-                    socketService.addListener((MessageListener) controller);
                 }
 
                 if (controller instanceof AdminPanelController) {
@@ -116,6 +113,14 @@ public class MainWindowController {
 
                 if (controller instanceof UserBettingViewController) {
                     viewModel = new UserBettingViewVM(horsesClient, socketService);
+                }
+
+//                Add socketListeners
+                if (controller instanceof MessageListener listener) {
+                    socketService.addListener(listener);
+                }
+                if (viewModel instanceof MessageListener listener) {
+                    socketService.addListener(listener);
                 }
 
                 controller.initialize(viewModel);

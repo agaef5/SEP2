@@ -31,14 +31,15 @@ public class LoginController implements MessageListener, Controller
 
   public void initialize (ViewModel loginVM)
   {
-      this.viewModel = (LoginVM) loginVM;
+    this.viewModel = (LoginVM) loginVM;
 
     usernameNameInput.textProperty()
         .bindBidirectional(viewModel.userNamePropriety());
-    messageLabel.textProperty()
-        .bindBidirectional(viewModel.userNamePropriety());
     passwordInput.textProperty()
         .bindBidirectional(viewModel.passwordPropriety());
+
+    messageLabel.textProperty()
+            .bindBidirectional(viewModel.messageProperty());
     buttonLogin.disableProperty().bind(viewModel.disableLoginButtonPropriety());
   }
 
