@@ -5,6 +5,7 @@ import server.model.RaceTrack;
 import server.persistence.shared.ConnectionProviderImpl;
 import shared.DTO.HorseDTO;
 import shared.DTO.RaceDTO;
+import shared.DTO.RaceState;
 import shared.DTO.RaceTrackDTO;
 
 import java.sql.*;
@@ -173,7 +174,7 @@ public class RaceRepositoryImpl implements RaceRepository {
                 String name = resultSet.getString("name");
                 Timestamp startTime = resultSet.getTimestamp("startTime");
 
-                return new RaceDTO(name, startTime, readParticipantsList(id), readRaceTrack(id));
+                return new RaceDTO(name, startTime, readParticipantsList(id), readRaceTrack(id), RaceState.NOT_STARTED);
             } else {
                 return null;
             }
@@ -217,7 +218,7 @@ public class RaceRepositoryImpl implements RaceRepository {
                     raceTrack = new RaceTrackDTO(trackName, trackLength, trackLocation);
                 }
 
-                RaceDTO race = new RaceDTO(name, startTime, readParticipantsList(id), raceTrack);
+                RaceDTO race = new RaceDTO(name, startTime, readParticipantsList(id), raceTrack, RaceState.NOT_STARTED);
 
                 result.add(race);
             }
@@ -246,7 +247,7 @@ public class RaceRepositoryImpl implements RaceRepository {
                 String name = resultSet.getString("name");
                 Timestamp startTime = resultSet.getTimestamp("startTime");
 
-                RaceDTO race = new RaceDTO(name, startTime, readParticipantsList(id), readRaceTrack(id));
+                RaceDTO race = new RaceDTO(name, startTime, readParticipantsList(id), readRaceTrack(id), RaceState.NOT_STARTED);
 
                 result.add(race);
             }
