@@ -5,6 +5,7 @@ import client.networking.race.RaceClient;
 import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -152,35 +153,64 @@ public class CreateRaceVM implements ViewModel, MessageListener
    */
   @Override
   public void update(String type, String payload) {
-    switch (type) {
-      case "getRaceTracks":
-        GetRaceTrackResponse trackResponse = gson.fromJson(payload, GetRaceTrackResponse.class);
-        updateAvailableRaceTracks(trackResponse);
-        break;
-      case "getRaceList":
-        GetRaceListResponse raceListResponse = gson.fromJson(payload, GetRaceListResponse.class);
-        handleRaceList(raceListResponse);
-        break;
-      case "createRace":
-        // Add null check for payload
-        if (payload != null && !payload.isEmpty()) {
-          CreateRaceResponse createRaceResponse = gson.fromJson(payload, CreateRaceResponse.class);
-          if (createRaceResponse != null) {
-            handleCreateRaceResponse(createRaceResponse);
-            raceClient.getRaceList();
-            if (createRaceResponse.Race() != null) {
-              RaceDTO newRace = gson.fromJson(createRaceResponse.Race().toString(), RaceDTO.class);
-              setSelectedRace(newRace);
+    try {
+      switch (type) {
+        case "getRaceTracks":
+          GetRaceTrackResponse trackResponse = gson.fromJson(payload, GetRaceTrackResponse.class);
+          updateAvailableRaceTracks(trackResponse);
+          break;
+        case "getRaceList":
+          GetRaceListResponse raceListResponse = gson.fromJson(payload, GetRaceListResponse.class);
+          handleRaceList(raceListResponse);
+          break;
+        case "createRace":
+          // Add null check for payload
+          if (payload != null && !payload.isEmpty()) {
+            try {
+              // Try to parse the payload directly
+              RaceResponse createRaceResponse = gson.fromJson(payload, RaceResponse.class);
+
+              if (createRaceResponse != null) {
+                handleCreateRaceResponse(createRaceResponse);
+                raceClient.getRaceList();
+
+                if (createRaceResponse.race() != null) {
+                  // If Race is a JSON string, we need to parse it
+                  Object raceObject = createRaceResponse.race();
+                  RaceDTO newRace;
+
+                  if (raceObject instanceof String) {
+                    newRace = gson.fromJson((String)raceObject, RaceDTO.class);
+                  } else {
+                    // Otherwise, convert the object to JSON and then parse it
+                    newRace = gson.fromJson(gson.toJson(raceObject), RaceDTO.class);
+                  }
+                  setSelectedRace(newRace);
+                }
+              } else {
+                System.out.println("Received null CreateRaceResponse");
+                raceClient.getRaceList(); // Still refresh the race list
+              }
+            } catch (JsonSyntaxException e) {
+              System.err.println("Error parsing createRace payload: " + e.getMessage());
+              System.err.println("Payload: " + payload);
+              raceClient.getRaceList(); // Still refresh the race list
             }
           } else {
-            System.out.println("Received null CreateRaceResponse");
+            System.out.println("Received empty payload for createRace");
             raceClient.getRaceList(); // Still refresh the race list
           }
-        } else {
-          System.out.println("Received empty payload for createRace");
-          raceClient.getRaceList(); // Still refresh the race list
-        }
-        break;
+          break;
+        case "horseMoveUpdate":
+          // Special handling for horse move updates if needed
+          break;
+        default:
+          System.out.println("Unhandled message type: " + type);
+          break;
+      }
+    } catch (Exception e) {
+      System.err.println("Error in CreateRaceVM.update(): " + e.getMessage());
+      e.printStackTrace();
     }
   }
 
@@ -201,10 +231,10 @@ public class CreateRaceVM implements ViewModel, MessageListener
    *
    * @param createRaceResponse Response object from the create race operation
    */
-  private void handleCreateRaceResponse(CreateRaceResponse createRaceResponse) {
+  private void handleCreateRaceResponse(RaceResponse createRaceResponse) {
     Platform.runLater(() -> {
       // Add null check here
-      if (createRaceResponse != null && createRaceResponse.Race() != null) {
+      if (createRaceResponse != null && createRaceResponse.race() != null) {
         System.out.println("Race created successfully");
       } else {
         System.out.println("Failed to create race");

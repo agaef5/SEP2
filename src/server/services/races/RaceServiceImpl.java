@@ -7,13 +7,12 @@ import server.model.RaceTrack;
 import server.persistence.raceRepository.raceTrack.RaceTrackRepImpl;
 import server.validation.baseValidation.BaseVal;
 import shared.DTO.RaceDTO;
+import shared.DTO.RaceState;
 import shared.DTO.RaceTrackDTO;
 import shared.DTO.HorseDTO;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class RaceServiceImpl implements RacesService {
@@ -39,8 +38,8 @@ public class RaceServiceImpl implements RacesService {
       Race race = new Race(name, raceTrack,capacity);
       RaceManager.getInstance().addRace(race); // assuming this adds it to in-memory list
       return toDTO(race);
-    } catch (SQLException e) {
-      System.err.println("Database error when creating race: " + e.getMessage());
+    } catch (SQLException e)
+    { System.err.println("Database error when creating race: " + e.getMessage());
       throw new RuntimeException("Failed to create race", e);
     }
   }
@@ -88,8 +87,8 @@ public class RaceServiceImpl implements RacesService {
             race.getName(),
             race.getDateTime(),
             horseDTOs,
-            toDTO(race.getRaceTrack())
-    );
+            toDTO(race.getRaceTrack()),
+            RaceState.NOT_STARTED);
   }
 
 

@@ -4,6 +4,7 @@ import server.networking.Server;
 import server.persistence.horses.HorseRepositoryImpl;
 import server.persistence.raceRepository.RaceRepositoryImpl;
 import shared.DTO.RaceState;
+import shared.race.RaceUpdate;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -140,9 +141,12 @@ public class Race implements Runnable {
       listener.onHorseFinished(horse,position);
     }
   }
+
   private void broadcastHorsePositions(int[] positions)
   {
-    Server.broadcast("horseMoveUpdate",positions);
+    List<Integer> positionsList = Arrays.stream(positions).boxed().toList();
+    RaceUpdate payload = new RaceUpdate(name, positionsList);
+    Server.broadcast("horseMoveUpdate", payload);
   }
 
   private void notifyRaceFinished()

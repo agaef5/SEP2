@@ -1,5 +1,6 @@
 package server.networking.socketHandling;
 
+import client.ui.util.ErrorHandler;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -143,7 +144,11 @@ public class ClientHandler implements Runnable {
    * @param message The response message object to be sent to the client.
    * @throws IOException if an I/O error occurs while sending the message.
    */
-  public void send(Object message) throws IOException {
+  public synchronized void send(Object message) throws IOException {
+    if(message.equals("")) {
+      System.out.println("Empty message");
+      return;
+    }
     String json = gson.toJson(message); // Convert the response object to JSON string
     out.write(json); // Write the JSON to output stream
     out.newLine();   // Send a newline to signal the end of the message

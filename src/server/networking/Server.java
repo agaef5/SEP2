@@ -33,11 +33,12 @@ public class Server {
    */
   public static void broadcast(String type, Object payload) {
     Respond response = new Respond(type, payload);
-    String json = new Gson().toJson(response);
+//    String json = new Gson().toJson(response);
+    System.out.println("Server sends: " + response.type() + ", payload: " + response.payload());
 
     for (ClientHandler client : clients) {
       try {
-        client.send(json); // send JSON-formatted response
+        client.send(response); // send JSON-formatted response
       } catch (IOException e) {
         throw new RuntimeException("Error broadcasting message: " + e.getMessage(), e);
       }

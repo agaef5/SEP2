@@ -107,9 +107,9 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
         // For now, we'll use dummy data
         Platform.runLater(() -> {
             betHistory.clear();
-            betHistory.add("Example bet: $100 on Thunder - Won $200");
-            betHistory.add("Example bet: $50 on Lightning - Lost");
-            betHistory.add("Example bet: $200 on Blizzard - Won $400");
+//            betHistory.add("Example bet: $100 on Thunder - Won $200");
+//            betHistory.add("Example bet: $50 on Lightning - Lost");
+//            betHistory.add("Example bet: $200 on Blizzard - Won $400");
         });
     }
 
@@ -120,45 +120,48 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
         // The actual exit will be handled by the controller
     }
 
-    // Update race information based on the received race list
-//    private void updateRaceInfo(List<RaceDTO> races) {
-//        Platform.runLater(() -> {
-//            if (races != null && !races.isEmpty()) {
-//                // Get the first race in the queue (assume it's sorted by time)
-//                selectedRace = races.get(0);
-//
-//                // Update button disabled state based on race state
-////                bettingButtonDisabled.set(selectedRace.state() != RaceState.NOT_STARTED);
-//
-//                // Display different message based on the race state
-//                if (selectedRace.state() == RaceState.NOT_STARTED) {
-//                    // Format the race information for upcoming race
-//                    String info = String.format("Next race: %s - Track: %s - Horses: %d",
-//                            selectedRace.name(),
-//                            selectedRace.raceTrack().name(),
-//                            selectedRace.horses().size());
-//
-//                    raceInfo.set(info);
-//                } else if (selectedRace.state() == RaceState.IN_PROGRESS) {
-//                    raceInfo.set("This race is in progress");
-//                } else if (selectedRace.state() == RaceState.FINISHED) {
-//                    raceInfo.set("The last race has finished. Waiting for the next race...");
-//                }
-//            } else {
-//                raceInfo.set("No upcoming races");
-//                selectedRace = null;
-//                bettingButtonDisabled.set(true); // Disable button when no races are available
-//            }
-//        });
-//    }
+//     Update race information based on the received race list
+    private void updateRaceInfo(List<RaceDTO> races) {
+        Platform.runLater(() -> {
+            if (races != null && !races.isEmpty()) {
+                // Get the first race in the queue (assume it's sorted by time)
+                selectedRace = races.get(0);
+
+                // Update button disabled state based on race state
+//                TODO: initialize different race stats on server
+                bettingButtonDisabled.set(selectedRace.raceState() != RaceState.NOT_STARTED);
+
+                // Display different message based on the race state
+                if (selectedRace.raceState() == RaceState.NOT_STARTED) {
+                    // Format the race information for upcoming race
+                    String info = String.format("Next race: %s - Track: %s - Horses: %d",
+                            selectedRace.name(),
+                            selectedRace.raceTrack().name(),
+                            selectedRace.horses().size());
+
+                    raceInfo.set(info);
+                } else if (selectedRace.raceState() == RaceState.IN_PROGRESS) {
+                    raceInfo.set("This race is in progress");
+                } else if (selectedRace.raceState() == RaceState.FINISHED) {
+                    raceInfo.set("The last race has finished. Waiting for the next race...");
+                }
+            } else {
+                raceInfo.set("No upcoming races");
+                selectedRace = null;
+                bettingButtonDisabled.set(true); // Disable button when no races are available
+            }
+        });
+    }
 
     // Handle messages received from the server
     @Override
     public void update(String type, String payload) {
         switch (type) {
+
             case "getRaceList" -> {
-                GetRaceListResponse response = gson.fromJson(payload, GetRaceListResponse.class);
-//                updateRaceInfo(response.races());
+                GetRaceListResponse raceListResponse = gson.fromJson(payload, GetRaceListResponse.class);
+                updateRaceInfo(raceListResponse.races());
+                break;
             }
             case "userBalance" -> {
                 // TODO create this case
