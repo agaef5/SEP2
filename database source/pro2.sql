@@ -10,6 +10,21 @@ CREATE TABLE sep2.game_user(
     balance INT
 );
 
+CREATE TABLE sep2.raceObserver(
+    player_username REFERENCES sep2.game_user(username),
+    race_id REFERENCES sep2.race(id),
+    id INT  PRIMARY KEY
+)
+
+CREATE TABLE sep2.bet(
+    id INT  PRIMARY KEY
+    raceObserver_id REFERENCES sep2.raceObserver(id),
+    race_id REFERENCES sep2.race(id),
+    participant_id REFERENCES sep2.participant(id),
+    betAmount INT,
+    status BOOLEAN
+)
+
 
 CREATE TABLE sep2.horse(
     id SERIAL PRIMARY KEY,
@@ -19,7 +34,8 @@ CREATE TABLE sep2.horse(
 );
 
 CREATE TABLE sep2.raceTrack(
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY, --just added, was missing
+    race_id SERIAL PRIMARY KEY,
     name VARCHAR,
     raceLength INT,
     location VARCHAR
@@ -29,10 +45,16 @@ CREATE TABLE sep2.raceTrack(
 CREATE TABLE sep2.race(
     id INT PRIMARY KEY,
     racetrack_id INT REFERENCES sep2.raceTrack(id),
-    horse_id INT REFERENCES sep2.horse(id)
     name VARCHAR,
     startTime TIMESTAMP
 );
+
+CREATE TABLE sep2.participant(
+    id INT PRIMARY KEY,
+    race_id INT REFERENCES sep2.race(id),
+    horse_id INT REFERENCES sep2.horse(id),
+    rank INT
+)
 
 
 INSERT INTO sep2.raceTrack (name, raceLength, location)
@@ -43,4 +65,3 @@ VALUES
     ('Dirt track', 3300, 'Sweden'),
     ('Ice track', 4000, 'Syberia'),
     ('Hot', 666, 'Hell');
-

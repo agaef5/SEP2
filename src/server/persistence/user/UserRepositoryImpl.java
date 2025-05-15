@@ -73,7 +73,7 @@ public class UserRepositoryImpl implements UserRepository {
   @Override
   public User createUser(String username, String email, String password, boolean isAdmin) throws SQLException{
     try (Connection connection = getConnection()) {
-      String query = "INSERT INTO game_user (username, password_hash, email, isAdmin, balance) VALUES (?, ?, ?, ?, ?)";
+      String query = "INSERT INTO Game_user (username, password_hash, email, isAdmin, balance) VALUES (?, ?, ?, ?, ?)";
       PreparedStatement statement = connection.prepareStatement(query);
       statement.setString(1, username);
       statement.setString(2, password);
@@ -102,7 +102,7 @@ public class UserRepositoryImpl implements UserRepository {
   @Override
   public User readByUsername(String username) throws SQLException{
     try (Connection connection = getConnection()) {
-      String query = "SELECT * FROM game_user  WHERE username = ?";
+      String query = "SELECT * FROM Game_user  WHERE username = ?";
       PreparedStatement statement = connection.prepareStatement(query);
       statement.setString(1, username);
       ResultSet resultSet = statement.executeQuery();
@@ -117,7 +117,7 @@ public class UserRepositoryImpl implements UserRepository {
   @Override
   public User readByEmail(String email) throws SQLException{
     try (Connection connection = getConnection()) {
-      String query = "SELECT * FROM game_user WHERE email = ?";
+      String query = "SELECT * FROM Game_user WHERE email = ?";
       PreparedStatement statement = connection.prepareStatement(query);
       statement.setString(1, email);
       ResultSet resultSet = statement.executeQuery();
@@ -134,7 +134,7 @@ public class UserRepositoryImpl implements UserRepository {
     User user = readByUsername(username);
 
     try (Connection connection = getConnection()) {
-      String query = "UPDATE game_user SET balance = ? WHERE username = ?";
+      String query = "UPDATE Game_user SET balance = ? WHERE username = ?";
       PreparedStatement statement = connection.prepareStatement(query);
       statement.setInt(1, newBalance);
       statement.setString(2, username);

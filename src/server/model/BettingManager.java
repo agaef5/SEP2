@@ -1,5 +1,7 @@
 package server.model;
 
+import server.persistence.raceRepository.bet.BetRepository;
+import server.persistence.raceRepository.bet.BetRepositoryImpl;
 import server.persistence.user.UserRepository;
 import server.persistence.user.UserRepositoryImpl;
 
@@ -14,7 +16,7 @@ public class BettingManager implements RaceListener {
     private static volatile BettingManager instance;
 
     // use the singleton repositories directly
-    private final BetRepository    betRepository  = BetRepositoryImpl.getInstance();
+//    private final BetRepository betRepository  = BetRepositoryImpl.getInstance();
     private final UserRepository userRepository = UserRepositoryImpl.getInstance();
 
     private final List<Bet>        openBets       = new ArrayList<>();
@@ -82,12 +84,12 @@ public class BettingManager implements RaceListener {
                 }
             }
 
-            try {
-                betRepository.save(bet);
-            } catch (SQLException e) {
-                throw new RuntimeException(
-                        "Failed to save bet for user " + bet.getUser().getUsername(), e);
-            }
+//            try {
+//                betRepository.save(bet);
+//            } catch (SQLException e) {
+//                throw new RuntimeException(
+//                        "Failed to save bet for user " + bet.getUser().getUsername(), e);
+//            }
         }
 
         openBets.clear();
@@ -116,12 +118,12 @@ public class BettingManager implements RaceListener {
         Bet bet = new Bet(currentRace, horse, user, amount);
         openBets.add(bet);
 
-        try {
-            betRepository.save(bet);
-        } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Failed to save new bet for user " + user.getUsername(), e);
-        }
+//        try {
+//            betRepository.save(bet);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(
+//                    "Failed to save new bet for user " + user.getUsername(), e);
+//        }
         return bet;
     }
 

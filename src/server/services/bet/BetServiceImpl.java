@@ -20,7 +20,7 @@ public class BetServiceImpl implements BetService {
 
     private final UserRepository userRepo        = UserRepositoryImpl.getInstance();
     private final HorseRepository horseRepo       = HorseRepositoryImpl.getInstance();
-    private final BetRepository     betRepo         = BetRepositoryImpl.getInstance();
+//    private final BetRepository     betRepo         = BetRepositoryImpl.getInstance();
     private final BettingManager    bettingManager  = BettingManager.getInstance();
 
     private BetServiceImpl() throws SQLException { /* singleton */ }
@@ -69,26 +69,27 @@ public class BetServiceImpl implements BetService {
      * Fetch all bets ever placed by a given user. Wraps SQLExceptions similarly.
      */
     public List<BetDTO> getBetsByUser(String username) {
-        try {
-            User user = userRepo.readByUsername(username);
-            if (user == null) {
-                throw new IllegalArgumentException("Unknown user: " + username);
-            }
-            return betRepo.readByUser(user);
-        } catch (SQLException e) {
-            throw new RuntimeException("Database error while fetching bets for user " + username, e);
-        }
+//        try {
+//            User user = userRepo.readByUsername(username);
+//            if (user == null) {
+//                throw new IllegalArgumentException("Unknown user: " + username);
+//            }
+//            return betRepo.readByUser(user);
+//        } catch (SQLException e) {
+//            throw new RuntimeException("Database error while fetching bets for user " + username, e);
+//        }
+        return null;
     }
 
     /**
      * Persist any Bet (e.g. if you settle it outside of createBet).
      */
     public void saveBet(Bet bet) {
-        try {
-            betRepo.save(bet);
-        } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Database error while saving bet for user " + bet.getUser().getUsername(), e);
-        }
+//        try {
+//            betRepo.save(bet);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(
+//                    "Database error while saving bet for user " + bet.getUser().getUsername(), e);
+//        }
     }
 }

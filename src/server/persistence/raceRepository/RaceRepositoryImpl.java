@@ -2,10 +2,13 @@ package server.persistence.raceRepository;
 
 import server.model.Race;
 import server.model.RaceTrack;
+import server.persistence.shared.ConnectionProviderImpl;
+import shared.DTO.HorseDTO;
+import shared.DTO.RaceDTO;
+import shared.DTO.RaceTrackDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,7 +17,13 @@ import java.util.List;
  */
 public class RaceRepositoryImpl implements RaceRepository {
     private static RaceRepositoryImpl instance;
+    private final ConnectionProviderImpl connectionProvider;
     private int defaultCapacity = 7;
+
+    public RaceRepositoryImpl(ConnectionProviderImpl connectionProvider)
+    {
+        this.connectionProvider = connectionProvider;
+    }
 
     /**
      * Private constructor to prevent direct instantiation.
@@ -22,9 +31,11 @@ public class RaceRepositoryImpl implements RaceRepository {
      *
      * @throws SQLException if a database access error occurs
      */
-    private RaceRepositoryImpl() throws SQLException {
-        DriverManager.registerDriver(new org.postgresql.Driver());
-    }
+//    private RaceRepositoryImpl() throws SQLException {
+//        DriverManager.registerDriver(new org.postgresql.Driver());
+//    } You don’t need to register the driver manually anymore, because
+//    Recent versions of JDBC automatically load the driver when DriverManager.getConnection(...) is called.
+
 
     /**
      * Provides a singleton instance of the {@link RaceRepositoryImpl} class.
@@ -35,7 +46,7 @@ public class RaceRepositoryImpl implements RaceRepository {
      */
     public static synchronized RaceRepositoryImpl getInstance() throws SQLException {
         if (instance == null) {
-            instance = new RaceRepositoryImpl();
+            instance = new RaceRepositoryImpl(new ConnectionProviderImpl());
         }
         return instance;
     }
@@ -47,9 +58,7 @@ public class RaceRepositoryImpl implements RaceRepository {
      * @throws SQLException if a database access error occurs
      */
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/postgres?currentSchema=sep2",
-                "postgres", "1234");
+        return connectionProvider.getConnection();
     }
 
     /**
@@ -67,6 +76,7 @@ public class RaceRepositoryImpl implements RaceRepository {
 
             String trackQuery = "SELECT id FROM raceTrack WHERE name = ? AND raceLength = ? AND location = ?";
             PreparedStatement trackStatement = connection.prepareStatement(trackQuery);
+
             trackStatement.setString(1, raceTrack.getName());
             trackStatement.setInt(2, raceTrack.getLength());
             trackStatement.setString(3, raceTrack.getLocation());
@@ -106,6 +116,7 @@ public class RaceRepositoryImpl implements RaceRepository {
             String trackQuery = "SELECT id FROM raceTrack WHERE name = ? " +
                     "AND raceLength = ? AND location = ?";
             PreparedStatement trackStatement = connection.prepareStatement(trackQuery);
+
             trackStatement.setString(1, raceTrack.getName());
             trackStatement.setInt(2, raceTrack.getLength());
             trackStatement.setString(3, raceTrack.getLocation());
@@ -148,37 +159,12 @@ public class RaceRepositoryImpl implements RaceRepository {
      * @throws SQLException if a database access error occurs
      */
     @Override
-    public Race readByID(int id) throws SQLException {
-//        try (Connection connection = getConnection())
-//        {
-//            String querry =  "SELECT r.id, r.name, r.startTime, " +
-//                    "rt.name AS track_name, rt.raceLength, rt.location " +
-//                    "FROM race r " +
-//                    "JOIN raceTrack rt ON r.race_id = rt.id " +
-//                    "WHERE r.name = ?";
-//            PreparedStatement statement = connection.prepareStatement(querry);
-//
-//            statement.setInt(1, id);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            if (!resultSet.next()) return null;
-//
-//            Race race = new Race(resultSet.getString("name"), null, defaultCapacity);
-//            RaceTrack track = new RaceTrack(
-//                    resultSet.getString("track_name"),
-//                    resultSet.getInt("raceLength"),
-//                    resultSet.getString("location")
-//            );
-//            race.set(track);
-//        }
+    public RaceDTO readByID(int id) throws SQLException {
         try (Connection connection = getConnection()) {
-            String query = "SELECT r.id, r.name, r.startTime," +
-                    "rt.name AS track_name, rt.raceLength, rt.location," +
-                    "h.id AS horse_id, h.name AS horse_name, h.speedMin, h.speedMax" +
-                    "FROM race r" +
-                    "LEFT JOIN raceTrack rt ON r.racetrack_id = rt.id" +
-                    "LEFT JOIN horse h ON r.horse_id = h.id" +
-                    "WHERE r.id = ?";
+            String query = "SELECT name, startTime " +
+                    "FROM race r " +
+                    "WHERE id = ?";
+
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -187,17 +173,7 @@ public class RaceRepositoryImpl implements RaceRepository {
                 String name = resultSet.getString("name");
                 Timestamp startTime = resultSet.getTimestamp("startTime");
 
-                String trackName = resultSet.getString("track_name");
-                int trackLength = resultSet.getInt("raceLength");
-                String trackLocation = resultSet.getString("location");
-
-                String horseName = resultSet.getString("horse_name");
-                int speedMin = resultSet.getInt("speedMin");
-                int speedMax = resultSet.getInt("speedMax");
-
-                RaceTrack raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
-
-                return new Race(name, raceTrack, defaultCapacity);
+                return new RaceDTO(name, startTime, readParticipantsList(id), readRaceTrack(id));
             } else {
                 return null;
             }
@@ -212,41 +188,36 @@ public class RaceRepositoryImpl implements RaceRepository {
      * @throws SQLException if a database access error occurs
      */
     @Override
-    public List<Race> readByName(String searchName) throws SQLException
+    public List<RaceDTO> readByName(String searchName) throws SQLException
     {
         try (Connection connection = getConnection())
         {
             String query = "SELECT r.id, r.name, r.status, r.startTime, " +
                     "rt.name as track_name, rt.raceLength, rt.location " +
-                    "h.id AS horse_id, h.name AS horse_name, h.speedMin, h.speedMax"+
                     "FROM race r " +
                     "LEFT JOIN raceTrack rt ON r.race_id = rt.id " +
-                    "LEFT JOIN horse h ON r.horse_id = h.id" +
                     "WHERE r.name LIKE ?";
 
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, "%" + searchName + "%");
             ResultSet resultSet = statement.executeQuery();
 
-            ArrayList<Race> result = new ArrayList<>();
+            ArrayList<RaceDTO> result = new ArrayList<>();
             while (resultSet != null && resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
+                Timestamp startTime = resultSet.getTimestamp("startTime");
 
                 String trackName = resultSet.getString("track_name");
                 int trackLength = resultSet.getInt("raceLength");
                 String trackLocation = resultSet.getString("location");
 
-                String horseName = resultSet.getString("horse_name");
-                int speedMin = resultSet.getInt("speedMin");
-                int speedMax = resultSet.getInt("speedMax");
-
-                RaceTrack raceTrack = null;
+                RaceTrackDTO raceTrack = null;
                 if(trackName!=null){
-                    raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
+                    raceTrack = new RaceTrackDTO(trackName, trackLength, trackLocation);
                 }
 
-                Race race = new Race(name, raceTrack, defaultCapacity);
+                RaceDTO race = new RaceDTO(name, startTime, readParticipantsList(id), raceTrack);
 
                 result.add(race);
             }
@@ -261,37 +232,21 @@ public class RaceRepositoryImpl implements RaceRepository {
      * @throws SQLException if a database access error occurs
      */
     @Override
-    public List<Race> getAll() throws SQLException {
+    public List<RaceDTO> getAll() throws SQLException {
         try (Connection connection = getConnection()) {
-            String query = "SELECT r.id, r.name, r.status, r.startTime, " +
-                    "rt.name as track_name, rt.raceLength, rt.location " +
-                    "h.id AS horse_id, h.name AS horse_name, h.speedMin, h.speedMax"+
-                    "FROM race r " +
-                    "LEFT JOIN raceTrack rt ON r.race_id = rt.id" +
-                    "LEFT JOIN horse h ON r.horse_id = h.id" ;
+            String query = "SELECT  name, startTime, " +
+                    "FROM race ";
 
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
 
-            ArrayList<Race> result = new ArrayList<>();
+            ArrayList<RaceDTO> result = new ArrayList<>();
             while (resultSet != null && resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
+                Timestamp startTime = resultSet.getTimestamp("startTime");
 
-                String trackName = resultSet.getString("track_name");
-                int trackLength = resultSet.getInt("raceLength");
-                String trackLocation = resultSet.getString("location");
-
-                String horseName = resultSet.getString("horse_name");
-                int speedMin = resultSet.getInt("speedMin");
-                int speedMax = resultSet.getInt("speedMax");
-
-                RaceTrack raceTrack = null;
-                if(trackName!=null){
-                    raceTrack = new RaceTrack(trackName, trackLength, trackLocation);
-                }
-
-                Race race = new Race(name, raceTrack, defaultCapacity);
+                RaceDTO race = new RaceDTO(name, startTime, readParticipantsList(id), readRaceTrack(id));
 
                 result.add(race);
             }
@@ -378,5 +333,59 @@ public class RaceRepositoryImpl implements RaceRepository {
             statement.setInt(1, 3); // Placeholder for race ID
             statement.executeUpdate();
         }
+    }
+
+    private List<HorseDTO> readParticipantsList(int id) throws SQLException{
+        try (Connection connection = getConnection()) {
+                String horseQuery = "SELECT h.id, h.name, h.speedMin, h.speedMax " +
+                        "FROM participant p " +
+                        "JOIN sep2.horse h ON h.id = p.horse_id " +
+                        "WHERE p.race_id = ?";
+                List<HorseDTO> horseDTOS = new ArrayList<>();
+                try (PreparedStatement horseStatement = connection.prepareStatement(horseQuery))
+                {
+                    horseStatement.setInt(1, id);
+                    try (ResultSet hrs = horseStatement.executeQuery())
+                    {
+                        while (hrs.next())
+                        {
+                            horseDTOS.add(new HorseDTO(
+                                    hrs.getInt("id"),
+                                    hrs.getString("name"),
+                                    hrs.getInt("speedMin"),
+                                    hrs.getInt("speedMax")));
+                        }
+                    }
+                }
+                return horseDTOS;
+        }
+    }
+
+    private RaceTrackDTO readRaceTrack (int id) throws SQLException{
+        try (Connection connection = getConnection()) {
+            String query = "SELECT name, raceLength, location " +
+                    "FROM raceTrack rt " +
+                    "JOIN race r ON rt.race_id = r.id " +
+                    "WHERE race_id = ? ";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            ArrayList<RaceDTO> result = new ArrayList<>();
+            while (resultSet != null && resultSet.next()) {
+
+                String trackName = resultSet.getString("track_name");
+                int trackLength = resultSet.getInt("raceLength");
+                String trackLocation = resultSet.getString("location");
+
+                RaceTrackDTO raceTrack = null;
+                if(trackName!=null){
+                    raceTrack = new RaceTrackDTO(trackName, trackLength, trackLocation);
+                }
+                return raceTrack;
+            }
+        }
+        return null;
     }
 }

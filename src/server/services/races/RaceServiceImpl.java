@@ -88,9 +88,7 @@ public class RaceServiceImpl implements RacesService {
             race.getName(),
             race.getDateTime(),
             horseDTOs,
-            finalPositionDTOs,
-            toDTO(race.getRaceTrack()),
-            race.getStatus()
+            toDTO(race.getRaceTrack())
     );
   }
 

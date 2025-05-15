@@ -2,10 +2,10 @@ package server.persistence.raceRepository;
 
 import server.model.Race;
 import server.model.RaceTrack;
+import shared.DTO.RaceDTO;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,7 +36,7 @@ public interface RaceRepository {
      * @return the {@link Race} object matching the given ID, or {@code null} if not found
      * @throws SQLException if there is an error during the database operation
      */
-    Race readByID(int id) throws SQLException;
+    RaceDTO readByID(int id) throws SQLException;
 
     /**
      * Retrieves a list of races whose names match the specified search criteria.
@@ -45,7 +45,7 @@ public interface RaceRepository {
      * @return a list of {@link Race} objects that match the search criteria
      * @throws SQLException if there is an error during the database operation
      */
-    List<Race> readByName(String name) throws SQLException;
+    List<RaceDTO> readByName(String name) throws SQLException;
 
     /**
      * Retrieves all races from the repository.
@@ -53,7 +53,7 @@ public interface RaceRepository {
      * @return a list of all {@link Race} objects in the repository
      * @throws SQLException if there is an error during the database operation
      */
-    List<Race> getAll() throws SQLException;
+    List<RaceDTO> getAll() throws SQLException;
 
     /**
      * Retrieves a race by its scheduled start time.

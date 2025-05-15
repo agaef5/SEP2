@@ -24,10 +24,10 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
     // Existing properties
     private final StringProperty raceInfo = new SimpleStringProperty("No upcoming races");
     private final BooleanProperty navigateToBetting = new SimpleBooleanProperty(false);
-    private RaceDTO selectedRace;
     private final BooleanProperty bettingButtonDisabled = new SimpleBooleanProperty(true);
     private final StringProperty balanceInfo = new SimpleStringProperty("Balance: $1000");
     private final ObservableList<String> betHistory = FXCollections.observableArrayList();
+    private RaceDTO selectedRace;
     private int userBalance = 1000;
 
     public UserLandingPageVM(RaceClient raceClient, SocketService socketService) {
@@ -121,36 +121,36 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
     }
 
     // Update race information based on the received race list
-    private void updateRaceInfo(List<RaceDTO> races) {
-        Platform.runLater(() -> {
-            if (races != null && !races.isEmpty()) {
-                // Get the first race in the queue (assume it's sorted by time)
-                selectedRace = races.get(0);
-
-                // Update button disabled state based on race state
-                bettingButtonDisabled.set(selectedRace.state() != RaceState.NOT_STARTED);
-
-                // Display different message based on the race state
-                if (selectedRace.state() == RaceState.NOT_STARTED) {
-                    // Format the race information for upcoming race
-                    String info = String.format("Next race: %s - Track: %s - Horses: %d",
-                            selectedRace.name(),
-                            selectedRace.raceTrack().name(),
-                            selectedRace.horses().size());
-
-                    raceInfo.set(info);
-                } else if (selectedRace.state() == RaceState.IN_PROGRESS) {
-                    raceInfo.set("This race is in progress");
-                } else if (selectedRace.state() == RaceState.FINISHED) {
-                    raceInfo.set("The last race has finished. Waiting for the next race...");
-                }
-            } else {
-                raceInfo.set("No upcoming races");
-                selectedRace = null;
-                bettingButtonDisabled.set(true); // Disable button when no races are available
-            }
-        });
-    }
+//    private void updateRaceInfo(List<RaceDTO> races) {
+//        Platform.runLater(() -> {
+//            if (races != null && !races.isEmpty()) {
+//                // Get the first race in the queue (assume it's sorted by time)
+//                selectedRace = races.get(0);
+//
+//                // Update button disabled state based on race state
+////                bettingButtonDisabled.set(selectedRace.state() != RaceState.NOT_STARTED);
+//
+//                // Display different message based on the race state
+//                if (selectedRace.state() == RaceState.NOT_STARTED) {
+//                    // Format the race information for upcoming race
+//                    String info = String.format("Next race: %s - Track: %s - Horses: %d",
+//                            selectedRace.name(),
+//                            selectedRace.raceTrack().name(),
+//                            selectedRace.horses().size());
+//
+//                    raceInfo.set(info);
+//                } else if (selectedRace.state() == RaceState.IN_PROGRESS) {
+//                    raceInfo.set("This race is in progress");
+//                } else if (selectedRace.state() == RaceState.FINISHED) {
+//                    raceInfo.set("The last race has finished. Waiting for the next race...");
+//                }
+//            } else {
+//                raceInfo.set("No upcoming races");
+//                selectedRace = null;
+//                bettingButtonDisabled.set(true); // Disable button when no races are available
+//            }
+//        });
+//    }
 
     // Handle messages received from the server
     @Override
@@ -158,7 +158,7 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
         switch (type) {
             case "getRaceList" -> {
                 GetRaceListResponse response = gson.fromJson(payload, GetRaceListResponse.class);
-                updateRaceInfo(response.races());
+//                updateRaceInfo(response.races());
             }
             case "userBalance" -> {
                 // TODO create this case
