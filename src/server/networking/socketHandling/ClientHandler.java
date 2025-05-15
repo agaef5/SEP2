@@ -144,8 +144,6 @@ public class ClientHandler implements Runnable {
    * @throws IOException if an I/O error occurs while sending the message.
    */
   public void send(Object message) throws IOException {
-    System.out.println("Sending message...");
-    System.out.println("Socket closed? " + socket.isClosed());
     String json = gson.toJson(message); // Convert the response object to JSON string
     out.write(json); // Write the JSON to output stream
     out.newLine();   // Send a newline to signal the end of the message
