@@ -125,7 +125,7 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
         Platform.runLater(() -> {
             if (races != null && !races.isEmpty()) {
                 // Get the first race in the queue (assume it's sorted by time)
-                selectedRace = races.getFirst();
+                selectedRace = races.get(0);
 
                 // Update button disabled state based on race state
 //                TODO: initialize different race stats on server
