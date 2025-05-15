@@ -128,6 +128,7 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
                 selectedRace = races.getFirst();
 
                 // Update button disabled state based on race state
+//                TODO: initialize different race stats on server
                 bettingButtonDisabled.set(selectedRace.raceState() != RaceState.NOT_STARTED);
 
                 // Display different message based on the race state
