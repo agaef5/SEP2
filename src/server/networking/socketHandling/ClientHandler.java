@@ -149,8 +149,6 @@ public class ClientHandler implements Runnable {
       System.out.println("Empty message");
       return;
     }
-//    System.out.println("Sending message...");
-//    System.out.println("Socket closed? " + socket.isClosed());
     String json = gson.toJson(message); // Convert the response object to JSON string
     out.write(json); // Write the JSON to output stream
     out.newLine();   // Send a newline to signal the end of the message
