@@ -68,6 +68,6 @@ VALUES
     ('Hot', 666, 'Hell');
 
 INSERT INTO sep2.game_user (username, password_hash, email, isAdmin, balance)
-VALUES ('admin', 'admin', 'admin@admin.com', TRUE, 0)
+VALUES ('admin', 'admin', 'admin@admin.com', TRUE, 0);
 INSERT INTO sep2.game_user (username, password_hash, email, isAdmin, balance)
 VALUES ('testuser', 'testuser', 'test@user.com', FALSE, 1000);
