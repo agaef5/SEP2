@@ -34,6 +34,7 @@ public class Server {
   public static void broadcast(String type, Object payload) {
     Respond response = new Respond(type, payload);
 //    String json = new Gson().toJson(response);
+    System.out.println("Server sends: " + response.type() + ", payload: " + response.payload());
 
     for (ClientHandler client : clients) {
       try {

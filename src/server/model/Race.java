@@ -144,8 +144,9 @@ public class Race implements Runnable {
 
   private void broadcastHorsePositions(int[] positions)
   {
-    RaceUpdate payload = new RaceUpdate(name, positions);
-    Server.broadcast("horseMoveUpdate",payload);
+    List<Integer> positionsList = Arrays.stream(positions).boxed().toList();
+    RaceUpdate payload = new RaceUpdate(name, positionsList);
+    Server.broadcast("horseMoveUpdate", payload);
   }
 
   private void notifyRaceFinished()

@@ -1,5 +1,7 @@
 package shared.race;
 
-public record RaceUpdate(String raceName, int[] distances)
+import java.util.List;
+
+public record RaceUpdate(String raceName, List<Integer> distances)
 {
 }

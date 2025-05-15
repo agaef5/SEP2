@@ -185,7 +185,6 @@ public class CreateRaceVM implements ViewModel, MessageListener
                     // Otherwise, convert the object to JSON and then parse it
                     newRace = gson.fromJson(gson.toJson(raceObject), RaceDTO.class);
                   }
-
                   setSelectedRace(newRace);
                 }
               } else {
