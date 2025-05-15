@@ -66,9 +66,11 @@ public class UserLandingPageController implements Controller {
         }
     }
 
-    @FXML
     public void handleButtonClick() {
-         viewModel.enterBettingStage();
+        RaceDTO selectedRace = viewModel.getSelectedRace();
+        if (selectedRace != null) {
+            mainWindowController.loadBettingPage(selectedRace);
+        }
     }
 
     @FXML

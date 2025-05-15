@@ -4,6 +4,7 @@ import client.ui.common.MessageListener;
 import client.ui.util.ErrorHandler;
 import client.ui.util.RespondValidate;
 import com.google.gson.Gson;
+import org.junit.platform.commons.function.Try;
 import server.networking.exceptions.InvalidMessageException;
 import shared.Request;
 import shared.Respond;
@@ -84,14 +85,37 @@ public class SocketService implements SocketSubject {
     System.out.println("Server>> " + jsonResponse.toString());
     try {
       System.out.println("Trying to decode the Respond");
+
+      // First check if the response is a valid JSON object
+      if (!jsonResponse.trim().startsWith("{")) {
+        System.err.println("Received invalid JSON: " + jsonResponse);
+        return;
+      }
+
       Respond respond = gson.fromJson(jsonResponse, Respond.class);
+
+      try{
       Respond respondDecoded = RespondValidate.decode(respond);
       System.out.println("Respond decoded: " + respondDecoded);
       if(respondDecoded.type().equals("disconnect")) return;
-      // Notify listeners with the response type and payload
-      notifyListener(respondDecoded.type(), (String) respondDecoded.payload());
-    } catch (InvalidMessageException e) {
-      ErrorHandler.handleError(e, "RespondValidate");
+
+        // Convert payload to string for notification
+        // The payload might already be a string, or it might be an object
+        Object payload = respondDecoded.payload();
+
+        // Check if the payload is already a string
+        if (payload instanceof String) {
+          notifyListener(respondDecoded.type(), (String) payload);
+        } else {
+          // If it's not a string, convert it to a JSON string
+          notifyListener(respondDecoded.type(), gson.toJson(payload));
+        }
+      } catch (InvalidMessageException e) {
+        ErrorHandler.handleError(e, "RespondValidate");
+      }
+    } catch (Exception e) {
+      System.err.println("Error processing response: " + e.getMessage());
+      e.printStackTrace();
     }
   }
 

@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import shared.DTO.HorseDTO;
+import shared.DTO.RaceDTO;
 
 /**
  * Controller for the User Betting View.
@@ -55,7 +56,6 @@ public class UserBettingViewController implements Controller {
 
   private MainWindowController mainWindowController;
 
-
   /**
    * Default empty constructor required by FXML loader.
    */
@@ -68,13 +68,14 @@ public class UserBettingViewController implements Controller {
    *
    * @param userBettingVM The ViewModel that provides data and operations for this view
    */
+  @Override
   public void initialize(ViewModel userBettingVM) {
     this.viewModel = (UserBettingViewVM) userBettingVM;
 
-      // Add debug statement
-      System.out.println("Initializing UserBettingViewController");
+    // Add debug statement
+    System.out.println("Initializing UserBettingViewController");
 
-      // Configure table columns
+    // Configure table columns
     nameColumn.setCellValueFactory(cellData ->
             new SimpleStringProperty(cellData.getValue().name()));
     minSpeedColumn.setCellValueFactory(cellData ->
@@ -82,13 +83,13 @@ public class UserBettingViewController implements Controller {
     maxSpeedColumn.setCellValueFactory(cellData ->
             new SimpleIntegerProperty(cellData.getValue().speedMax()).asObject());
 
-      // Bind table data to ViewModel
-      horseTableView.setItems(viewModel.getHorses());
+    // Bind table data to ViewModel
+    horseTableView.setItems(viewModel.getHorses());
 
-      // Add debug listener to track changes in the horses list
-      viewModel.getHorses().addListener((ListChangeListener<HorseDTO>) change -> {
-        System.out.println("Horses list changed. New size: " + viewModel.getHorses().size());
-      });
+    // Add debug listener to track changes in the horses list
+    viewModel.getHorses().addListener((ListChangeListener<HorseDTO>) change -> {
+      System.out.println("Horses list changed. New size: " + viewModel.getHorses().size());
+    });
 
     // Bind selected horse to ViewModel
     horseTableView.getSelectionModel().selectedItemProperty().addListener(
@@ -118,6 +119,14 @@ public class UserBettingViewController implements Controller {
     placeBetButton.disableProperty().bind(
             viewModel.betValidProperty().not().or(viewModel.uiLockedProperty())
     );
+
+    // Add listener for auto-navigation to game view
+    viewModel.navigateToRaceViewProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal) {
+        navigateToGameView();
+        viewModel.resetRaceViewNavigation();
+      }
+    });
 
     // Add window close handler to cleanup resources
     setupWindowCloseHandler();
@@ -153,10 +162,19 @@ public class UserBettingViewController implements Controller {
     }
   }
 
+  /**
+   * Handles navigation to the game view when the race starts.
+   */
+  private void navigateToGameView() {
+    RaceDTO selectedRace = viewModel.getSelectedRace();
+    if (selectedRace != null) {
+      mainWindowController.loadGameView(selectedRace);
+    }
+  }
 
   @Override
   public void setWindowController(MainWindowController mainWindowController) {
-      if(mainWindowController != null) this.mainWindowController = mainWindowController;
+    if(mainWindowController != null) this.mainWindowController = mainWindowController;
   }
 
   /**

@@ -11,7 +11,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import shared.DTO.HorseDTO;
 import shared.DTO.RaceDTO;
-import shared.horse.HorseListResponse;
+import shared.DTO.RaceState;
+import shared.updates.OnHorseFinished;
+import shared.updates.OnRaceFinished;
+import shared.updates.OnRaceStarted;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UserBettingViewVM implements MessageListener, ViewModel {
 
@@ -23,6 +30,9 @@ public class UserBettingViewVM implements MessageListener, ViewModel {
 
   // JSON parser for handling server responses
   private final Gson gson;
+
+  // The selected race for betting
+  private final RaceDTO selectedRace;
 
   // Observable list containing horses available for betting
   private final ObservableList<HorseDTO> horses = FXCollections.observableArrayList();
@@ -48,8 +58,8 @@ public class UserBettingViewVM implements MessageListener, ViewModel {
   // Property to indicate if betting UI is locked (after placing a bet)
   private final BooleanProperty uiLocked = new SimpleBooleanProperty(false);
 
-  // The selected race for betting
-  private final RaceDTO selectedRace;
+  // Property to trigger navigation to the race view
+  private final BooleanProperty navigateToRaceView = new SimpleBooleanProperty(false);
 
   // User's balance value
   private int balanceValue = 1000; // Default starting balance
@@ -192,6 +202,21 @@ public class UserBettingViewVM implements MessageListener, ViewModel {
     return uiLocked;
   }
 
+  // Gets the property that indicates when to navigate to the race view
+  public BooleanProperty navigateToRaceViewProperty() {
+    return navigateToRaceView;
+  }
+
+  // Gets the selected race
+  public RaceDTO getSelectedRace() {
+    return selectedRace;
+  }
+
+  // Resets the navigation property after navigation has been handled
+  public void resetRaceViewNavigation() {
+    navigateToRaceView.set(false);
+  }
+
   // Increases the bet amount by 100
   public void increaseBet() {
     if (!uiLocked.get()) {
@@ -246,21 +271,28 @@ public class UserBettingViewVM implements MessageListener, ViewModel {
   // Processes different message types and updates the ViewModel state accordingly
   @Override
   public void update(String type, String payload) {
-    // We're no longer listening for getHorseList responses since we're only using horses from the selected race
-
     // Handle race updates and other messages
     if ("onRaceStarted".equals(type)) {
       // Handle race start event
       Platform.runLater(() -> {
         countdownText.set("Race has started! Watch the excitement unfold!");
+        navigateToRaceView.set(true);
       });
     } else if ("onHorseFinished".equals(type)) {
       // Handle horse finishing event
       // You could show which horses have finished and in what position
+      OnHorseFinished horseFinished = gson.fromJson(payload, OnHorseFinished.class);
+      Platform.runLater(() -> {
+        statusMessage.set(horseFinished.horseDTO().name() + " finished in position " + horseFinished.position());
+      });
     } else if ("onRaceFinished".equals(type)) {
       // Handle race finished event
+      OnRaceFinished raceFinished = gson.fromJson(payload, OnRaceFinished.class);
       Platform.runLater(() -> {
         countdownText.set("Race has finished! Results are in.");
+        if (!raceFinished.finalPositionsDTO().isEmpty()) {
+          statusMessage.set("Winner: " + raceFinished.finalPositionsDTO().get(0).name());
+        }
         // Unlock UI after race is done
         uiLocked.set(false);
       });

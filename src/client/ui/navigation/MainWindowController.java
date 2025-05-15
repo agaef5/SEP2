@@ -22,11 +22,14 @@ import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import client.ui.userView.bettingPage.UserBettingViewController;
 import client.ui.userView.bettingPage.UserBettingViewVM;
+import client.ui.userView.gameView.GameViewController;
+import client.ui.userView.gameView.GameViewVM;
 import client.ui.userView.landingPage.UserLandingPageController;
 import client.ui.userView.landingPage.UserLandingPageVM;
 import client.ui.util.ErrorHandler;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -75,12 +78,16 @@ public class MainWindowController {
     }
 
     private void loadPage(String fxmlFile) {
+        loadPage(fxmlFile, null);
+    }
+
+    private void loadPage(String fxmlFile, Object additionalData) {
         Platform.runLater(() -> {
             try {
                 mainPane.getChildren().clear();
 
                 FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlFile));
-                Pane newContent = loader.load();
+                Parent newContent = loader.load();
 
                 if (isAdminView) {
                     adminMenu.setPrefHeight(25.0);
@@ -92,35 +99,37 @@ public class MainWindowController {
                 Controller controller = loader.getController();
                 controller.setWindowController(this);
 
+                // Create the appropriate ViewModel based on controller type
                 if (controller instanceof LoginController) {
                     viewModel = new LoginVM(authenticationClient, socketService);
-                }
-
-                if (controller instanceof RegisterController) {
+                } else if (controller instanceof RegisterController) {
                     viewModel = new RegisterVM(authenticationClient, socketService);
-                }
-
-                if (controller instanceof AdminPanelController) {
+                } else if (controller instanceof AdminPanelController) {
                     viewModel = new AdminPanelVM(raceClient, socketService);
-                }
-
-                if (controller instanceof CreateEditHorseController) {
+                } else if (controller instanceof CreateEditHorseController) {
                     viewModel = new CreateEditHorseVM(horsesClient, socketService);
-                }
-
-                if (controller instanceof CreateRaceController) {
+                } else if (controller instanceof CreateRaceController) {
                     viewModel = new CreateRaceVM(raceClient, socketService);
-                }
-
-                if (controller instanceof UserLandingPageController) {
+                } else if (controller instanceof UserLandingPageController) {
                     viewModel = new UserLandingPageVM(raceClient, socketService);
+                } else if (controller instanceof UserBettingViewController) {
+                    // Pass the race data if provided
+                    if (additionalData instanceof RaceDTO race) {
+                        viewModel = new UserBettingViewVM(horsesClient, socketService, race);
+                    } else {
+                        viewModel = new UserBettingViewVM(horsesClient, socketService);
+                    }
+                } else if (controller instanceof GameViewController) {
+                    // Pass the race data for the game view
+                    if (additionalData instanceof RaceDTO race) {
+                        viewModel = new GameViewVM(socketService, race);
+                    } else {
+                        // Create with default (may want to throw an error instead)
+                        viewModel = new GameViewVM(socketService, null);
+                    }
                 }
 
-                if (controller instanceof UserBettingViewController) {
-                    viewModel = new UserBettingViewVM(horsesClient, socketService);
-                }
-
-//                Add socketListeners
+                // Add socket listeners
                 if (controller instanceof MessageListener listener) {
                     socketService.addListener(listener);
                 }
@@ -148,9 +157,17 @@ public class MainWindowController {
         loadPage("client/ui/userView/landingPage/userLandingPage.fxml");
     }
 
-    public void loadBettingPage(String windowTitle) {
-        stage.setTitle(windowTitle);
+    public void loadBettingPage(RaceDTO race) {
+        stage.setTitle(race != null ? "Betting - " + race.name() : "Betting");
+        loadPage("client/ui/userView/bettingPage/UserBettingView.fxml", race);
+    }
+
+    public void loadBettingPage() {
         loadPage("client/ui/userView/bettingPage/UserBettingView.fxml");
+    }
+
+    public void loadGameView(RaceDTO race) {
+        loadPage("client/ui/userView/gameView/gameView.fxml", race);
     }
 
     public void loadAdminPanel() {
@@ -164,6 +181,7 @@ public class MainWindowController {
     public void loadRacePage() {
         if (isAdminView) loadPage("client/ui/adminView/race/CreateRace.fxml");
     }
+
 
     public void authorizeUser(UserDTO userDTO) {
         Platform.runLater(() -> {

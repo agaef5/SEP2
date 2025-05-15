@@ -1,6 +1,9 @@
 package client.ui.util;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import server.networking.exceptions.InvalidMessageException;
 import shared.Respond;
 
@@ -32,24 +35,35 @@ public class RespondValidate
     }
 
     Gson gson = new Gson();
-    String payload;
+    Object decodedPayload = respond.payload();
 
     // Handle payload depending on its type
-    if (respond.payload() instanceof String strPayload) {
-      payload = strPayload; // Payload is already a valid JSON string
-    } else {
-      payload = gson.toJson(respond.payload()); // Convert the payload to JSON if it's not a string
+    if (decodedPayload instanceof String) {
+      String strPayload = (String) decodedPayload;
+      // Check if it's a valid JSON string that needs parsing
+      if (strPayload.trim().startsWith("{") || strPayload.trim().startsWith("[")) {
+        try {
+          // Try to parse it as JSON
+          JsonElement element = JsonParser.parseString(strPayload);
+          decodedPayload = element;
+        } catch (JsonSyntaxException e) {
+          // If it's not valid JSON, keep it as a string
+        }
+      }
+    } else if (decodedPayload != null) {
+      // If it's not a string but an object, convert it to a properly structured object
+      decodedPayload = gson.fromJson(gson.toJson(decodedPayload), Object.class);
     }
 
     // Check if the payload is valid
-    if (payload == null || payload.isEmpty()) {
-      throw new InvalidMessageException("Invalid payload: payload is null or empty.");
+    if (decodedPayload == null) {
+      throw new InvalidMessageException("Invalid payload: payload is null.");
     }
 
     // Log the decoded payload for debugging purposes
-    System.out.println("Decoded payload: " + payload);
+    System.out.println("Decoded payload: " + decodedPayload);
 
     // Return the Respond object with the decoded payload
-    return new Respond(respond.type(), payload);
+    return new Respond(respond.type(), decodedPayload);
   }
 }

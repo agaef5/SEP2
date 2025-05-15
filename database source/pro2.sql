@@ -45,6 +45,7 @@ CREATE TABLE sep2.raceTrack(
 CREATE TABLE sep2.race(
     id INT PRIMARY KEY,
     racetrack_id INT REFERENCES sep2.raceTrack(id),
+    horse_id INT REFERENCES sep2.horse(id)
     name VARCHAR,
     startTime TIMESTAMP
 );
@@ -54,7 +55,7 @@ CREATE TABLE sep2.participant(
     race_id INT REFERENCES sep2.race(id),
     horse_id INT REFERENCES sep2.horse(id),
     rank INT
-)
+);
 
 
 INSERT INTO sep2.raceTrack (name, raceLength, location)
@@ -65,3 +66,8 @@ VALUES
     ('Dirt track', 3300, 'Sweden'),
     ('Ice track', 4000, 'Syberia'),
     ('Hot', 666, 'Hell');
+
+INSERT INTO sep2.game_user (username, password_hash, email, isAdmin, balance)
+VALUES ('admin', 'admin', 'admin@admin.com', TRUE, 0)
+INSERT INTO sep2.game_user (username, password_hash, email, isAdmin, balance)
+VALUES ('testuser', 'testuser', 'test@user.com', FALSE, 1000);

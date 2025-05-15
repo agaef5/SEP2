@@ -39,8 +39,8 @@ public class RaceServiceImpl implements RacesService {
       Race race = new Race(name, raceTrack,capacity);
       RaceManager.getInstance().addRace(race); // assuming this adds it to in-memory list
       return toDTO(race);
-    } catch (SQLException e) {
-      System.err.println("Database error when creating race: " + e.getMessage());
+    } catch (SQLException e)
+    { System.err.println("Database error when creating race: " + e.getMessage());
       throw new RuntimeException("Failed to create race", e);
     }
   }
