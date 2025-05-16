@@ -111,7 +111,19 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     public void createRace(String name, RaceTrackDTO raceTrack, Integer capacity){
         CreateRaceRequest raceRequest = new CreateRaceRequest(name, raceTrack,capacity);
         raceClient.createRace(raceRequest);
-    };
+    }
+
+    @Override
+    public void createBet(String username, HorseDTO horseDTO, int amount) {
+
+    }
+
+    @Override
+    public void getBetList(String username) {
+
+    }
+
+    ;
 
     // Horse
     public void getAllHorses(){

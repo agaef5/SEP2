@@ -7,6 +7,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
+import server.model.Horse;
 import shared.DTO.*;
 
 public interface ModelManager {
@@ -20,6 +21,10 @@ public interface ModelManager {
     void getRaceTracks();
     void getAllRaces();
     void createRace(String name, RaceTrackDTO raceTrack, Integer capacity);
+
+//    Bet
+    void createBet(String username, HorseDTO horseDTO, int amount);
+    void getBetList(String username);
 
     // Horse
     void getAllHorses();
