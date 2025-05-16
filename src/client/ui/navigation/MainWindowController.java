@@ -1,5 +1,6 @@
 package client.ui.navigation;
 
+import client.modelManager.ModelManager;
 import client.networking.SocketService;
 import client.networking.authentication.AuthenticationClient;
 import client.networking.authentication.SocketAuthenticationClient;
@@ -47,18 +48,12 @@ public class MainWindowController {
 
     private Stage stage;
 
-    private SocketService socketService;
-    private AuthenticationClient authenticationClient;
-    private HorsesClient horsesClient;
-    private RaceClient raceClient;
+    ModelManager modelManager;
     private boolean isAdminView = false;
     private String username;
 
-    public void initialize(SocketService socketService, LoginController loginController) {
-        this.socketService = socketService;
-        authenticationClient = new SocketAuthenticationClient(socketService);
-        horsesClient = new SocketHorsesClient(socketService);
-        raceClient = new SocketRaceClient(socketService);
+    public void initialize(ModelManager modelManager, LoginController loginController) {
+        this.modelManager = modelManager;
 
         if (loginController != null) {
             loginController.setWindowController(this);
@@ -101,40 +96,32 @@ public class MainWindowController {
 
                 // Create the appropriate ViewModel based on controller type
                 if (controller instanceof LoginController) {
-                    viewModel = new LoginVM(authenticationClient, socketService);
+                    viewModel = new LoginVM(modelManager);
                 } else if (controller instanceof RegisterController) {
-                    viewModel = new RegisterVM(authenticationClient, socketService);
+                    viewModel = new RegisterVM(modelManager);
                 } else if (controller instanceof AdminPanelController) {
-                    viewModel = new AdminPanelVM(raceClient, socketService);
+                    viewModel = new AdminPanelVM(modelManager);
                 } else if (controller instanceof CreateEditHorseController) {
-                    viewModel = new CreateEditHorseVM(horsesClient, socketService);
+                    viewModel = new CreateEditHorseVM(modelManager);
                 } else if (controller instanceof CreateRaceController) {
-                    viewModel = new CreateRaceVM(raceClient, socketService);
+                    viewModel = new CreateRaceVM(modelManager);
                 } else if (controller instanceof UserLandingPageController) {
-                    viewModel = new UserLandingPageVM(raceClient, socketService);
+                    viewModel = new UserLandingPageVM(modelManager);
                 } else if (controller instanceof UserBettingViewController) {
                     // Pass the race data if provided
                     if (additionalData instanceof RaceDTO race) {
-                        viewModel = new UserBettingViewVM(horsesClient, socketService, race);
+                        viewModel = new UserBettingViewVM(modelManager, race);
                     } else {
-                        viewModel = new UserBettingViewVM(horsesClient, socketService);
+                        viewModel = new UserBettingViewVM(modelManager);
                     }
                 } else if (controller instanceof GameViewController) {
                     // Pass the race data for the game view
                     if (additionalData instanceof RaceDTO race) {
-                        viewModel = new GameViewVM(socketService, race);
+                        viewModel = new GameViewVM(modelManager, race);
                     } else {
                         // Create with default (may want to throw an error instead)
-                        viewModel = new GameViewVM(socketService, null);
+                        viewModel = new GameViewVM(modelManager, null);
                     }
-                }
-
-                // Add socket listeners
-                if (controller instanceof MessageListener listener) {
-                    socketService.addListener(listener);
-                }
-                if (viewModel instanceof MessageListener listener) {
-                    socketService.addListener(listener);
                 }
 
                 controller.initialize(viewModel);
@@ -201,22 +188,6 @@ public class MainWindowController {
 
     public String getUsername() {
         return username;
-    }
-
-    public HorsesClient getHorsesClient() {
-        return horsesClient;
-    }
-
-    public RaceClient getRaceClient() {
-        return raceClient;
-    }
-
-    public AuthenticationClient getAuthenticationClient() {
-        return authenticationClient;
-    }
-
-    public SocketService getSocketService() {
-        return socketService;
     }
 
     public void shutdown() {

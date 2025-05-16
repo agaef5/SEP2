@@ -23,7 +23,10 @@ public class RunClient extends Application
   }
 
   @Override public void start(Stage primaryStage) throws Exception {
-    SocketService socketservice = new SocketService("localhost", 2910);
+    String HOST = "localhost";
+    int PORT = 2910;
+    ClientAppInitializer clientAppInitializer = new ClientAppInitializer(HOST, PORT);
+    SocketService socketService = clientAppInitializer.getSocketService();
 
 //  MAIN WINDOW VIEW
 //    Loading main window that will display pages
@@ -38,11 +41,11 @@ public class RunClient extends Application
     LoginController loginController = loginPageLoader.getController();
 
 //  Initialize main window controller
-    mainWindowController.initialize(socketservice, loginController);
+    mainWindowController.initialize(clientAppInitializer.getModelManager(), loginController);
 
     // Set the close request handler
     primaryStage.setOnCloseRequest(event -> {
-      socketservice.disconnect();
+      socketService.disconnect();
       Platform.exit();
       System.out.println("Client disconnected and closed");
     });
