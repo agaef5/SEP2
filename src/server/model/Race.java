@@ -183,15 +183,19 @@ public class Race implements Runnable {
     Set<Horse> finished = new HashSet<>();
 
     while (finished.size() < horses.size()) {
+      StringBuilder horsePositionsText = new StringBuilder();
       int[] positions = new int[horses.size()];
       for (int i = 0; i < horses.size(); i++) {
         Horse horse = horses.get(i);
         if (!finished.contains(horse)) {
           horse.move();
         }
+        horsePositionsText.append("\n").append(horse.getName()).append(": ").append(horse.getPosition());
         positions[i] = horse.getPosition();
       }
-      System.out.println("Horse positions: " + Arrays.toString(positions));
+//      System.out.println("Horse positions in race " + name + ": " + Arrays.toString(positions));
+      System.out.println("\nHorse positions in race " + name + ": " + horsePositionsText);
+
       broadcastHorsePositions(positions);
 
       for (int i = 0; i < horses.size(); i++) {

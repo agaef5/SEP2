@@ -44,6 +44,5 @@ public class RaceListenerImpl implements RaceListener {
         List<HorseDTO> finalPositionsDTO = DTOMapper.horseListToDTO(finalPositions);
         OnRaceFinished payload = new OnRaceFinished(race.getName(),finalPositionsDTO);
         Server.broadcast("onRaceFinished",payload);
-
     }
 }

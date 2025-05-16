@@ -78,8 +78,8 @@ public class RaceManager implements Runnable {
           Thread.sleep(3000); // small delay to avoid busy waiting
         }
 
-        race.run();         // Run the race (still in the queue)
         raceQueue.take();   // Now remove it from the queue
+        race.run();         // Run the race (still in the queue)
 
         // TODO: Add race to the database
 

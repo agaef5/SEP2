@@ -11,7 +11,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import shared.DTO.HorseDTO;
 import shared.DTO.RaceDTO;
+import shared.DTO.RaceState;
 import shared.DTO.RaceTrackDTO;
+import shared.bet.CreateBetRequest;
 import shared.horse.CreateHorseRequest;
 import shared.horse.CreateHorseResponse;
 import shared.horse.HorseListResponse;
@@ -20,6 +22,8 @@ import shared.loginRegister.LoginRespond;
 import shared.loginRegister.RegisterRequest;
 import shared.loginRegister.RegisterRespond;
 import shared.race.*;
+import shared.updates.OnRaceFinished;
+import shared.updates.OnRaceStarted;
 
 public class ModelManagerImpl implements ModelManager, MessageListener {
 
@@ -40,7 +44,10 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     private final ObservableList<RaceDTO>      raceList     = FXCollections.observableArrayList();
     private final BooleanProperty              createRaceOk = new SimpleBooleanProperty(false);
     private final StringProperty               createRaceMsg= new SimpleStringProperty("");
-    private final ObjectProperty<RaceDTO>      nextRace = new SimpleObjectProperty<RaceDTO>();
+
+    private final ObjectProperty<RaceDTO>      nextRace = new SimpleObjectProperty<RaceDTO>(null);
+    private final ObjectProperty<RaceState>    raceState = new SimpleObjectProperty<>(null);
+    private final ObservableList<HorseDTO>     raceRank = FXCollections.observableArrayList();
 
     // —— Horse data ——
     private final ObservableList<HorseDTO> horseList       = FXCollections.observableArrayList();
@@ -77,6 +84,11 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     public ObjectProperty<RaceDTO>     nextRaceProperty()      { return nextRace; }
     public BooleanProperty    createRaceSuccessProperty() { return createRaceOk; }
     public StringProperty     createRaceMessageProperty() { return createRaceMsg; }
+    public ObjectProperty<RaceState> getCurrentRaceState() {
+        if (nextRace.get() != null)
+            return null;
+        return raceState;  }
+    public ObservableList<HorseDTO> getRaceRank(){ return raceRank; };
 
     public ObservableList<HorseDTO>  getHorseList()            { return horseList;       }
     public BooleanProperty    createHorseSuccessProperty() { return createHorseOk;   }
@@ -115,7 +127,6 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     @Override
     public void createBet(String username, HorseDTO horseDTO, int amount) {
-
     }
 
     @Override
@@ -123,7 +134,6 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     }
 
-    
 
     // Horse
     public void getAllHorses(){
@@ -153,6 +163,10 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             case "getRaceTracks":    handleGetRaceTracks(payload);  break;
             case "getRaceList":      handleGetRaceList(payload);    break;
             case "createRace":       handleCreateRace(payload);     break;
+            case "horseMoveUpdate":  handleHorseMove(payload);      break;
+            case "onHorseFinished":  handleOnHorseFinished(payload);break;
+            case "onRaceStarted":    handleOnRaceStarted(payload);  break;
+            case "onRaceFinished":   handleOnRaceFinished(payload); break;
             case "getHorseList":     handleGetHorseList(payload);   break;
             case "createHorse":      handleCreateHorse(payload);    break;
             case "updateHorse":      handleUpdateHorse(payload);    break;
@@ -207,6 +221,27 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             createRaceOk.set(false);
             createRaceMsg.set("Failed to create race");
         }
+    }
+
+    private void handleOnRaceFinished(String payload) {
+        OnRaceFinished respond = gson.fromJson(payload, OnRaceFinished.class);
+//        TODO: check if its correct
+        if(respond.raceName().equals(nextRace.get().name()))
+            raceState.set(RaceState.FINISHED);
+    }
+
+    private void handleOnRaceStarted(String payload) {
+        OnRaceStarted respond = gson.fromJson(payload, OnRaceStarted.class);
+//        TODO: check if its correct
+        if(respond.raceName().equals(nextRace.get().name()))
+            raceState.set(RaceState.IN_PROGRESS);
+    }
+
+    private void handleOnHorseFinished(String payload) {
+
+    }
+
+    private void handleHorseMove(String payload) {
     }
 
     private void handleGetHorseList(String payload){
