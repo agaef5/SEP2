@@ -27,19 +27,16 @@ public class SocketRaceClient implements RaceClient {
     this.gson = new Gson();
   }
 
+  /**
+   * Sends a request to retrieve a list of races from the server.
+   * This method constructs a {@link GetRaceListRequest} object, serializes it into JSON,
+   * and sends it as part of a {@link Request} to the server using the {@link SocketService}.
+   * The server is expected to respond with a list of races.
+   */
   @Override public void getRaceList()
   {
-    Request request = new Request("race", "getRaceList", gson.toJsonTree(new Object()));
-    socketService.sendRequest(request);
-  }
-
-  /**
-   * Sends a request to retrieve a list of races to the server.
-   *
-   * @param getRaceListRequest the request containing the criteria for retrieving races
-   */
-  @Override public void getRaceList(GetRaceListRequest getRaceListRequest) {
-    JsonElement payload = gson.toJsonTree(getRaceListRequest);
+    GetRaceListRequest getRaceList = new GetRaceListRequest();
+    JsonElement payload = gson.toJsonTree(getRaceList);
     Request request = new Request("race", "getRaceList", payload);
     socketService.sendRequest(request);
   }
