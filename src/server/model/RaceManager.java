@@ -68,7 +68,7 @@ public class RaceManager implements Runnable {
    * This method is run in a separate thread and processes each race sequentially.
    */
   @Override
-  public void run() {
+  public synchronized void run() {
     while (true) {
       try {
         Race race;
@@ -77,9 +77,9 @@ public class RaceManager implements Runnable {
         while ((race = raceQueue.peek()) == null) {
           Thread.sleep(3000); // small delay to avoid busy waiting
         }
-
+        race.run();
         raceQueue.take();   // Now remove it from the queue
-        race.run();         // Run the race (still in the queue)
+               // Run the race (still in the queue)
 
         // TODO: Add race to the database
 

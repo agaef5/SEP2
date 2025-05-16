@@ -1,8 +1,7 @@
-
+package server.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.model.Horse;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +11,7 @@ class HorseTest
 
   @BeforeEach
   void setUp() {
-    horse = new Horse(1, "Lightning", 5, 10);
+    horse = new Horse("Lightning", 5, 10);
   }
 
   @Test

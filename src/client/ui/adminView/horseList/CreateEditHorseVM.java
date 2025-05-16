@@ -1,302 +1,127 @@
+// client/ui/adminView/horseList/HorseListViewModel.java
 package client.ui.adminView.horseList;
 
-import client.networking.SocketService;
-import client.networking.horses.HorsesClient;
-import client.ui.common.MessageListener;
-import client.ui.common.ViewModel;
-import com.google.gson.Gson;
-import javafx.application.Platform;
+import client.modelManager.ModelManager;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.BooleanExpression;
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.collections.ObservableList;
-
-
+import javafx.collections.ListChangeListener;
 import shared.DTO.HorseDTO;
-import shared.horse.CreateHorseRequest;
-import shared.horse.CreateHorseResponse;
-import shared.horse.HorseListResponse;
 
-import java.util.ArrayList;
+public class CreateEditHorseVM {
+  private final ModelManager model;
 
-/**
- * ViewModel for the Create/Edit Horse view.
- * Manages the data and operations related to horse management.
- * Handles communication with the server via HorsesClient and processes responses.
- * Implements MessageListener to receive updates from the server.
- */
-public class CreateEditHorseVM implements ViewModel, MessageListener {
+  // –– backing lists & props ––
+  private final ObservableList<HorseDTO> horseList;
+  private final ObjectProperty<HorseDTO> selectedHorse = new SimpleObjectProperty<>();
+  private final StringProperty horseName        = new SimpleStringProperty();
+  private final IntegerProperty speedMin        = new SimpleIntegerProperty();
+  private final IntegerProperty speedMax        = new SimpleIntegerProperty();
+  private final BooleanProperty creationMode    = new SimpleBooleanProperty(false);
+  private final StringProperty message         = new SimpleStringProperty();
 
-  /** Client for communicating with horse-related server endpoints */
-  private final HorsesClient horseClient;
+  public CreateEditHorseVM(ModelManager model) {
+    this.model      = model;
+    this.horseList  = model.getHorseList();
 
-  /** Observable list containing all horses retrieved from the server */
-  private final ObservableList<HorseDTO> horseList = FXCollections.observableArrayList();
+    // when the global list changes, clear message
+    model.getHorseList().addListener((ListChangeListener<HorseDTO>) change -> {
+      message.set("");
+    });
 
-  /** Observable property for the horse name */
-  private final StringProperty horseName = new SimpleStringProperty();
+    // keep our form fields in sync with selectedHorse
+    selectedHorse.addListener((o, oldH, newH) -> {
+      if (newH == null) {
+        horseName.set("");
+        speedMin.set(0);
+        speedMax.set(0);
+      } else {
+        horseName.set(newH.name());
+        speedMin.set(newH.speedMin());
+        speedMax.set(newH.speedMax());
+      }
+      creationMode.set(false);
+      message.set("");
+    });
 
-  /** Observable property for the minimum speed value */
-  private final IntegerProperty speedMin = new SimpleIntegerProperty();
+    // wire server-side success/failure back into our message text
+    model.createHorseSuccessProperty().addListener((o, old, ok) -> {
+      if (ok) {
+        model.getAllHorses();
+      } else {
+        message.set(model.createHorseMessageProperty().get());
+      }
+    });
+    model.updateHorseSuccessProperty().addListener((o, old, ok) -> {
+      if (ok) {
+        model.getAllHorses();
+      } else {
+        message.set(model.updateHorseMessageProperty().get());
+      }
+    });
+    model.deleteHorseSuccessProperty().addListener((o, old, ok) -> {
+      if (ok) {
+        model.getAllHorses();
+      } else {
+        message.set(model.deleteHorseMessageProperty().get());
+      }
+    });
 
-  /** Observable property for the maximum speed value */
-  private final IntegerProperty speedMax = new SimpleIntegerProperty();
-
-  /** Observable property controlling the edit button's disabled state */
-  private final BooleanProperty editButtonDisabled = new SimpleBooleanProperty();
-
-  /** Observable property controlling the remove button's disabled state */
-  private final BooleanProperty removeButtonDisabled = new SimpleBooleanProperty();
-
-  /** JSON parser for handling server responses */
-  private final Gson gson;
-
-  /** Service for socket communication with the server */
-  private final SocketService socketService;
-
-  /** The currently selected horse */
-  private HorseDTO selectedHorse;
-
-  /** Flag indicating whether the view is in horse creation mode */
-  private boolean creatingHorse;
-
-  /**
-   * Constructs the ViewModel with necessary dependencies and initializes data.
-   *
-   * @param client Client for horse-related server operations
-   * @param socketService Service for socket communication with the server
-   */
-  public CreateEditHorseVM(HorsesClient client, SocketService socketService) {
-    this.horseClient = client;
-    this.socketService = socketService;
-    this.socketService.addListener(this);
-    horseClient.getHorseList();
-    this.gson = new Gson();
-    creatingHorse = false;
+    // bootstrap the list
+    model.getAllHorses();
   }
 
-  /**
-   * Gets the observable property for the horse name.
-   * @return Property containing the horse name
-   */
-  public Property<String> horseNameProperty() { return horseName; }
+  // — property getters for binding —
 
-  /**
-   * Gets the observable property for the minimum speed.
-   * @return Property containing the minimum speed value
-   */
-  public IntegerProperty speedMinProperty() { return speedMin; }
+  public ObservableList<HorseDTO> getHorseList()     { return horseList; }
+  public ObjectProperty<HorseDTO> selectedHorseProp(){ return selectedHorse; }
+  public StringProperty horseNameProp()             { return horseName; }
+  public IntegerProperty speedMinProp()             { return speedMin; }
+  public IntegerProperty speedMaxProp()             { return speedMax; }
+  public BooleanProperty creationModeProp()         { return creationMode; }
+  public StringProperty messageProp()               { return message; }
 
-  /**
-   * Gets the observable property for the maximum speed.
-   * @return Property containing the maximum speed value
-   */
-  public IntegerProperty speedMaxProperty() { return speedMax; }
-
-  /**
-   * Gets the observable property controlling the edit button's disabled state.
-   * @return Property controlling whether the edit button should be disabled
-   */
-  public BooleanProperty getEditButtonDisabledProperty() { return editButtonDisabled; }
-
-  /**
-   * Gets the observable property controlling the remove button's disabled state.
-   * @return Property controlling whether the remove button should be disabled
-   */
-  public BooleanProperty getRemoveButtonDisableProperty() { return removeButtonDisabled; }
-
-  /**
-   * Gets the observable list containing all horses.
-   * @return Observable list of all horses
-   */
-  public ObservableList<HorseDTO> getHorseList() {
-    return horseList;
+  public BooleanExpression canCreate() {
+    return creationMode;
   }
 
-  /**
-   * Sets the selected horse and updates form fields and button states accordingly.
-   *
-   * @param newVal The newly selected horse, or null if no selection
-   */
-  public void setSelectedHorse(HorseDTO newVal) {
-    this.selectedHorse = newVal;
-    if (newVal != null) {
-      horseName.set(newVal.name());
-      speedMin.set(newVal.speedMin());
-      speedMax.set(newVal.speedMax());
+  public BooleanBinding canUpdate()  { return selectedHorse.isNotNull(); }
+  public BooleanBinding canDelete()  { return selectedHorse.isNotNull(); }
 
-      editButtonDisabled.set(false);
-      removeButtonDisabled.set(false);
-    }
+  // — commands invoked by the Controller —
+
+  /** Switch UI into “new horse” mode */
+  public void enterCreateMode() {
+    selectedHorse.set(null);
+    creationMode.set(true);
+    message.set("");
   }
 
-  /**
-   * Clears the current selection and resets form fields and button states.
-   */
-  public void setNull() {
-    this.selectedHorse = null;
-    horseName.set(null);
-    speedMin.set(0);
-    speedMax.set(0);
-
-    editButtonDisabled.set(true);
-    removeButtonDisabled.set(true);
+  /** Create a brand‐new horse */
+  public void createHorse() {
+    if (!creationMode.get()) return;
+    model.createHorse(horseName.get(), speedMin.get(), speedMax.get());
   }
 
-  /**
-   * Creates a new horse with the current form values.
-   * Only executes if the view is in creation mode.
-   */
-  public void addHorse() {
-    if (!creatingHorse) return;
-
-    CreateHorseRequest createHorseRequest = new CreateHorseRequest(
+  /** Update the selected horse */
+  public void updateHorse() {
+    HorseDTO h = selectedHorse.get();
+    if (h == null) return;
+    HorseDTO updated = new HorseDTO(
+            h.id(),
             horseName.get(),
             speedMin.get(),
             speedMax.get()
     );
-
-    horseClient.createHorse(createHorseRequest);
-    setReadMode();
+    model.updateHorse(updated);
   }
 
-
-  /**
-   * Updates the currently selected horse with the form values.
-   * Only executes if a horse is selected.
-   */
-  public void updateHorse() {
-    if (selectedHorse != null) {
-      HorseDTO updatedHorse = new HorseDTO(
-              selectedHorse.id(),        // keep the original ID
-              horseName.get(),
-              speedMin.get(),
-              speedMax.get()
-      );
-
-      horseClient.updateHorse(updatedHorse);
-    }
-  }
-
-
-  /**
-   * Removes the currently selected horse.
-   * Only executes if a horse is selected.
-   */
-  public void removeHorse() {
-    if (selectedHorse != null) {
-      horseClient.deleteHorse(selectedHorse);
-      setNull();
-    }
-  }
-
-  /**
-   * Updates the horse list with data received from the server.
-   * Updates must be performed on the JavaFX application thread.
-   *
-   * @param horseListResponse Response object containing the list of horses
-   */
-  public void updateHorseList(HorseListResponse horseListResponse) {
-    if(horseListResponse == null) return;
-
-    Platform.runLater(() -> {
-      System.out.println("Platform.runLater: horses = " + horseListResponse.horseList());
-      ArrayList<HorseDTO> newHorseList = new ArrayList<>();
-      for (HorseDTO horse : horseListResponse.horseList()) {
-        newHorseList.add(horse);
-      }
-      horseList.setAll(newHorseList);
-
-      if(selectedHorse == null) setSelectedHorse(horseList.getFirst());
-      System.out.println("List updated");
-    });
-  }
-
-  /**
-   * Activates horse creation mode.
-   * If already in creation mode, finalizes the current horse creation first.
-   */
-  public void setHorseCreationMode() {
-    if(creatingHorse) addHorse();
-
-    setNull();
-    creatingHorse = true;
-  }
-
-  /**
-   * Exits horse creation mode and returns to read mode.
-   */
-  public void setReadMode() {
-    creatingHorse = false;
-  }
-
-  /**
-   * Handles messages received from the server via the socket connection.
-   * Processes different message types and updates the ViewModel state accordingly.
-   *
-   * @param type The type of message received
-   * @param payload The JSON payload containing the message data
-   */
-  @Override
-  public void update(String type, String payload) {
-    System.out.println("Message received: " + type);
-    switch (type) {
-      case "getHorseList":
-        HorseListResponse horseListResponse = gson.fromJson(payload, HorseListResponse.class);
-        System.out.println("Parsed horses: " + horseListResponse.horseList());
-        updateHorseList(horseListResponse);
-        break;
-      case "createHorse":
-        CreateHorseResponse createHorseResponse = gson.fromJson(payload, CreateHorseResponse.class);
-        handleCreateHorseResponse(createHorseResponse);
-        break;
-      case "updateHorse":
-        HorseDTO updatedHorse = gson.fromJson(payload, HorseDTO.class);
-        handleUpdateHorseResponse(updatedHorse);
-        break;
-      case "deleteHorse":
-        String message = payload;
-        handleRemoveHorseResponse(message);
-        break;
-    }
-  }
-
-  /**
-   * Handles the response after creating a horse.
-   * Updates the horse list and selects the newly created horse.
-   *
-   * @param createHorseResponse Response object from the create horse operation
-   */
-  private void handleCreateHorseResponse(CreateHorseResponse createHorseResponse) {
-    horseClient.getHorseList();
-    if (createHorseResponse.horse() != null) {
-      HorseDTO newHorse = gson.fromJson(createHorseResponse.horse().toString(), HorseDTO.class);
-      setSelectedHorse(newHorse);
-    }
-  }
-
-  /**
-   * Handles the response after updating a horse.
-   * Updates the horse list and selects the updated horse.
-   *
-   * @param updatedHorse The updated horse object returned from the server
-   */
-  private void handleUpdateHorseResponse(HorseDTO updatedHorse) {
-    horseClient.getHorseList();
-    if (updatedHorse != null) {
-      setSelectedHorse(updatedHorse);
-    }
-  }
-
-  /**
-   * Handles the response after removing a horse.
-   * Updates the horse list and clears the selection if successful.
-   *
-   * @param message Response message from the delete operation
-   */
-  private void handleRemoveHorseResponse(String message) {
-    if(message.equals("success")) {
-      horseClient.getHorseList();
-      setNull();
-    }
+  /** Delete the selected horse */
+  public void deleteHorse() {
+    HorseDTO h = selectedHorse.get();
+    if (h != null) model.deleteHorse(h);
   }
 }

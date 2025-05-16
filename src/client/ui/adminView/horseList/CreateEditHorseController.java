@@ -1,3 +1,4 @@
+// client/ui/adminView/horseList/HorseListController.java
 package client.ui.adminView.horseList;
 
 import client.ui.common.Controller;
@@ -6,97 +7,70 @@ import client.ui.navigation.MainWindowController;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import shared.DTO.HorseDTO;
 
-/**
- * Controller for the Create/Edit Horse view.
- * Manages user interactions for creating, editing, and removing horse entries.
- * Connects UI components to the corresponding ViewModel.
- */
-public class CreateEditHorseController implements Controller
-{
-  /** ListView displaying all available horses */
-  @FXML private ListView<HorseDTO> listView;
+public class CreateEditHorseController implements Controller {
+  @FXML private ListView<HorseDTO>   listView;
+  @FXML private TextField            nameField;
+  @FXML private TextField            minField;
+  @FXML private TextField            maxField;
+  @FXML private Button               newBtn;
+  @FXML private Button               createBtn;
+  @FXML private Button               updateBtn;
+  @FXML private Button               deleteBtn;
+  @FXML private Label                messageLabel;
 
-  /** Text field for editing horse name */
-  @FXML private TextField horseName;
+  private CreateEditHorseVM vm;
+  private MainWindowController window;
 
-  /** Text field for editing minimum speed value */
-  @FXML private TextField speedMin;
+  @Override
+  public void initialize(ViewModel viewModel) {
+    vm = (CreateEditHorseVM)viewModel;
 
-  /** Text field for editing maximum speed value */
-  @FXML private TextField speedMax;
+    // — bind the list —
+    listView.setItems(vm.getHorseList());
+    listView.getSelectionModel()
+            .selectedItemProperty()
+            ;
 
-  /** Button to create a new horse */
-  @FXML private Button create;
-
-  /** Button to edit the selected horse */
-  @FXML private Button edit;
-
-  /** Button to remove the selected horse */
-  @FXML private Button remove;
-
-  /** ViewModel that provides data and operations for this view */
-  private CreateEditHorseVM viewModel;
-
-  /** Controller that allows to control changing the view inside the main window*/
-  private MainWindowController mainWindowController;
-
-  /**
-   * Initializes the controller with the provided ViewModel.
-   * Sets up bindings between UI components and ViewModel properties,
-   * configures cell rendering for the horse list, and attaches event handlers.
-   *
-   * @param createEditHorseVM The ViewModel that provides data and operations for this view
-   */
-  public void initialize(ViewModel createEditHorseVM) {
-    this.viewModel = (CreateEditHorseVM) createEditHorseVM;
-
-    // Bind the ListView to the horse list in the ViewModel
-    listView.setItems(viewModel.getHorseList());
-
-    // Configure cell rendering for the horse list
-    listView.setCellFactory(param -> new ListCell<>() {
-      @Override
-      protected void updateItem(HorseDTO horse, boolean empty) {
-        super.updateItem(horse, empty);
-        if (empty || horse == null) {
-          setText(null);
-        } else {
-          setText(horse.name() + " (speed: " + horse.speedMin() + " - " + horse.speedMax() + ")");
-        }
-      }
-    });
-
-    // Update the selected horse in the ViewModel when selection changes in the ListView
-    listView.getSelectionModel().selectedItemProperty().addListener(
-        (obs, oldVal, newVal) -> viewModel.setSelectedHorse(newVal)
+    // — bind the form fields —
+    nameField.textProperty()
+            .bindBidirectional(vm.horseNameProp());
+    Bindings.bindBidirectional(
+            minField.textProperty(),
+            vm.speedMinProp(),
+            new NumberStringConverter()
+    );
+    Bindings.bindBidirectional(
+            maxField.textProperty(),
+            vm.speedMaxProp(),
+            new NumberStringConverter()
     );
 
-    // Bind text fields to ViewModel properties with appropriate converters
-    Bindings.bindBidirectional(horseName.textProperty(), viewModel.horseNameProperty(), new DefaultStringConverter());
-    Bindings.bindBidirectional(speedMin.textProperty(), viewModel.speedMinProperty(), new NumberStringConverter());
-    Bindings.bindBidirectional(speedMax.textProperty(), viewModel.speedMaxProperty(), new NumberStringConverter());
+    // — bind button enable/disable —
+    newBtn.disableProperty()
+            .bind(vm.creationModeProp());
+    createBtn.disableProperty()
+            .bind(vm.canCreate().not());
+    updateBtn.disableProperty()
+            .bind(vm.canUpdate().not());
+    deleteBtn.disableProperty()
+            .bind(vm.canDelete().not());
 
-    // Bind button disabled states to ViewModel properties
-    Bindings.bindBidirectional(edit.disableProperty(), viewModel.getEditButtonDisabledProperty());
-    Bindings.bindBidirectional(remove.disableProperty(), viewModel.getRemoveButtonDisableProperty());
+    // — actions —
+    newBtn.setOnAction(e -> vm.enterCreateMode());
+    createBtn.setOnAction(e -> vm.createHorse());
+    updateBtn.setOnAction(e -> vm.updateHorse());
+    deleteBtn.setOnAction(e -> vm.deleteHorse());
 
-    // Configure button actions
-    create.setOnAction(e -> viewModel.setHorseCreationMode());
-    edit.setOnAction(e -> viewModel.updateHorse());
-    remove.setOnAction(e -> viewModel.removeHorse());
+    // — status message —
+    messageLabel.textProperty()
+            .bind(vm.messageProp());
   }
 
-  /**
-   * Allows to change tabs inside the main window within the tab
-   *
-   * @param mainWindowController - the main window controller that changes tabs
-   */
   @Override
   public void setWindowController(MainWindowController mainWindowController) {
-    if(mainWindowController != null) this.mainWindowController = mainWindowController;
+    this.window = mainWindowController;
   }
 }
