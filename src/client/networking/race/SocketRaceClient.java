@@ -28,8 +28,10 @@ public class SocketRaceClient implements RaceClient {
   }
 
   /**
-   * Sends a request to retrieve a list of races to the server.
-   *
+   * Sends a request to retrieve a list of races from the server.
+   * This method constructs a {@link GetRaceListRequest} object, serializes it into JSON,
+   * and sends it as part of a {@link Request} to the server using the {@link SocketService}.
+   * The server is expected to respond with a list of races.
    */
   @Override public void getRaceList()
   {
