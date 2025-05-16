@@ -123,7 +123,7 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     }
 
-    ;
+    
 
     // Horse
     public void getAllHorses(){
