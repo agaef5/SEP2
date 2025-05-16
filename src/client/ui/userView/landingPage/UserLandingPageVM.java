@@ -134,7 +134,7 @@ public class UserLandingPageVM implements MessageListener, ViewModel {
                 // Display different message based on the race state
                 if (selectedRace.raceState() == RaceState.NOT_STARTED) {
                     // Format the race information for upcoming race
-                    String info = String.format("Next race: %s - \n Track: %s - \n Horses: %d",
+                    String info = String.format("Next race: %s -%nTrack: %s -%nHorses: %d",
                             selectedRace.name(),
                             selectedRace.raceTrack().name(),
                             selectedRace.horses().size());
