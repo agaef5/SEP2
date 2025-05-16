@@ -131,7 +131,6 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     @Override
     public void getBetList(String username) {
-
     }
 
 

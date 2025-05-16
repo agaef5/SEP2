@@ -11,27 +11,6 @@ import server.model.Horse;
 import shared.DTO.*;
 
 public interface ModelManager {
-    // —— VM‐facing API ——
-
-    // Authentication
-    void loginUser(String username, String password);
-    void registerUser(String username, String email, String password);
-
-    // Race
-    void getRaceTracks();
-    void getAllRaces();
-    void createRace(String name, RaceTrackDTO raceTrack, Integer capacity);
-
-//    Bet
-    void createBet(String username, HorseDTO horseDTO, int amount);
-    void getBetList(String username);
-
-    // Horse
-    void getAllHorses();
-    void createHorse(String name, int speedMin, int speedMax);
-    void updateHorse(HorseDTO horse);
-    void deleteHorse(HorseDTO horse);
-
     // —— Properties for VMs to bind to ——
     BooleanProperty    loginSuccessProperty();
     StringProperty     loginMessageProperty();
@@ -43,6 +22,8 @@ public interface ModelManager {
     ObjectProperty<RaceDTO> nextRaceProperty();
     BooleanProperty    createRaceSuccessProperty();
     StringProperty     createRaceMessageProperty();
+    public ObjectProperty<RaceState> getCurrentRaceState();
+    public ObservableList<HorseDTO> getRaceRank();
 
     ObservableList<HorseDTO> getHorseList();
     BooleanProperty    createHorseSuccessProperty();
@@ -51,6 +32,26 @@ public interface ModelManager {
     StringProperty     updateHorseMessageProperty();
     BooleanProperty deleteHorseSuccessProperty();
     StringProperty deleteHorseMessageProperty();
+
+//    Methods to be used by VM
+    // Authentication
+    void loginUser(String username, String password);
+    void registerUser(String username, String email, String password);
+
+    // Race
+    void getRaceTracks();
+    void getAllRaces();
+    void createRace(String name, RaceTrackDTO raceTrack, Integer capacity);
+
+    //    Bet
+    void createBet(String username, HorseDTO horseDTO, int amount);
+    void getBetList(String username);
+
+    // Horse
+    void getAllHorses();
+    void createHorse(String name, int speedMin, int speedMax);
+    void updateHorse(HorseDTO horse);
+    void deleteHorse(HorseDTO horse);
 
     void update(String type, String payload);
 }
