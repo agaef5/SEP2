@@ -17,14 +17,6 @@ public interface RaceClient {
    void getRaceList();
 
    /**
-    * Sends a request to retrieve a list of races based on the provided {@link GetRaceListRequest}.
-    * Allows filtering and customizing the race list retrieval.
-    *
-    * @param getRaceListRequest the request containing the criteria for retrieving races
-    */
-   void getRaceList(GetRaceListRequest getRaceListRequest);
-
-   /**
     * Sends a request to create a new race using the provided {@link CreateRaceRequest}.
     * After successful creation, the new race will be added to the race queue.
     *
