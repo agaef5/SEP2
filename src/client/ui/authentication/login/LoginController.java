@@ -38,6 +38,15 @@ public class LoginController implements Controller
     buttonLogin.disableProperty().bind(viewModel.disableLoginButtonProperty());
     createNewAccountB.disableProperty().bindBidirectional(viewModel.createNewUserProperty());
 
+    messageLabel.textProperty().bind(viewModel.loginMessageProperty());
+
+    // Listen for login success to trigger navigation
+    viewModel.loginSuccessProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal) {
+        mainWindowController.authorizeUser();
+      }
+    });
+
 
     buttonLogin.setOnAction(e -> viewModel.loginUser());
     createNewAccountB.setOnAction(e -> mainWindowController.loadRegisterPage());

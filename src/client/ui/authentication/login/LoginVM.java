@@ -2,17 +2,13 @@ package client.ui.authentication.login;
 
 
 import client.modelManager.ModelManager;
-import client.networking.SocketService;
-import client.networking.authentication.AuthenticationClient;
 import client.ui.common.ViewModel;
-import com.google.gson.Gson;
 import javafx.beans.property.*;
-import shared.loginRegister.LoginRequest;
 
 
 public class LoginVM implements ViewModel
 {
-    private final ModelManager model;
+    private final ModelManager modelManager;
     private final StringProperty usernameProp = new SimpleStringProperty();
     private final StringProperty passwordProp = new SimpleStringProperty();
     private final StringProperty messageProp = new SimpleStringProperty();
@@ -22,15 +18,21 @@ public class LoginVM implements ViewModel
 
 
 
-
-    public LoginVM (ModelManager model)
+    public LoginVM (ModelManager modelManager)
     {
-        this.model = model;
+        this.modelManager = modelManager;
         disableLoginButtonProp.bind(
                 usernameProp.isEmpty().or(passwordProp.isEmpty())
         );
     }
 
+    public BooleanProperty loginSuccessProperty() {
+        return modelManager.loginSuccessProperty();
+    }
+
+    public StringProperty loginMessageProperty() {
+        return modelManager.loginMessageProperty();
+    }
 
     public void loginUser(){
         String username = usernameProp.get();
@@ -48,7 +50,7 @@ public class LoginVM implements ViewModel
         {
             messageProp.set("Username is empty");
         }
-        model.loginUser(username, password);
+        modelManager.loginUser(username, password);
         clearFields();
     }
 

@@ -154,7 +154,7 @@ public class MainWindowController {
     }
 
     public void loadGameView(RaceDTO race) {
-        loadPage("client/ui/userView/gameView/gameView.fxml", race);
+        loadPage("client/ui/userView/gameView/GameView.fxml", race);
     }
 
     public void loadAdminPanel() {
@@ -170,19 +170,20 @@ public class MainWindowController {
     }
 
 
-    public void authorizeUser(UserDTO userDTO) {
+    public void authorizeUser() {
         Platform.runLater(() -> {
 
-            modelManager.setCurrentUser(userDTO);
+            UserDTO userDTO = modelManager.getCurrentUser();
 
             if (userDTO.username() != null) setUsername(userDTO.username());
-            if (authenticateAdmin(userDTO)) loadAdminPanel();
+            authenticateAdmin(userDTO);
+            if (isAdminView) loadAdminPanel();
             else loadUserLandingPage();
         });
     }
 
-    public boolean authenticateAdmin(UserDTO userDTO) {
-        return isAdminView = userDTO.isAdmin();
+    public void authenticateAdmin(UserDTO userDTO) {
+        isAdminView = userDTO.isAdmin();
     }
 
     public void setUsername(String username) {
@@ -197,6 +198,8 @@ public class MainWindowController {
         stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST)
         );
     }
+
+
 }
 
 

@@ -216,7 +216,11 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     private void handleLogin(String payload){
         LoginRespond respond = gson.fromJson(payload, LoginRespond.class);
-        if ("success".equals(respond.message())) {
+
+        if ("success".equals(respond.message()) && !payload.isEmpty()) {
+            UserDTO userDTO = gson.fromJson(gson.toJson(respond.payload()), UserDTO.class);
+            // Assuming payload contains user data
+                setCurrentUser(userDTO);
             loginSuccess.set(true);
             loginMessage.set("");
         } else {
@@ -389,6 +393,14 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         }
     }
 
+    public UserDTO getCurrentUser(){
+        if(currentUser == null){
+            loadCurrentUser();
+//            Thread.sleep(1000);
+        }
+        return currentUser;
+    };
+
     public boolean validateBet(HorseDTO horse, int amount) {
         // Check if horse is selected
         if (horse == null) return false;
@@ -403,6 +415,4 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
         return true;
     }
-
-
 }

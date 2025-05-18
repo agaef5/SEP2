@@ -6,6 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import shared.DTO.*;
+import shared.user.UserRequest;
 
 public interface ModelManager {
     // —— Properties for VMs to bind to ——
@@ -56,10 +57,12 @@ public interface ModelManager {
     void updateHorse(HorseDTO horse);
     void deleteHorse(HorseDTO horse);
     ObservableList<Integer> getHorsePositions();
-    //  Game
 
+    //  Game
 
     void update(String type, String payload);
 
     void setCurrentUser(UserDTO userDTO);
+    void loadCurrentUser();
+    UserDTO getCurrentUser();
 }

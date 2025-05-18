@@ -4,7 +4,6 @@ import client.ui.common.Controller;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import shared.DTO.RaceDTO;
@@ -20,19 +19,19 @@ public class CreateRaceController implements Controller {
   @FXML private ListView<RaceDTO> raceQueueList;
   @FXML private Label           messageLabel;
 
-  private CreateRaceVM vm;
+  private CreateRaceVM viewModel;
   private MainWindowController mainCtrl;
 
   @Override
   public void initialize(ViewModel viewModel) {
-    vm = (CreateRaceVM) viewModel;
+    this.viewModel = (CreateRaceVM) viewModel;
 
     // Bind choice‐box and list‐view
-    trackChoice.setItems(vm.getAvailableTracks());
-    trackChoice.valueProperty()
-            .bindBidirectional(vm.selectedTrackProperty());
+//    trackChoice.setItems(this.viewModel.getAvailableTracks());
+//    trackChoice.valueProperty()
+//            .bindBidirectional(this.viewModel.selectedTrackProperty());
 
-    raceQueueList.setItems(vm.getRaceQueue());
+    raceQueueList.setItems(this.viewModel.getRaceQueue());
     raceQueueList.setCellFactory(lv -> new ListCell<>() {
       @Override
       protected void updateItem(RaceDTO item, boolean empty) {
@@ -44,27 +43,27 @@ public class CreateRaceController implements Controller {
     });
 
     // Bind form fields
-    raceNameField.textProperty()
-            .bindBidirectional(vm.raceNameProperty());
-    Bindings.bindBidirectional(
-            horseCountField.textProperty(),
-            vm.horseCountProperty(),
-            new javafx.util.converter.NumberStringConverter()
-    );
+//    raceNameField.textProperty()
+//            .bindBidirectional(this.viewModel.raceNameProperty());
+//    Bindings.bindBidirectional(
+//            horseCountField.textProperty(),
+//            this.viewModel.horseCountProperty(),
+//            new javafx.util.converter.NumberStringConverter()
+//    );
 
     // Bind button disable to VM.canCreate
-    createButton.disableProperty()
-            .bind(vm.canCreate().not());
+//    createButton.disableProperty()
+//            .bind(this.viewModel.canCreate().not());
 
     // Bind message
-    messageLabel.textProperty()
-            .bind(vm.messageProperty());
+//    messageLabel.textProperty()
+//            .bind(this.viewModel.messageProperty());
 
     // Button actions
-    createButton.setOnAction(e -> vm.createRace());
-    backButton.setOnAction(e -> {
-      if (mainCtrl != null) mainCtrl.loadAdminPanel();
-    });
+//    createButton.setOnAction(e -> this.viewModel.createRace());
+//    backButton.setOnAction(e -> {
+//      if (mainCtrl != null) mainCtrl.loadAdminPanel();
+//    });
   }
 
   @Override
