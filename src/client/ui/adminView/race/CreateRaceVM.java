@@ -1,13 +1,14 @@
 package client.ui.adminView.race;
 
 import client.modelManager.ModelManager;
+import client.ui.common.ViewModel;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import shared.DTO.RaceDTO;
 import shared.DTO.RaceTrackDTO;
 
-public class CreateRaceVM {
+public class CreateRaceVM implements ViewModel {
 
   private final ModelManager model;
 

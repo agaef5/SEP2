@@ -2,6 +2,7 @@
 package client.ui.adminView.horseList;
 
 import client.modelManager.ModelManager;
+import client.ui.common.ViewModel;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.BooleanExpression;
@@ -11,7 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ListChangeListener;
 import shared.DTO.HorseDTO;
 
-public class CreateEditHorseVM {
+public class CreateEditHorseVM implements ViewModel {
   private final ModelManager model;
 
   // –– backing lists & props ––
