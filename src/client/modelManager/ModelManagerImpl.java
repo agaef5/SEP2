@@ -7,6 +7,7 @@ import client.networking.horses.HorsesClient;
 import client.networking.race.RaceClient;
 import client.ui.common.MessageListener;
 import com.google.gson.Gson;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,8 +27,7 @@ import shared.updates.OnRaceStarted;
 import shared.user.UserRequest;
 import shared.user.UserResponse;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class ModelManagerImpl implements ModelManager, MessageListener {
 
@@ -66,6 +66,9 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     // —— Bet data ——
     private final BooleanProperty betPlaced = new SimpleBooleanProperty(false);
+
+    // —— Game data ——
+    private final ObservableList<Integer> horsePositions = FXCollections.observableArrayList();
 
     // —— User data ——
     private UserDTO currentUser;
@@ -109,6 +112,7 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     public StringProperty currentRaceNameProperty() { return currentRaceName; }
 
     public BooleanProperty betPlacedProperty() { return betPlaced; }
+    public ObservableList<Integer> getHorsePositions() { return horsePositions; }
 
     public ObservableList<HorseDTO>  getHorseList()            { return horseList;       }
     public BooleanProperty    createHorseSuccessProperty() { return createHorseOk;   }
@@ -281,11 +285,21 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     }
 
 
-    private void handleOnHorseFinished(String payload) {
+    private void handleOnHorseFinished(String payload)
+    {
 
     }
 
-    private void handleHorseMove(String payload) {
+    private void handleHorseMove(String payload)
+    {
+        // Parse horse positions from payload
+        int[] positions = gson.fromJson(payload, int[].class);
+
+        // Update property
+        Platform.runLater(() -> {
+            horsePositions.setAll(Arrays.stream(positions).boxed().toList());
+        });
+
     }
 
     private void handleGetHorseList(String payload){

@@ -1,15 +1,10 @@
 package client.modelManager;
 
-import client.networking.authentication.AuthenticationClient;
-import client.networking.horses.HorsesClient;
-import client.networking.race.RaceClient;
-import client.ui.common.MessageListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
-import server.model.Horse;
 import shared.DTO.*;
 
 public interface ModelManager {
@@ -60,6 +55,9 @@ public interface ModelManager {
     void createHorse(String name, int speedMin, int speedMax);
     void updateHorse(HorseDTO horse);
     void deleteHorse(HorseDTO horse);
+    ObservableList<Integer> getHorsePositions();
+    //  Game
+
 
     void update(String type, String payload);
 

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class GameViewController implements Controller, MessageListener {
+public class GameViewController implements Controller {
 
     @FXML private Canvas raceCanvas;
     @FXML private Label statusLabel;
@@ -125,40 +125,5 @@ public class GameViewController implements Controller, MessageListener {
     @Override
     public void setWindowController(MainWindowController mainWindowController) {
         this.mainWindowController = mainWindowController;
-    }
-
-    @Override
-    public void update(String type, String payload) {
-        switch (type) {
-            case "onRaceStarted":
-                viewModel.handleRaceStarted(payload);
-                break;
-            case "horseMoveUpdate":
-                viewModel.handleHorseMoveUpdate(payload);
-                break;
-            case "onHorseFinished":
-                viewModel.handleHorseFinished(payload);
-                break;
-            case "onRaceFinished":
-                viewModel.handleRaceFinished(payload);
-                handleRaceFinished();
-                break;
-        }
-    }
-
-    private void handleRaceFinished() {
-        // Stop the animation when the race is finished
-        if (animationTimer != null) {
-            animationTimer.stop();
-        }
-
-        // You might want to add a delay before returning to the previous screen
-        // or add a "Return" button that appears after the race is done
-    }
-
-    public void cleanup() {
-        if (animationTimer != null) {
-            animationTimer.stop();
-        }
     }
 }
