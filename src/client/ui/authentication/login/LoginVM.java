@@ -1,92 +1,84 @@
 package client.ui.authentication.login;
 
+
+import client.modelManager.ModelManager;
 import client.networking.SocketService;
 import client.networking.authentication.AuthenticationClient;
-import client.startup.RunClient;
-import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
-import client.ui.util.ErrorHandler;
 import com.google.gson.Gson;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.binding.BooleanExpression;
 import javafx.beans.property.*;
-import shared.DTO.HorseDTO;
-import shared.horse.CreateHorseResponse;
-import shared.horse.HorseListResponse;
 import shared.loginRegister.LoginRequest;
-import shared.loginRegister.LoginRespond;
 
-public class LoginVM implements ViewModel, MessageListener
+
+public class LoginVM implements ViewModel
 {
+    private final ModelManager model;
+    private final StringProperty usernameProp = new SimpleStringProperty();
+    private final StringProperty passwordProp = new SimpleStringProperty();
+    private final StringProperty messageProp = new SimpleStringProperty();
+    private final BooleanProperty disableLoginButtonProp = new SimpleBooleanProperty(
+            false);
+    private final BooleanProperty createNewUser = new SimpleBooleanProperty(true);
 
-  private StringProperty usernameProp = new SimpleStringProperty();
-  private StringProperty passwordProp = new SimpleStringProperty();
-  private StringProperty messageProp = new SimpleStringProperty();
-  private BooleanProperty disableLoginButtonProp = new SimpleBooleanProperty(
-      false);
 
-  private AuthenticationClient authClient;
-  private SocketService socketService;
-  private Gson gson;
 
-    public LoginVM (AuthenticationClient authClient, SocketService socketService)
-  {
-    this.authClient = authClient;
-    this.socketService = socketService;
-    gson = new Gson();
-  }
 
-  public void loginUser()
-  {
-    messageProp.set("");
-
-    if ( usernameProp.get() == null || usernameProp.get().isEmpty() )
+    public LoginVM (ModelManager model)
     {
-      messageProp.set("Username is empty");
-      return;
+        this.model = model;
+        disableLoginButtonProp.bind(
+                usernameProp.isEmpty().or(passwordProp.isEmpty())
+        );
     }
-    if ( passwordProp.get() == null || passwordProp.get().isEmpty() )
-    {
-      messageProp.set("Password is empty");
-      return;
+
+
+    public void loginUser(){
+        String username = usernameProp.get();
+        String password = passwordProp.get();
+
+
+        if (username.isEmpty() || password.isEmpty()){
+            messageProp.set("Username is empty");
+        }
+        if ( passwordProp.get() == null || passwordProp.get().isEmpty() )
+        {
+            messageProp.set("Password is empty");
+        }
+        if ( usernameProp.get() == null || usernameProp.get().isEmpty() )
+        {
+            messageProp.set("Username is empty");
+        }
+        model.loginUser(username, password);
+        clearFields();
     }
-    LoginRequest request = new LoginRequest(usernameProp.get(),
-        passwordProp.get());
-    authClient.loginUser(request);
-  }
 
-  public BooleanBinding disableLoginButtonPropriety ()
-  {
-    return usernameProp.isEmpty().or(passwordProp.isEmpty());
-  }
 
-  public StringProperty userNamePropriety ()
-  {
-    return usernameProp;
-  }
+    public StringProperty usernameProperty() {
+        return usernameProp;
+    }
 
-  public StringProperty passwordPropriety ()
-  {
-    return passwordProp;
-  }
 
-  public StringProperty messageProperty(){
-      return messageProp;
-  }
+    public StringProperty passwordProperty() {
+        return passwordProp;
+    }
 
-  @Override
-  public void update(String type, String payload) {
-    System.out.println("Message received in LoginVM: " + type);
-      if (type.equals("login")) {
-          LoginRespond loginRespond = gson.fromJson(payload, LoginRespond.class);
-          handleLogin(loginRespond);
-      }
-  }
 
-  public void handleLogin(LoginRespond loginRespond){
-      if(loginRespond.message().equals("error")){
-        ErrorHandler.handleError(new Exception(""),loginRespond.payload().toString());
-        messageProp.set("Login failed");
-      }
-  }
+    public StringProperty messageProperty() {
+        return messageProp;
+    }
+
+
+    public BooleanProperty disableLoginButtonProperty() {
+        return disableLoginButtonProp;
+    }
+
+
+    public BooleanProperty createNewUserProperty() {
+        return createNewUser;
+    }
+    public void clearFields(){
+        usernameProp.set("");
+        passwordProp.set("");
+        messageProp.set("");
+    }
 }

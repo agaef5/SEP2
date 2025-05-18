@@ -1,5 +1,7 @@
 package client.ui.authentication.register;
 
+
+import client.modelManager.ModelManager;
 import client.networking.SocketService;
 import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
@@ -17,7 +19,8 @@ import shared.loginRegister.RegisterRequest;
 import shared.loginRegister.RegisterRespond;
 import shared.race.GetRaceListResponse;
 
-public class RegisterVM implements ViewModel, MessageListener
+
+public class RegisterVM implements ViewModel
 {
   private StringProperty emailProp = new SimpleStringProperty();
   private StringProperty passwordProp = new SimpleStringProperty();
@@ -25,17 +28,16 @@ public class RegisterVM implements ViewModel, MessageListener
   private StringProperty usernameProp = new SimpleStringProperty();
   private StringProperty messageProp = new SimpleStringProperty();
   private BooleanProperty disableRegisterButtonProp = new SimpleBooleanProperty(
-      false);
+          false);
   private AuthenticationClient authClient;
-  private SocketService socketService;
-  private Gson gson;
+  private ModelManager modelManager;
 
-    public RegisterVM (AuthenticationClient authenticationClient, SocketService socketService)
+
+  public RegisterVM(ModelManager modelManager)
   {
-    this.authClient = authenticationClient;
-    this.socketService = socketService;
-    gson = new Gson();
+    this.modelManager = modelManager;
   }
+
 
   public void registerUser ()
   {
@@ -60,56 +62,45 @@ public class RegisterVM implements ViewModel, MessageListener
       return;
     }
     RegisterRequest request = new RegisterRequest(emailProp.get(),
-        usernameProp.get(), passwordProp.get());
+            usernameProp.get(), passwordProp.get());
     authClient.registerUser(request);
   }
+
 
   public StringProperty passwordPropriety ()
   {
     return passwordProp;
   }
 
+
   public StringProperty repeatPropriety ()
   {
     return repeatProp;
   }
+
 
   public StringProperty userNamePropriety ()
   {
     return usernameProp;
   }
 
+
   public StringProperty emailPropriety ()
   {
     return emailProp;
   }
+
 
   public StringProperty messagePropriety ()
   {
     return messageProp;
   }
 
+
   public BooleanBinding disableRegisterButtonPropriety() {
     return usernameProp.isEmpty()
             .or(passwordProp.isEmpty())
             .or(emailProp.isEmpty())
             .or(repeatProp.isEmpty());
-  }
-
-  @Override
-  public void update(String type, String payload) {
-    System.out.println("Message received: " + type);
-    if (type.equals("register")) {
-      RegisterRespond registerRespond = gson.fromJson(payload, RegisterRespond.class);
-      Platform.runLater(() -> {
-        handleRegister(registerRespond);
-      });
-    }
-  }
-
-  public void handleRegister(RegisterRespond registerRespond){
-    if(registerRespond.message().equals("error")){
-      messageProp.set("Register failed: " + registerRespond.payload().toString());
-    }
   }
 }
