@@ -65,6 +65,15 @@ public class UserBettingViewVM implements ViewModel {
         }
     });
 
+    model.betPlacedProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal) {
+        // Bet was successful
+        statusMessage.set("Bet placed successfully!");
+        uiLocked.set(true);
+        startCountdown();
+      }
+    });
+
     setupValidation();
     if (!horses.isEmpty())
     {
@@ -157,28 +166,14 @@ public class UserBettingViewVM implements ViewModel {
     }
   }
 
-  // Places a bet on the selected horse
-  // Updates the user's balance, locks the UI, and starts the countdown
-  // Returns true if the bet was successfully placed, false otherwise
   public boolean placeBet() {
-    if (!betValid.get() || uiLocked.get())
-    {
+    if (!betValid.get() || uiLocked.get()) {
       statusMessage.set("Invalid bet: Please select a horse and valid amount");
       return false;
     }
 
-    // TODO send balance update this to server through modelmanager
-
-
-    // Lock the UI
-    uiLocked.set(true);
-
-    // Show confirmation message
-    String horseName = selectedHorse.get().name();
-    statusMessage.set("Bet of $" + betAmount.get() + " placed on " + horseName);
-
-    // Start the countdown timer
-    startCountdown();
+    // Send bet via ModelManager (no username needed)
+    model.createBet(selectedHorse.get(), betAmount.get());
 
     return true;
   }

@@ -4,6 +4,7 @@ import client.modelManager.ModelManager;
 import client.modelManager.ModelManagerImpl;
 import client.networking.SocketService;
 import client.networking.authentication.SocketAuthenticationClient;
+import client.networking.bet.SocketBetClient;
 import client.networking.horses.SocketHorsesClient;
 import client.networking.race.SocketRaceClient;
 
@@ -19,8 +20,9 @@ public class ClientAppInitializer {
         var authClient = new SocketAuthenticationClient(socketService);
         var horsesClient = new SocketHorsesClient(socketService);
         var raceClient = new SocketRaceClient(socketService);
+        var betClient = new SocketBetClient(socketService);
 
-        modelManager = new ModelManagerImpl(authClient, raceClient, horsesClient, socketService);
+        modelManager = new ModelManagerImpl(authClient, raceClient, horsesClient, betClient, socketService);
     }
 
     public ModelManager getModelManager() {

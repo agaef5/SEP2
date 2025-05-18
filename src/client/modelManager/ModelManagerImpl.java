@@ -2,6 +2,7 @@ package client.modelManager;
 
 import client.networking.SocketService;
 import client.networking.authentication.AuthenticationClient;
+import client.networking.bet.BetClient;
 import client.networking.horses.HorsesClient;
 import client.networking.race.RaceClient;
 import client.ui.common.MessageListener;
@@ -10,6 +11,8 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import shared.DTO.*;
+import shared.bet.CreateBetRequest;
+import shared.bet.CreateBetResponse;
 import shared.horse.CreateHorseRequest;
 import shared.horse.CreateHorseResponse;
 import shared.horse.HorseListResponse;
@@ -31,6 +34,7 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     private final AuthenticationClient authClient;
     private final RaceClient        raceClient;
     private final HorsesClient      horsesClient;
+    private final BetClient         betClient;
     private final SocketService     socketService;
     private final Gson gson = new Gson();
 
@@ -61,7 +65,7 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     private final StringProperty          deleteHorseMsg  = new SimpleStringProperty("");
 
     // —— Bet data ——
-
+    private final BooleanProperty betPlaced = new SimpleBooleanProperty(false);
 
     // —— User data ——
     private UserDTO currentUser;
@@ -71,12 +75,15 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             AuthenticationClient authClient,
             RaceClient raceClient,
             HorsesClient horsesClient,
+            BetClient betClient,
             SocketService socketService
+
     ) {
         this.authClient   = authClient;
         this.raceClient   = raceClient;
         this.horsesClient = horsesClient;
         this.socketService= socketService;
+        this.betClient = betClient;
 
         // subscribe once for all incoming socket messages
         this.socketService.addListener(this);
@@ -100,6 +107,8 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     public ObservableList<HorseDTO> getRaceRank(){ return raceRank; };
     public BooleanProperty raceStartedProperty() { return raceStarted; }
     public StringProperty currentRaceNameProperty() { return currentRaceName; }
+
+    public BooleanProperty betPlacedProperty() { return betPlaced; }
 
     public ObservableList<HorseDTO>  getHorseList()            { return horseList;       }
     public BooleanProperty    createHorseSuccessProperty() { return createHorseOk;   }
@@ -136,7 +145,24 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     }
 
     @Override
-    public void createBet(String username, HorseDTO horseDTO, int amount) {
+    public void createBet(HorseDTO horseDTO, int amount) {
+        // Validation check
+        if (!validateBet(horseDTO, amount)) {
+            System.err.println("Bet validation failed");
+            return;
+        }
+
+        // Get username from currentUser
+        if (currentUser == null) {
+            System.err.println("No current user for betting");
+            return;
+        }
+
+        // Create request
+        CreateBetRequest request = new CreateBetRequest(currentUser.username(), horseDTO, amount);
+
+        // Send to server
+        betClient.createBet(request);
     }
 
     // Horse
@@ -179,24 +205,10 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             case "updateHorse":      handleUpdateHorse(payload);    break;
             case "deleteHorse":      handleDeleteHorse(payload);    break;
             case "getUser":          handeGetUser(payload);          break;
+            case "createBet":        handleCreateBet(payload);       break;
         }
     }
 
-    private void handeGetUser(String payload)
-    {
-        UserResponse userResponse = gson.fromJson(payload, UserResponse.class);
-
-        if("succes".equals(userResponse.message()))
-        {
-            UserDTO userDTO = gson.fromJson(gson.toJson(userResponse.payload()), UserDTO.class);
-            userBalance.set(userDTO.balance());
-            this.currentUser=userDTO;
-        }
-        else
-        {
-            //TODO handle error
-        }
-    }
 
     private void handleLogin(String payload){
         LoginRespond respond = gson.fromJson(payload, LoginRespond.class);
@@ -313,6 +325,38 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         } else {
             deleteHorseOk.set(false);
             deleteHorseMsg.set(payload);
+        }
+    }
+
+    private void handleCreateBet(String payload)
+    {
+        CreateBetResponse response = gson.fromJson(payload, CreateBetResponse.class);
+        if (response.BetDTO() != null)
+        {
+            // Bet was successful
+            loadCurrentUser();
+            betPlaced.set(true);
+        }
+        else
+        {
+            // Bet failed
+            betPlaced.set(false);
+        }
+    }
+
+    private void handeGetUser(String payload)
+    {
+        UserResponse userResponse = gson.fromJson(payload, UserResponse.class);
+
+        if("succes".equals(userResponse.message()))
+        {
+            UserDTO userDTO = gson.fromJson(gson.toJson(userResponse.payload()), UserDTO.class);
+            userBalance.set(userDTO.balance());
+            this.currentUser=userDTO;
+        }
+        else
+        {
+            //TODO handle error
         }
     }
 

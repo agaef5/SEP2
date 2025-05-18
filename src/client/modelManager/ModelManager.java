@@ -37,6 +37,7 @@ public interface ModelManager {
     StringProperty     updateHorseMessageProperty();
     BooleanProperty deleteHorseSuccessProperty();
     StringProperty deleteHorseMessageProperty();
+    BooleanProperty betPlacedProperty();
 
     IntegerProperty getUserBalance();
 
@@ -51,7 +52,7 @@ public interface ModelManager {
     void createRace(String name, RaceTrackDTO raceTrack, Integer capacity);
 
     //    Bet
-    void createBet(String username, HorseDTO horseDTO, int amount);
+    void createBet(HorseDTO horseDTO, int amount);
     boolean validateBet(HorseDTO horse, int amount);
 
     // Horse
