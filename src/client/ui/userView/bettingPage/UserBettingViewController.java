@@ -9,7 +9,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import shared.DTO.HorseDTO;
@@ -97,7 +96,7 @@ public class UserBettingViewController implements Controller {
     );
 
     // Bind text properties
-    balance.textProperty().bind(viewModel.balanceTextProperty());
+    balance.textProperty().bind(viewModel.balanceInfoProperty().asString("$%d"));
     countDownLabel.textProperty().bind(viewModel.countdownTextProperty());
 
     // Bidirectional binding for bet amount
@@ -121,10 +120,10 @@ public class UserBettingViewController implements Controller {
     );
 
     // Add listener for auto-navigation to game view
-    viewModel.navigateToRaceViewProperty().addListener((obs, oldVal, newVal) -> {
+    viewModel.navigateToGameViewProperty().addListener((obs, oldVal, newVal) -> {
       if (newVal) {
         navigateToGameView();
-        viewModel.resetRaceViewNavigation();
+        viewModel.resetGameViewNavigation();
       }
     });
 
@@ -143,7 +142,7 @@ public class UserBettingViewController implements Controller {
         Window window = newScene.getWindow();
         if (window != null) {
           window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, event -> {
-            viewModel.cleanup();
+            mainWindowController.loadUserLandingPage();
           });
         }
       }

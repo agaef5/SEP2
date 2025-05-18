@@ -112,7 +112,7 @@ public class MainWindowController {
                     if (additionalData instanceof RaceDTO race) {
                         viewModel = new UserBettingViewVM(modelManager, race);
                     } else {
-                        viewModel = new UserBettingViewVM(modelManager);
+                        throw new IllegalArgumentException("UserBettingView requires a RaceDTO");
                     }
                 } else if (controller instanceof GameViewController) {
                     // Pass the race data for the game view
@@ -172,6 +172,9 @@ public class MainWindowController {
 
     public void authorizeUser(UserDTO userDTO) {
         Platform.runLater(() -> {
+
+            modelManager.setCurrentUser(userDTO);
+
             if (userDTO.username() != null) setUsername(userDTO.username());
             if (authenticateAdmin(userDTO)) loadAdminPanel();
             else loadUserLandingPage();

@@ -3,7 +3,9 @@ package client.modelManager;
 import client.networking.authentication.AuthenticationClient;
 import client.networking.horses.HorsesClient;
 import client.networking.race.RaceClient;
+import client.ui.common.MessageListener;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -24,6 +26,9 @@ public interface ModelManager {
     StringProperty     createRaceMessageProperty();
     public ObjectProperty<RaceState> getCurrentRaceState();
     public ObservableList<HorseDTO> getRaceRank();
+    BooleanProperty raceStartedProperty();
+    StringProperty currentRaceNameProperty() ;
+
 
     ObservableList<HorseDTO> getHorseList();
     BooleanProperty    createHorseSuccessProperty();
@@ -32,6 +37,8 @@ public interface ModelManager {
     StringProperty     updateHorseMessageProperty();
     BooleanProperty deleteHorseSuccessProperty();
     StringProperty deleteHorseMessageProperty();
+
+    IntegerProperty getUserBalance();
 
 //    Methods to be used by VM
     // Authentication
@@ -45,7 +52,7 @@ public interface ModelManager {
 
     //    Bet
     void createBet(String username, HorseDTO horseDTO, int amount);
-    void getBetList(String username);
+    boolean validateBet(HorseDTO horse, int amount);
 
     // Horse
     void getAllHorses();
@@ -54,4 +61,6 @@ public interface ModelManager {
     void deleteHorse(HorseDTO horse);
 
     void update(String type, String payload);
+
+    void setCurrentUser(UserDTO userDTO);
 }

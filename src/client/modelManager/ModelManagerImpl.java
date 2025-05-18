@@ -9,11 +9,7 @@ import com.google.gson.Gson;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import shared.DTO.HorseDTO;
-import shared.DTO.RaceDTO;
-import shared.DTO.RaceState;
-import shared.DTO.RaceTrackDTO;
-import shared.bet.CreateBetRequest;
+import shared.DTO.*;
 import shared.horse.CreateHorseRequest;
 import shared.horse.CreateHorseResponse;
 import shared.horse.HorseListResponse;
@@ -24,6 +20,11 @@ import shared.loginRegister.RegisterRespond;
 import shared.race.*;
 import shared.updates.OnRaceFinished;
 import shared.updates.OnRaceStarted;
+import shared.user.UserRequest;
+import shared.user.UserResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ModelManagerImpl implements ModelManager, MessageListener {
 
@@ -44,7 +45,8 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     private final ObservableList<RaceDTO>      raceList     = FXCollections.observableArrayList();
     private final BooleanProperty              createRaceOk = new SimpleBooleanProperty(false);
     private final StringProperty               createRaceMsg= new SimpleStringProperty("");
-
+    private final BooleanProperty              raceStarted = new SimpleBooleanProperty(false);
+    private final StringProperty               currentRaceName = new SimpleStringProperty("");
     private final ObjectProperty<RaceDTO>      nextRace = new SimpleObjectProperty<RaceDTO>(null);
     private final ObjectProperty<RaceState>    raceState = new SimpleObjectProperty<>(null);
     private final ObservableList<HorseDTO>     raceRank = FXCollections.observableArrayList();
@@ -57,6 +59,13 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     private final StringProperty          updateHorseMsg  = new SimpleStringProperty("");
     private final BooleanProperty         deleteHorseOk   = new SimpleBooleanProperty(false);
     private final StringProperty          deleteHorseMsg  = new SimpleStringProperty("");
+
+    // —— Bet data ——
+
+
+    // —— User data ——
+    private UserDTO currentUser;
+    private final IntegerProperty userBalance = new SimpleIntegerProperty(0);
 
     public ModelManagerImpl(
             AuthenticationClient authClient,
@@ -89,6 +98,8 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             return null;
         return raceState;  }
     public ObservableList<HorseDTO> getRaceRank(){ return raceRank; };
+    public BooleanProperty raceStartedProperty() { return raceStarted; }
+    public StringProperty currentRaceNameProperty() { return currentRaceName; }
 
     public ObservableList<HorseDTO>  getHorseList()            { return horseList;       }
     public BooleanProperty    createHorseSuccessProperty() { return createHorseOk;   }
@@ -97,7 +108,6 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     public StringProperty     updateHorseMessageProperty() { return updateHorseMsg;  }
     public BooleanProperty    deleteHorseSuccessProperty() { return deleteHorseOk;   }
     public StringProperty     deleteHorseMessageProperty() { return deleteHorseMsg;  }
-
 
     // —— Methods to call from ViewModels ——
     // Authentication
@@ -129,11 +139,6 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     public void createBet(String username, HorseDTO horseDTO, int amount) {
     }
 
-    @Override
-    public void getBetList(String username) {
-    }
-
-
     // Horse
     public void getAllHorses(){
         horsesClient.getHorseList();
@@ -152,6 +157,9 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         horsesClient.deleteHorse(horse);
     }
 
+    public IntegerProperty getUserBalance (){
+        return userBalance;
+    }
 
     // —— Method called from SocketService - MessageListener "update" implementation ——
     @Override
@@ -170,6 +178,23 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             case "createHorse":      handleCreateHorse(payload);    break;
             case "updateHorse":      handleUpdateHorse(payload);    break;
             case "deleteHorse":      handleDeleteHorse(payload);    break;
+            case "getUser":          handeGetUser(payload);          break;
+        }
+    }
+
+    private void handeGetUser(String payload)
+    {
+        UserResponse userResponse = gson.fromJson(payload, UserResponse.class);
+
+        if("succes".equals(userResponse.message()))
+        {
+            UserDTO userDTO = gson.fromJson(gson.toJson(userResponse.payload()), UserDTO.class);
+            userBalance.set(userDTO.balance());
+            this.currentUser=userDTO;
+        }
+        else
+        {
+            //TODO handle error
         }
     }
 
@@ -222,19 +247,27 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         }
     }
 
+    private void handleOnRaceStarted(String payload) {
+        OnRaceStarted raceStarted = gson.fromJson(payload, OnRaceStarted.class);
+        this.raceStarted.set(true);
+        this.currentRaceName.set(raceStarted.raceName());
+
+        OnRaceStarted respond = gson.fromJson(payload, OnRaceStarted.class);
+//        TODO: check if its correct
+        if(respond.raceName().equals(nextRace.get().name()))
+            raceState.set(RaceState.IN_PROGRESS);
+    }
+
     private void handleOnRaceFinished(String payload) {
+        raceStarted.set(false);
+        currentRaceName.set("");
+
         OnRaceFinished respond = gson.fromJson(payload, OnRaceFinished.class);
 //        TODO: check if its correct
         if(respond.raceName().equals(nextRace.get().name()))
             raceState.set(RaceState.FINISHED);
     }
 
-    private void handleOnRaceStarted(String payload) {
-        OnRaceStarted respond = gson.fromJson(payload, OnRaceStarted.class);
-//        TODO: check if its correct
-        if(respond.raceName().equals(nextRace.get().name()))
-            raceState.set(RaceState.IN_PROGRESS);
-    }
 
     private void handleOnHorseFinished(String payload) {
 
@@ -282,4 +315,36 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             deleteHorseMsg.set(payload);
         }
     }
+
+    public void setCurrentUser(UserDTO userDTO)
+    {
+        this.currentUser = userDTO;
+        loadCurrentUser();
+    }
+
+    public void loadCurrentUser()
+    {
+        if (currentUser!=null)
+        {
+            UserRequest request = new UserRequest(currentUser.username());
+            authClient.getUser(request);
+        }
+    }
+
+    public boolean validateBet(HorseDTO horse, int amount) {
+        // Check if horse is selected
+        if (horse == null) return false;
+
+        // Check if amount is positive
+        if (amount <= 0) return false;
+
+        // Check if user has enough balance
+        if (amount > userBalance.get()) return false;
+
+        // Eventueel: check if betting is still open
+
+        return true;
+    }
+
+
 }

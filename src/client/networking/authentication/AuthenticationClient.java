@@ -2,6 +2,7 @@ package client.networking.authentication;
 
 import shared.loginRegister.LoginRequest;
 import shared.loginRegister.RegisterRequest;
+import shared.user.UserRequest;
 
 /**
  * Interface for handling user authentication-related operations.
@@ -25,4 +26,6 @@ public interface AuthenticationClient
    * @param loginRequest the request object containing user login credentials
    */
   void loginUser(LoginRequest loginRequest);
+
+  void getUser(UserRequest userRequest);
 }

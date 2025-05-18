@@ -8,6 +8,7 @@ import shared.DTO.RaceDTO;
 import shared.DTO.RaceTrackDTO;
 
 public class CreateRaceVM {
+
   private final ModelManager model;
 
   // — Form fields —
@@ -19,6 +20,7 @@ public class CreateRaceVM {
   private final ObservableList<RaceDTO>      raceQueue;
   // — Feedback —
   private final StringProperty message       = new SimpleStringProperty();
+
   public CreateRaceVM(ModelManager model) {
     this.model            = model;
     this.availableTracks  = model.getRaceTracksList();
