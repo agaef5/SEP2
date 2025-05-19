@@ -69,10 +69,9 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     // —— Game data ——
     private final ObservableList<Integer> horsePositions = FXCollections.observableArrayList();
-
+    private final IntegerProperty userBalance = new SimpleIntegerProperty(0);
     // —— User data ——
     private UserDTO currentUser;
-    private final IntegerProperty userBalance = new SimpleIntegerProperty(0);
 
     public ModelManagerImpl(
             AuthenticationClient authClient,
@@ -378,12 +377,6 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         }
     }
 
-    public void setCurrentUser(UserDTO userDTO)
-    {
-        this.currentUser = userDTO;
-        loadCurrentUser();
-    }
-
     public void loadCurrentUser()
     {
         if (currentUser!=null)
@@ -393,12 +386,19 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         }
     }
 
-    public UserDTO getCurrentUser(){
+public UserDTO getCurrentUser(){
         if(currentUser == null){
             loadCurrentUser();
 //            Thread.sleep(1000);
         }
         return currentUser;
+    }
+
+        public void setCurrentUser(UserDTO userDTO)
+    {
+        this.currentUser = userDTO;
+        userBalance.set(userDTO.balance());
+        loadCurrentUser();
     };
 
     public boolean validateBet(HorseDTO horse, int amount) {

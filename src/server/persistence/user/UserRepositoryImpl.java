@@ -4,6 +4,7 @@ import client.ui.util.ErrorHandler;
 //import server.model.Admin;
 import server.model.Balance;
 import server.model.User;
+import server.persistence.shared.ConnectionProviderImpl;
 import shared.DTO.UserDTO;
 
 import java.sql.*;
@@ -24,6 +25,7 @@ public class UserRepositoryImpl implements UserRepository {
   private static final Lock lock = new ReentrantLock();
   private static UserRepositoryImpl instance;
   private ArrayList<User> users;
+
 
   /**
    * Private constructor initializes the in-memory list of users.
