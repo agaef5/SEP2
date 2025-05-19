@@ -1,4 +1,4 @@
-package client.ui.common;
+package client.modelManager;
 
 /**
  * The {@code MessageListener} interface is used for listening to and handling different types of messages

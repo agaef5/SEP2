@@ -2,21 +2,11 @@ package client.ui.adminView.adminPanel;
 
 
 import client.modelManager.ModelManager;
-import client.networking.SocketService;
-import client.networking.race.RaceClient;
-import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
-import com.google.gson.Gson;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import shared.DTO.RaceDTO;
-import shared.race.GetRaceListResponse;
-
-
-import java.util.List;
 
 
 /**

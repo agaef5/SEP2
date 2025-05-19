@@ -5,7 +5,6 @@ import client.networking.authentication.AuthenticationClient;
 import client.networking.bet.BetClient;
 import client.networking.horses.HorsesClient;
 import client.networking.race.RaceClient;
-import client.ui.common.MessageListener;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.*;

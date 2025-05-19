@@ -2,18 +2,11 @@ package client.ui.authentication.register;
 
 
 import client.modelManager.ModelManager;
-import client.ui.common.MessageListener;
 import client.ui.common.Controller;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
-import client.ui.util.ErrorHandler;
-import com.google.gson.Gson;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import shared.DTO.UserDTO;
-import shared.loginRegister.LoginRespond;
-import shared.loginRegister.RegisterRespond;
 
 
 public class RegisterController implements Controller {

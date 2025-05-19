@@ -2,22 +2,14 @@ package client.ui.authentication.register;
 
 
 import client.modelManager.ModelManager;
-import client.networking.SocketService;
-import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
-import client.ui.navigation.MainWindowController;
-import com.google.gson.Gson;
-import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import client.networking.authentication.AuthenticationClient;
-import shared.loginRegister.LoginRespond;
 import shared.loginRegister.RegisterRequest;
-import shared.loginRegister.RegisterRespond;
-import shared.race.GetRaceListResponse;
 
 
 public class RegisterVM implements ViewModel
