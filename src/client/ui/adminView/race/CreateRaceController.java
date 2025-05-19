@@ -3,12 +3,14 @@ package client.ui.adminView.race;
 import client.ui.common.Controller;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
+import client.ui.util.ErrorHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import shared.DTO.RaceDTO;
 import shared.DTO.RaceTrackDTO;
 
@@ -34,11 +36,11 @@ public class CreateRaceController implements Controller
   /** Button to create a new race */
   @FXML private Button createRace;
 
-  /** Button to navigate back to the admin panel */
-  @FXML private Button back;
-
   /** ListView displaying the queue of upcoming races */
   @FXML private ListView<RaceDTO> raceQueueList;
+
+  /** Label to display messages*/
+  @FXML private Label messageLabel;
 
   /** ViewModel that provides data and operations for this view */
   private CreateRaceVM viewModel;
@@ -64,10 +66,27 @@ public class CreateRaceController implements Controller
 
     // Bind the choice box to the available racetracks in the ViewModel
     raceTrack.setItems(this.viewModel.getAvailableRaceTracks());
-    this.viewModel.selectedRaceTrackProperty().bind(raceTrack.getSelectionModel().selectedItemProperty());
+    viewModel.selectedRaceTrackProperty().bind(raceTrack.getSelectionModel().selectedItemProperty());
+
+    raceTrack.setItems(this.viewModel.getAvailableRaceTracks());
+    viewModel.selectedRaceTrackProperty().bind(raceTrack.getSelectionModel().selectedItemProperty());
+
+// Add this to format how each race track is shown
+    raceTrack.setConverter(new StringConverter<>() {
+      @Override
+      public String toString(RaceTrackDTO track) {
+        return viewModel.formatRaceTrack(track);
+      }
+
+      @Override
+      public RaceTrackDTO fromString(String string) {
+        return null; // not needed for ChoiceBox
+      }
+    });
+
 
     // Configure the race queue ListView with data from the ViewModel
-    raceQueueList.setItems(this.viewModel.getRaceQueue());
+    raceQueueList.setItems(viewModel.getRaceQueue());
     raceQueueList.setCellFactory(param -> new ListCell<>() {
       @Override
       protected void updateItem(RaceDTO race, boolean empty) {
@@ -91,6 +110,12 @@ public class CreateRaceController implements Controller
 
     // Bind the race name text field to the ViewModel property
     raceName.textProperty().bindBidirectional(this.viewModel.raceNameProperty());
+
+    messageLabel.textProperty().bind(viewModel.getMessageLabel());
+
+    createRace.setOnAction(event -> {
+            onCreateRaceClicked();
+    });
   }
 
   /**
@@ -107,10 +132,8 @@ public class CreateRaceController implements Controller
   /**
    * Handles the Create Race button click event.
    * Validates input and creates a new race if valid, otherwise shows an alert.
-   *
-   * @throws SQLException If there is an error accessing the database
    */
-  @FXML private void onCreateRaceClicked() throws SQLException
+  @FXML private void onCreateRaceClicked()
   {
     if(viewModel.isValid()){
       viewModel.createRace();
@@ -119,24 +142,6 @@ public class CreateRaceController implements Controller
       showAlert("Incorrect input", "Make sure all the fields are filled.");
     }
   }
-
-  /**
-   * Handles the Back button click event.
-   * Navigates back to the admin panel view.
-   *
-   * @throws IOException If there is an error loading the admin panel view
-   */
-  @FXML private void onBackClicked() throws IOException
-  {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-        "/client/ui/adminView/adminPanel/AdminPanel.fxml"));
-    Parent root = loader.load();
-    Stage stage = (Stage) back.getScene().getWindow();
-    stage.setScene(new Scene(root));
-  }
-
-
-
 
   /**
    * Displays an alert dialog with the specified title and content.
