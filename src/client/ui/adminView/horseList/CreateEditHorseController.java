@@ -7,6 +7,7 @@ import client.ui.navigation.MainWindowController;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import shared.DTO.HorseDTO;
 
@@ -16,14 +17,12 @@ public class CreateEditHorseController implements Controller {
   @FXML private TextField            speedMin;
   @FXML private TextField            speedMax;
 
-  @FXML private Button               newBtn;
   @FXML private Button               create;
   @FXML private Button               edit;
   @FXML private Button               remove;
-  @FXML private Label                messageLabel;
 
   private CreateEditHorseVM viewModel;
-  private MainWindowController window;
+  private MainWindowController mainWindowController;
 
   @Override
   public void initialize(ViewModel viewModel) {
@@ -31,12 +30,10 @@ public class CreateEditHorseController implements Controller {
 
     // — bind the list —
     listView.setItems(this.viewModel.getHorseList());
-    listView.getSelectionModel()
-            .selectedItemProperty();
+
 
     // — bind the form fields —
-    horseName.textProperty()
-            .bindBidirectional(this.viewModel.horseNameProp());
+    Bindings.bindBidirectional(horseName.textProperty(),  this.viewModel.horseNameProp(), new DefaultStringConverter());
     Bindings.bindBidirectional(
             speedMin.textProperty(),
             this.viewModel.speedMinProp(),
@@ -48,21 +45,43 @@ public class CreateEditHorseController implements Controller {
             new NumberStringConverter()
     );
 
+    // Configure cell rendering for the horse list
+    listView.setCellFactory(param -> new ListCell<>() {
+      @Override
+      protected void updateItem(HorseDTO horse, boolean empty) {
+        super.updateItem(horse, empty);
+        if (empty || horse == null) {
+          setText(null);
+        } else {
+          setText(horse.name() + " (speed: " + horse.speedMin() + " - " + horse.speedMax() + ")");
+        }
+      }
+    });
+
+
+    // Update the selected horse in the ViewModel when selection changes in the ListView
+    listView.getSelectionModel().selectedItemProperty().addListener(
+            (obs, oldVal, newVal) -> this.viewModel.setSelectedHorse(newVal)
+    );
+
     // — bind button enable/disable —
-//    newBtn.disableProperty()
-//            .bind(this.viewModel.creationModeProp());
-    create.disableProperty()
-            .bind(this.viewModel.canCreate().not());
-    edit.disableProperty()
-            .bind(this.viewModel.canUpdate().not());
-    remove.disableProperty()
-            .bind(this.viewModel.canDelete().not());
+
+    // Bind button disabled states to ViewModel properties
+    Bindings.bindBidirectional(edit.disableProperty(), ((CreateEditHorseVM) viewModel).editButtonDisableProperty());
+    Bindings.bindBidirectional(remove.disableProperty(), ((CreateEditHorseVM) viewModel).removeButtonDisableProperty());
+
+//    create.disableProperty()
+//            .bind(this.viewModel.createButtonDisableProperty());
+//    edit.disableProperty()
+//            .bind(this.viewModel.editButtonDisableProperty());
+//    remove.disableProperty()
+//            .bind(this.viewModel.removeButtonDisableProperty());
 
     // — actions —
 //    newBtn.setOnAction(e -> this.viewModel.enterCreateMode());
-    create.setOnAction(e -> this.viewModel.createHorse());
+    create.setOnAction(e -> this.viewModel.setHorseCreationMode());
     edit.setOnAction(e -> this.viewModel.updateHorse());
-    remove.setOnAction(e -> this.viewModel.deleteHorse());
+    remove.setOnAction(e -> this.viewModel.removeHorse());
 
     // — status message —
 //    messageLabel.textProperty()
@@ -71,6 +90,6 @@ public class CreateEditHorseController implements Controller {
 
   @Override
   public void setWindowController(MainWindowController mainWindowController) {
-    this.window = mainWindowController;
+    this.mainWindowController = mainWindowController;
   }
 }

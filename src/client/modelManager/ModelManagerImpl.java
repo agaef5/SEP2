@@ -177,8 +177,9 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         CreateHorseRequest request = new CreateHorseRequest(name, speedMin, speedMax);
         horsesClient.createHorse(request);
     }
-
-    public void updateHorse(HorseDTO horse){
+    @Override
+    public void updateHorse(int id,String horseName,int speedMin,int speedMax ){
+        HorseDTO horse = new HorseDTO(id,horseName,speedMin,speedMax);
         horsesClient.updateHorse(horse);
     }
 
@@ -256,14 +257,15 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     private void handleCreateRace(String payload){
         RaceResponse respond = gson.fromJson(payload, RaceResponse.class);
-        if (respond.race() != null) {
+        Platform.runLater(()->{ if (respond.race() != null) {
             createRaceOk.set(true);
             createRaceMsg.set("");
             getAllRaces();
         } else {
             createRaceOk.set(false);
             createRaceMsg.set("Failed to create race");
-        }
+        }});
+
     }
 
     private void handleOnRaceStarted(String payload) {
@@ -307,42 +309,46 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     private void handleGetHorseList(String payload){
         HorseListResponse respond = gson.fromJson(payload, HorseListResponse.class);
-        horseList.setAll(respond.horseList());
+        Platform.runLater(()->{ horseList.setAll(respond.horseList());});
+
     }
 
     private void handleCreateHorse(String payload){
         CreateHorseResponse respond = gson.fromJson(payload, CreateHorseResponse.class);
-        if (respond.horse() != null) {
+        Platform.runLater(()->{if (respond.horse() != null) {
             createHorseOk.set(true);
             createHorseMsg.set("");
             getAllHorses();
         } else {
             createHorseOk.set(false);
             createHorseMsg.set("Failed to create horse");
-        }
+        }});
+
     }
 
     private void handleUpdateHorse(String payload){
         HorseDTO updated = gson.fromJson(payload, HorseDTO.class);
-        if (updated != null) {
+        Platform.runLater(()->{if (updated != null) {
             updateHorseOk.set(true);
             updateHorseMsg.set("");
             getAllHorses();
         } else {
             updateHorseOk.set(false);
             updateHorseMsg.set("Failed to update horse");
-        }
+        }});
+
     }
 
     private void handleDeleteHorse(String payload){
-        if ("success".equals(payload)) {
+        Platform.runLater(()->{if ("success".equals(payload)) {
             deleteHorseOk.set(true);
             deleteHorseMsg.set("");
             getAllHorses();
         } else {
             deleteHorseOk.set(false);
             deleteHorseMsg.set(payload);
-        }
+        }});
+
     }
 
     private void handleCreateBet(String payload)
