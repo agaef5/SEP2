@@ -14,20 +14,18 @@ public class AdminPanelController implements Controller
 {
   @FXML private Button addHorse;
   @FXML private Button addRace;
-  @FXML private Button editUser;
   @FXML private Label raceInfo;
-
 
   private AdminPanelVM viewModel;
   private MainWindowController mainWindowController;
   public AdminPanelController(){};
 
 
-  @FXML
+  @Override
   public void initialize(ViewModel viewModel)
   {
     this.viewModel = (AdminPanelVM) viewModel;
-    raceInfo.textProperty().bindBidirectional(this.viewModel.raceInfoTextProperty());
+    raceInfo.textProperty().bind(this.viewModel.raceInfoTextProperty());
     addHorse.setOnAction(e -> {
       mainWindowController.loadHorsePage();
     });
@@ -35,7 +33,6 @@ public class AdminPanelController implements Controller
       mainWindowController.loadRacePage();
     });
   }
-
 
   @Override
   public void setWindowController(MainWindowController mainWindowController)

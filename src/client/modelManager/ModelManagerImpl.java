@@ -213,7 +213,7 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             case "createHorse":      handleCreateHorse(payload);    break;
             case "updateHorse":      handleUpdateHorse(payload);    break;
             case "deleteHorse":      handleDeleteHorse(payload);    break;
-            case "getUser":          handeGetUser(payload);          break;
+            case "getUser":          handleGetUser(payload);          break;
             case "createBet":        handleCreateBet(payload);       break;
         }
     }
@@ -235,16 +235,19 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     private void handleRegister(String payload){
         RegisterRespond respond = gson.fromJson(payload, RegisterRespond.class);
-        if ("success".equals(respond.message())) {
-            UserDTO userDTO = gson.fromJson(gson.toJson(respond.payload()), UserDTO.class);
-            setCurrentUser(userDTO);
+        Platform.runLater(() -> {
+            if ("success".equals(respond.message())) {
+                UserDTO userDTO = gson.fromJson(gson.toJson(respond.payload()), UserDTO.class);
+                setCurrentUser(userDTO);
 
-            registerSuccess.set(true);
-            registerMessage.set("");
-        } else {
-            registerSuccess.set(false);
-            registerMessage.set(respond.payload().toString());
-        }
+                registerSuccess.set(true);
+                registerMessage.set("");
+            } else {
+                registerSuccess.set(false);
+                registerMessage.set(respond.payload().toString());
+            }
+        });
+
     }
 
     private void handleGetRaceTracks(String payload){
@@ -386,7 +389,7 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         }
     }
 
-    private void handeGetUser(String payload)
+    private void handleGetUser(String payload)
     {
         UserResponse userResponse = gson.fromJson(payload, UserResponse.class);
 
@@ -401,6 +404,8 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             //TODO handle error
         }
     }
+
+
 
     public void setCurrentUser(UserDTO userDTO)
     {

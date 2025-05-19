@@ -16,8 +16,6 @@ public class LoginVM implements ViewModel
             false);
     private final BooleanProperty createNewUser = new SimpleBooleanProperty(true);
 
-
-
     public LoginVM (ModelManager modelManager)
     {
         this.modelManager = modelManager;
@@ -38,7 +36,6 @@ public class LoginVM implements ViewModel
         String username = usernameProp.get();
         String password = passwordProp.get();
 
-
         if (username.isEmpty() || password.isEmpty()){
             messageProp.set("Username is empty");
         }
@@ -53,7 +50,6 @@ public class LoginVM implements ViewModel
         modelManager.loginUser(username, password);
         clearFields();
     }
-
 
     public StringProperty usernameProperty() {
         return usernameProp;
@@ -74,13 +70,10 @@ public class LoginVM implements ViewModel
         return disableLoginButtonProp;
     }
 
-
-    public BooleanProperty createNewUserProperty() {
-        return createNewUser;
-    }
     public void clearFields(){
         usernameProp.set("");
         passwordProp.set("");
         messageProp.set("");
+
     }
 }

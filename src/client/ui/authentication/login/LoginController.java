@@ -20,7 +20,6 @@ import shared.loginRegister.LoginRespond;
 public class LoginController implements Controller
 {
   @FXML public Button createNewAccountB;
-  ModelManager modelManager;
   @FXML private TextField usernameNameInput;
   @FXML private TextField passwordInput;
   @FXML private Text messageLabel;
@@ -29,14 +28,13 @@ public class LoginController implements Controller
   private MainWindowController mainWindowController;
 
 
-  public void initialize (ViewModel loginVM)
+  public void initialize(ViewModel loginVM)
   {
     this.viewModel = (LoginVM) loginVM;
+
     usernameNameInput.textProperty().bindBidirectional(viewModel.usernameProperty());
     passwordInput.textProperty().bindBidirectional(viewModel.passwordProperty());
     messageLabel.textProperty().bind(viewModel.messageProperty());
-    buttonLogin.disableProperty().bind(viewModel.disableLoginButtonProperty());
-    createNewAccountB.disableProperty().bindBidirectional(viewModel.createNewUserProperty());
 
     messageLabel.textProperty().bind(viewModel.loginMessageProperty());
 
@@ -47,7 +45,7 @@ public class LoginController implements Controller
       }
     });
 
-
+    buttonLogin.disableProperty().bind(viewModel.disableLoginButtonProperty());
     buttonLogin.setOnAction(e -> viewModel.loginUser());
     createNewAccountB.setOnAction(e -> mainWindowController.loadRegisterPage());
   }

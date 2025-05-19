@@ -127,6 +127,7 @@ public class MainWindowController {
                 controller.initialize(viewModel);
                 mainPane.getChildren().add(newContent);
             } catch (IOException e) {
+                e.printStackTrace();
                 ErrorHandler.handleError(new IllegalArgumentException(e), "Error loading page");
             }
         });
