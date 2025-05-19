@@ -101,8 +101,8 @@ public class MainWindowController {
                     viewModel = new AdminPanelVM(modelManager);
                 } else if (controller instanceof CreateEditHorseController) {
                     viewModel = new CreateEditHorseVM(modelManager);
-//                } else if (controller instanceof CreateRaceController) {
-//                    viewModel = new CreateRaceVM(modelManager);
+                } else if (controller instanceof CreateRaceController) {
+                    viewModel = new CreateRaceVM(modelManager);
                 } else if (controller instanceof UserLandingPageController) {
                     viewModel = new UserLandingPageVM(modelManager);
                 } else if (controller instanceof UserBettingViewController) {

@@ -64,9 +64,9 @@ public class CreateRaceVM implements ViewModel
     messageLabel.bind(modelManager.createRaceMessageProperty());
 
     // Update the horse count in the ViewModel when the text field changes
-    modelManager.getCreatedRace().addListener((obs, oldVal, newVal) -> {
-        setSelectedRace(modelManager.getCreatedRace().get());
-    });
+//    modelManager.getCreatedRace().addListener((obs, oldVal, newVal) -> {
+//        setSelectedRace(modelManager.getCreatedRace().get());
+//    });
 
     modelManager.getRaceTracks();
     modelManager.getAllHorses();
@@ -154,18 +154,18 @@ public class CreateRaceVM implements ViewModel
     horseCount.set(0);
   }
 
-  /**
-   * Sets the specified race as the selected race.
-   * This method is currently a placeholder.
-   *
-   * @param newRace The race to select
-   */
-  private void setSelectedRace(RaceDTO newRace)
-  {
-    raceName.set(newRace.name());
-    horseCount.set(newRace.horses().size());
-    selectedRaceTrack.set(newRace.raceTrack());
-  }
+//  /**
+//   * Sets the specified race as the selected race.
+//   * This method is currently a placeholder.
+//   *
+//   * @param newRace The race to select
+//   */
+//  private void setSelectedRace(RaceDTO newRace)
+//  {
+//    raceName.set(newRace.name());
+//    horseCount.set(newRace.horses().size());
+//    selectedRaceTrack.set(newRace.raceTrack());
+//  }
 
   /**
    * Updates the available race tracks list with data received from the server.

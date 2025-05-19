@@ -407,12 +407,6 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             //TODO handle error
         }
     }
-  
-    public void setCurrentUser(UserDTO userDTO)
-    {
-        this.currentUser = userDTO;
-        loadCurrentUser();
-    }
 
     public void loadCurrentUser()
     {
