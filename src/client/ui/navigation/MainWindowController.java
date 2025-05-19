@@ -149,10 +149,6 @@ public class MainWindowController {
         loadPage("client/ui/userView/bettingPage/UserBettingView.fxml", race);
     }
 
-    public void loadBettingPage() {
-        loadPage("client/ui/userView/bettingPage/UserBettingView.fxml");
-    }
-
     public void loadGameView(RaceDTO race) {
         loadPage("client/ui/userView/gameView/GameView.fxml", race);
     }
