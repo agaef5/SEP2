@@ -45,10 +45,8 @@ import java.io.IOException;
 public class MainWindowController {
     public StackPane mainPane;
     public HBox adminMenu;
-
-    private Stage stage;
-
     ModelManager modelManager;
+    private Stage stage;
     private boolean isAdminView = false;
     private String username;
 
@@ -103,8 +101,8 @@ public class MainWindowController {
                     viewModel = new AdminPanelVM(modelManager);
                 } else if (controller instanceof CreateEditHorseController) {
                     viewModel = new CreateEditHorseVM(modelManager);
-                } else if (controller instanceof CreateRaceController) {
-                    viewModel = new CreateRaceVM(modelManager);
+//                } else if (controller instanceof CreateRaceController) {
+//                    viewModel = new CreateRaceVM(modelManager);
                 } else if (controller instanceof UserLandingPageController) {
                     viewModel = new UserLandingPageVM(modelManager);
                 } else if (controller instanceof UserBettingViewController) {
@@ -183,12 +181,12 @@ public class MainWindowController {
         isAdminView = userDTO.isAdmin();
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void shutdown() {

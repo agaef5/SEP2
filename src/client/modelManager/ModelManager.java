@@ -55,7 +55,7 @@ public interface ModelManager {
     // Horse
     void getAllHorses();
     void createHorse(String name, int speedMin, int speedMax);
-    void updateHorse(HorseDTO horse);
+    void updateHorse(int id,String horseName,int speedMin,int speedMax);
     void deleteHorse(HorseDTO horse);
     ObservableList<Integer> getHorsePositions();
 
@@ -63,7 +63,9 @@ public interface ModelManager {
 
     void update(String type, String payload);
 
-    void setCurrentUser(UserDTO userDTO);
     void loadCurrentUser();
+
     UserDTO getCurrentUser();
+
+    void setCurrentUser(UserDTO userDTO);
 }

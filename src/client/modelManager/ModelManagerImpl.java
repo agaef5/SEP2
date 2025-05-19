@@ -71,10 +71,9 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     // —— Game data ——
     private final ObservableList<Integer> horsePositions = FXCollections.observableArrayList();
-
+    private final IntegerProperty userBalance = new SimpleIntegerProperty(0);
     // —— User data ——
     private UserDTO currentUser;
-    private final IntegerProperty userBalance = new SimpleIntegerProperty(0);
 
     public ModelManagerImpl(
             AuthenticationClient authClient,
@@ -183,8 +182,9 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         CreateHorseRequest request = new CreateHorseRequest(name, speedMin, speedMax);
         horsesClient.createHorse(request);
     }
-
-    public void updateHorse(HorseDTO horse){
+    @Override
+    public void updateHorse(int id,String horseName,int speedMin,int speedMax ){
+        HorseDTO horse = new HorseDTO(id,horseName,speedMin,speedMax);
         horsesClient.updateHorse(horse);
     }
 
@@ -340,37 +340,40 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     private void handleCreateHorse(String payload){
         CreateHorseResponse respond = gson.fromJson(payload, CreateHorseResponse.class);
-        if (respond.horse() != null) {
+        Platform.runLater(()->{if (respond.horse() != null) {
             createHorseOk.set(true);
             createHorseMsg.set("");
             getAllHorses();
         } else {
             createHorseOk.set(false);
             createHorseMsg.set("Failed to create horse");
-        }
+        }});
+
     }
 
     private void handleUpdateHorse(String payload){
         HorseDTO updated = gson.fromJson(payload, HorseDTO.class);
-        if (updated != null) {
+        Platform.runLater(()->{if (updated != null) {
             updateHorseOk.set(true);
             updateHorseMsg.set("");
             getAllHorses();
         } else {
             updateHorseOk.set(false);
             updateHorseMsg.set("Failed to update horse");
-        }
+        }});
+
     }
 
     private void handleDeleteHorse(String payload){
-        if ("success".equals(payload)) {
+        Platform.runLater(()->{if ("success".equals(payload)) {
             deleteHorseOk.set(true);
             deleteHorseMsg.set("");
             getAllHorses();
         } else {
             deleteHorseOk.set(false);
             deleteHorseMsg.set(payload);
-        }
+        }});
+
     }
 
     private void handleCreateBet(String payload)
@@ -404,9 +407,7 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             //TODO handle error
         }
     }
-
-
-
+  
     public void setCurrentUser(UserDTO userDTO)
     {
         this.currentUser = userDTO;
@@ -422,12 +423,19 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         }
     }
 
-    public UserDTO getCurrentUser(){
+public UserDTO getCurrentUser(){
         if(currentUser == null){
             loadCurrentUser();
 //            Thread.sleep(1000);
         }
         return currentUser;
+    }
+
+        public void setCurrentUser(UserDTO userDTO)
+    {
+        this.currentUser = userDTO;
+        userBalance.set(userDTO.balance());
+        loadCurrentUser();
     };
 
     public boolean validateBet(HorseDTO horse, int amount) {
