@@ -6,7 +6,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import shared.DTO.*;
-import shared.user.UserRequest;
 
 public interface ModelManager {
     // —— Properties for VMs to bind to ——
@@ -17,9 +16,11 @@ public interface ModelManager {
 
     ObservableList<RaceTrackDTO> getRaceTracksList();
     ObservableList<RaceDTO>      getRaceList();
-    ObjectProperty<RaceDTO> nextRaceProperty();
+    ObjectProperty<RaceDTO> getNextRace();
     BooleanProperty    createRaceSuccessProperty();
     StringProperty     createRaceMessageProperty();
+    ObjectProperty<RaceDTO> getCreatedRace();
+
     public ObjectProperty<RaceState> getCurrentRaceState();
     public ObservableList<HorseDTO> getRaceRank();
     BooleanProperty raceStartedProperty();

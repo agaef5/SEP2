@@ -21,7 +21,7 @@ public class UserLandingPageVM implements ViewModel {
         this.modelManager = model;
 
         // Register as listener
-        model.nextRaceProperty().addListener((obs, oldRace, newRace) ->updateRaceInfo(newRace));
+        model.getNextRace().addListener((obs, oldRace, newRace) ->updateRaceInfo(newRace));
 
         //binding data to balance
         balanceInfo.bind(model.getUserBalance());

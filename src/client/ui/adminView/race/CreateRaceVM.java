@@ -1,5 +1,6 @@
 package client.ui.adminView.race;
 
+import client.modelManager.ModelManager;
 import client.networking.SocketService;
 import client.networking.race.RaceClient;
 import client.ui.common.MessageListener;
@@ -20,16 +21,10 @@ import shared.race.*;
  * Handles communication with the server via RaceClient and processes responses.
  * Implements MessageListener to receive updates from the server.
  */
-public class CreateRaceVM implements ViewModel, MessageListener
+public class CreateRaceVM implements ViewModel
 {
-  /** Service for socket communication with the server */
-  private final SocketService socketService;
-
-  /** Client for communicating with race-related server endpoints */
-  private final RaceClient raceClient;
-
-  /** JSON parser for handling server responses */
-  private final Gson gson;
+  /** Model manager for managing all necessary operations */
+  private final ModelManager modelManager;
 
   /** Observable property for the race name */
   private StringProperty raceName = new SimpleStringProperty();
@@ -41,30 +36,46 @@ public class CreateRaceVM implements ViewModel, MessageListener
   private ObjectProperty<RaceTrackDTO> selectedRaceTrack = new SimpleObjectProperty<>();
 
   /** Observable list containing all available race tracks */
-  private ObservableList<RaceTrackDTO> availableRaceTracks = FXCollections.observableArrayList();
+  private ObservableList<RaceTrackDTO> availableRaceTracks;
 
   /** Observable list containing the queue of upcoming races */
-  private ObservableList<RaceDTO> raceQueue = FXCollections.observableArrayList();
+  private ObservableList<RaceDTO> raceQueue;
+
+  private StringProperty messageLabel = new SimpleStringProperty();
 
   /**
    * Constructs the ViewModel with necessary dependencies and initializes data.
    *
-   * @param raceClient Client for race-related server operations
-   * @param socketService Service for socket communication with the server
+   * @param modelManager {@link ModelManager} for accessing the data
    */
-  public CreateRaceVM(RaceClient raceClient, SocketService socketService)
+  public CreateRaceVM(ModelManager modelManager)
   {
-    this.raceClient = raceClient;
-    this.gson = new Gson();
-    this.socketService = socketService;
-    this.socketService.addListener(this);
+    this.modelManager = modelManager;
+    modelManager.getRaceTracksList();
+    modelManager.getRaceList();
 
     // Request race tracks when the ViewModel is initialized
-    GetRaceTracksRequest request = new GetRaceTracksRequest();
-    raceClient.getRaceTracks(request);
+    availableRaceTracks =modelManager.getRaceTracksList();
 
     // Request the race list to initialize the race queue
-    raceClient.getRaceList();
+    raceQueue = modelManager.getRaceList();
+
+//    Bind message label to ModelManager's
+    messageLabel.bind(modelManager.createRaceMessageProperty());
+
+    // Update the horse count in the ViewModel when the text field changes
+    modelManager.getCreatedRace().addListener((obs, oldVal, newVal) -> {
+        setSelectedRace(modelManager.getCreatedRace().get());
+    });
+
+    modelManager.getRaceTracks();
+    modelManager.getAllHorses();
+    modelManager.getAllRaces();
+  }
+
+  public String formatRaceTrack(RaceTrackDTO track) {
+    if (track == null) return "";
+    return track.name() + " - " + track.length() + "m";
   }
 
   /**
@@ -111,6 +122,10 @@ public class CreateRaceVM implements ViewModel, MessageListener
     return raceQueue;
   }
 
+  public StringProperty getMessageLabel(){
+    return messageLabel;
+  }
+
   /**
    * Validates the input fields for creating a race.
    * @return true if all required fields are valid, false otherwise
@@ -132,86 +147,11 @@ public class CreateRaceVM implements ViewModel, MessageListener
     {
       return;
     }
-    CreateRaceRequest request = new CreateRaceRequest(
-        raceName.get(),
-        selectedRaceTrack.get(),
-        horseCount.get()
-    );
-    raceClient.createRace(request);
+    modelManager.createRace(raceName.get(), selectedRaceTrack.get(), horseCount.get());
 
     // Clear input fields after creating
     raceName.set("");
     horseCount.set(0);
-  }
-
-  /**
-   * Handles messages received from the server via the socket connection.
-   * Processes different message types and updates the ViewModel state accordingly.
-   *
-   * @param type The type of message received
-   * @param payload The JSON payload containing the message data
-   */
-  @Override
-  public void update(String type, String payload) {
-    try {
-      switch (type) {
-        case "getRaceTracks":
-          GetRaceTrackResponse trackResponse = gson.fromJson(payload, GetRaceTrackResponse.class);
-          updateAvailableRaceTracks(trackResponse);
-          break;
-        case "getRaceList":
-          GetRaceListResponse raceListResponse = gson.fromJson(payload, GetRaceListResponse.class);
-          handleRaceList(raceListResponse);
-          break;
-        case "createRace":
-          // Add null check for payload
-          if (payload != null && !payload.isEmpty()) {
-            try {
-              // Try to parse the payload directly
-              RaceResponse createRaceResponse = gson.fromJson(payload, RaceResponse.class);
-
-              if (createRaceResponse != null) {
-                handleCreateRaceResponse(createRaceResponse);
-                raceClient.getRaceList();
-
-                if (createRaceResponse.race() != null) {
-                  // If Race is a JSON string, we need to parse it
-                  Object raceObject = createRaceResponse.race();
-                  RaceDTO newRace;
-
-                  if (raceObject instanceof String) {
-                    newRace = gson.fromJson((String)raceObject, RaceDTO.class);
-                  } else {
-                    // Otherwise, convert the object to JSON and then parse it
-                    newRace = gson.fromJson(gson.toJson(raceObject), RaceDTO.class);
-                  }
-                  setSelectedRace(newRace);
-                }
-              } else {
-                System.out.println("Received null CreateRaceResponse");
-                raceClient.getRaceList(); // Still refresh the race list
-              }
-            } catch (JsonSyntaxException e) {
-              System.err.println("Error parsing createRace payload: " + e.getMessage());
-              System.err.println("Payload: " + payload);
-              raceClient.getRaceList(); // Still refresh the race list
-            }
-          } else {
-            System.out.println("Received empty payload for createRace");
-            raceClient.getRaceList(); // Still refresh the race list
-          }
-          break;
-        case "horseMoveUpdate":
-          // Special handling for horse move updates if needed
-          break;
-        default:
-          System.out.println("Unhandled message type: " + type);
-          break;
-      }
-    } catch (Exception e) {
-      System.err.println("Error in CreateRaceVM.update(): " + e.getMessage());
-      e.printStackTrace();
-    }
   }
 
   /**
@@ -222,24 +162,9 @@ public class CreateRaceVM implements ViewModel, MessageListener
    */
   private void setSelectedRace(RaceDTO newRace)
   {
-    // This is a placeholder method, implementation may be added in the future
-  }
-
-  /**
-   * Handles the response after creating a race.
-   * Logs success or failure to the console.
-   *
-   * @param createRaceResponse Response object from the create race operation
-   */
-  private void handleCreateRaceResponse(RaceResponse createRaceResponse) {
-    Platform.runLater(() -> {
-      // Add null check here
-      if (createRaceResponse != null && createRaceResponse.race() != null) {
-        System.out.println("Race created successfully");
-      } else {
-        System.out.println("Failed to create race");
-      }
-    });
+    raceName.set(newRace.name());
+    horseCount.set(newRace.horses().size());
+    selectedRaceTrack.set(newRace.raceTrack());
   }
 
   /**
@@ -251,24 +176,7 @@ public class CreateRaceVM implements ViewModel, MessageListener
   private void updateAvailableRaceTracks(GetRaceTrackResponse response)
   {
     Platform.runLater(()->
-        availableRaceTracks.setAll(response.raceTracks()));
-  }
-
-  /**
-   * Updates the race queue list with data received from the server.
-   * Updates must be performed on the JavaFX application thread.
-   *
-   * @param response Response object containing the list of races
-   */
-  private void handleRaceList(GetRaceListResponse response)
-  {
-    Platform.runLater(() -> {
-      // Update the race queue with the received races
-      raceQueue.clear();
-      if (response.races() != null) {
-        raceQueue.addAll(response.races());
-      }
-      System.out.println("Race queue updated with " + raceQueue.size() + " races");
-    });
+        availableRaceTracks.setAll(response.raceTracks())
+    );
   }
 }

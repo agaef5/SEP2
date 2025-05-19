@@ -4,17 +4,10 @@ package client.ui.adminView.adminPanel;
 import client.modelManager.ModelManager;
 import client.networking.SocketService;
 import client.networking.race.RaceClient;
-import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
-import com.google.gson.Gson;
-import javafx.application.Platform;
 import javafx.beans.property.*;
 import shared.DTO.RaceDTO;
 import shared.DTO.RaceState;
-import shared.race.GetRaceListResponse;
-
-
-import java.util.List;
 
 
 /**
@@ -24,10 +17,6 @@ import java.util.List;
  */
 public class AdminPanelVM implements ViewModel //implements ViewModel, MessageListener
 {
-  private RaceClient raceClient;
-  private SocketService socketService;
-  private StringProperty nextRaceInfo = new SimpleStringProperty("No planned races");
-
   // Controls whether buttons are enabled
   private final ObjectProperty<RaceDTO> nextRace = new SimpleObjectProperty<RaceDTO>(null);
   private final StringProperty raceInfoText = new SimpleStringProperty("Info on coming race");
@@ -37,13 +26,14 @@ public class AdminPanelVM implements ViewModel //implements ViewModel, MessageLi
   public AdminPanelVM(ModelManager modelManager){
     this.modelManager = modelManager;
 
-    nextRace.bind(modelManager.nextRaceProperty());
+    nextRace.bind(modelManager.getNextRace());
 
     nextRace.addListener((observable, oldValue, newValue) -> {
       boolean hasUpcomingRace = newValue != null;
       updateRaceInfoText(hasUpcomingRace);
     });
 
+    modelManager.getAllRaces();
     refreshRaceList();
   }
 
@@ -55,9 +45,9 @@ public class AdminPanelVM implements ViewModel //implements ViewModel, MessageLi
       String textToDisplay = "";
       RaceDTO race = nextRace.get();
       if(race.raceState().equals(RaceState.NOT_STARTED))
-        textToDisplay += "Upcoming race:";
+        textToDisplay += "Upcoming race:\n";
       else if (race.raceState().equals(RaceState.IN_PROGRESS)) {
-        textToDisplay += "Ongoing race:";
+        textToDisplay += "Ongoing race:\n";
       }
       textToDisplay += race.name() +"\n"
               + race.raceTrack().name() + ", " + race.raceTrack().location();
@@ -75,16 +65,5 @@ public class AdminPanelVM implements ViewModel //implements ViewModel, MessageLi
   private void refreshRaceList()
   {
     modelManager.getRaceList();
-  }
-
-  /**
-   * Gets the observable property containing information about the next race.
-   * This property can be bound to UI elements to display race information.
-   *
-   * @return StringProperty containing formatted race information
-   */
-  public StringProperty getNextRaceInfo()
-  {
-    return nextRaceInfo;
   }
 }
