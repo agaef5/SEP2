@@ -22,6 +22,7 @@ import shared.loginRegister.LoginRespond;
 import shared.loginRegister.RegisterRequest;
 import shared.loginRegister.RegisterRespond;
 import shared.race.*;
+import shared.updates.HorsePositionsUpdate;
 import shared.updates.OnRaceFinished;
 import shared.updates.OnRaceStarted;
 import shared.user.UserRequest;
@@ -220,17 +221,18 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     private void handleLogin(String payload){
         LoginRespond respond = gson.fromJson(payload, LoginRespond.class);
-
-        if ("success".equals(respond.message()) && !payload.isEmpty()) {
-            UserDTO userDTO = gson.fromJson(gson.toJson(respond.payload()), UserDTO.class);
+        Platform.runLater(() -> {
+            if ("success".equals(respond.message()) && !payload.isEmpty()) {
+                UserDTO userDTO = gson.fromJson(gson.toJson(respond.payload()), UserDTO.class);
                 setCurrentUser(userDTO);
 
-            loginSuccess.set(true);
-            loginMessage.set("");
-        } else {
-            loginSuccess.set(false);
-            loginMessage.set(respond.payload().toString());
-        }
+                loginSuccess.set(true);
+                loginMessage.set("");
+            } else {
+                loginSuccess.set(false);
+                loginMessage.set(respond.payload().toString());
+            }
+        });
     }
 
     private void handleRegister(String payload){
@@ -322,11 +324,12 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     private void handleHorseMove(String payload)
     {
         // Parse horse positions from payload
-        int[] positions = gson.fromJson(payload, int[].class);
+        HorsePositionsUpdate update = gson.fromJson(payload, HorsePositionsUpdate.class);
+//        int[] positions = gson.fromJson(update.positions(), int[].class);
 
         // Update property
         Platform.runLater(() -> {
-            horsePositions.setAll(Arrays.stream(positions).boxed().toList());
+            horsePositions.setAll(update.positions());
         });
 
     }
@@ -379,17 +382,20 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     private void handleCreateBet(String payload)
     {
         CreateBetResponse response = gson.fromJson(payload, CreateBetResponse.class);
-        if (response.BetDTO() != null)
-        {
-            // Bet was successful
-            loadCurrentUser();
-            betPlaced.set(true);
-        }
-        else
-        {
-            // Bet failed
-            betPlaced.set(false);
-        }
+        Platform.runLater(() ->{
+            if (response.BetDTO() != null)
+            {
+                // Bet was successful
+                loadCurrentUser();
+                betPlaced.set(true);
+            }
+            else
+            {
+                // Bet failed
+                betPlaced.set(false);
+            }
+        } );
+
     }
 
     private void handleGetUser(String payload)
@@ -399,8 +405,10 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         if("succes".equals(userResponse.message()))
         {
             UserDTO userDTO = gson.fromJson(gson.toJson(userResponse.payload()), UserDTO.class);
-            userBalance.set(userDTO.balance());
-            this.currentUser=userDTO;
+            Platform.runLater(() -> {
+                userBalance.set(userDTO.balance());
+                this.currentUser = userDTO;
+            });
         }
         else
         {
@@ -427,8 +435,10 @@ public UserDTO getCurrentUser(){
 
         public void setCurrentUser(UserDTO userDTO)
     {
-        this.currentUser = userDTO;
-        userBalance.set(userDTO.balance());
+        Platform.runLater(() -> {
+                    this.currentUser = userDTO;
+                    userBalance.set(userDTO.balance());
+                });
         loadCurrentUser();
     };
 

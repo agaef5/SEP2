@@ -127,6 +127,13 @@ public class UserBettingViewController implements Controller {
       }
     });
 
+    viewModel.getNavigateToUserLandingPageProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal) {
+        navigateToUserLandingPage();
+        viewModel.resetGameViewNavigation();
+      }
+    });
+
     // Add window close handler to cleanup resources
     setupWindowCloseHandler();
   }
@@ -171,6 +178,12 @@ public class UserBettingViewController implements Controller {
     }
   }
 
+  private void navigateToUserLandingPage(){
+    showAlert("No bet placed", "No bet was placed and race has " +
+            "already started.Too late to place a bet.");
+    mainWindowController.loadUserLandingPage();
+  }
+
   @Override
   public void setWindowController(MainWindowController mainWindowController) {
     if(mainWindowController != null) this.mainWindowController = mainWindowController;
@@ -193,5 +206,21 @@ public class UserBettingViewController implements Controller {
         return 0;
       }
     }
+  }
+
+  /**
+   * Displays an alert dialog with the specified title and content.
+   * Used for showing validation errors and other notifications.
+   *
+   * @param title The title of the alert dialog
+   * @param content The content message to display in the alert
+   */
+  private void showAlert(String title, String content)
+  {
+    Alert alert = new Alert(Alert.AlertType.WARNING);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(content);
+    alert.showAndWait();
   }
 }

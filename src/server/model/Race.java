@@ -42,7 +42,6 @@ public class Race implements Runnable {
     assignRandomHorsesFromDatabase();
   }
 
-
   public Race(String name, Timestamp timestamp, HorseList finalpositionlist, RaceTrack raceTrack) {
     this.name = name;
     this.status = RaceState.FINISHED;
@@ -167,7 +166,7 @@ public class Race implements Runnable {
     try {
       dateTime = Timestamp.valueOf(LocalDateTime.now());
       System.out.println("Betting window opened");
-      Thread.sleep(5000);
+      Thread.sleep(60000);
       System.out.println("Betting window closed");
     } catch (InterruptedException e) {
       e.printStackTrace();
@@ -226,19 +225,17 @@ public class Race implements Runnable {
    * Persists the race, then prints the formatted final results with a winning flag.
    */
   private void persistAndPrintResults() {
-   // try {
-
-
+    try {
       System.out.println("Saving race " + name + "...");
-    //  RaceRepositoryImpl.getInstance().save(this);
+      RaceRepositoryImpl.getInstance().save(this);
       System.out.println("Race " + name + " saved");
-  //  } catch (SQLException e) {
-   //   e.printStackTrace();
-   // }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
     printFinalResults();
   }
 
-  /**
+      /**
    * Prints the final standings, marking the winner with a chequered flag.
    */
   private void printFinalResults() {
