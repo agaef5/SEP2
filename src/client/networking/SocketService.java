@@ -81,21 +81,17 @@ public class SocketService implements SocketSubject {
    * @param jsonResponse the raw JSON response from the server
    */
   public void receive(String jsonResponse) {
-    System.out.println("Server>> " + jsonResponse.toString());
     try {
-      System.out.println("Trying to decode the Respond");
-
       // First check if the response is a valid JSON object
       if (!jsonResponse.trim().startsWith("{")) {
         System.err.println("Received invalid JSON: " + jsonResponse);
         return;
       }
-
       Respond respond = gson.fromJson(jsonResponse, Respond.class);
 
       try{
       Respond respondDecoded = RespondValidate.decode(respond);
-      System.out.println("Respond decoded: " + respondDecoded);
+      System.out.println("\nRespond decoded: " + respondDecoded);
       if(respondDecoded.type().equals("disconnect")) return;
 
         // Convert payload to string for notification
@@ -114,7 +110,6 @@ public class SocketService implements SocketSubject {
       }
     } catch (Exception e) {
       System.err.println("Error processing response: " + e.getMessage());
-      e.printStackTrace();
     }
   }
 
@@ -132,7 +127,6 @@ public class SocketService implements SocketSubject {
       Thread.sleep(1000);
 
       removeAllListeners();
-      System.out.println("Client is disconnecting from the server...");
       if (socket != null && !socket.isClosed()) socket.close();
       if (in != null) in.close();
       if (out != null) out.close();
@@ -151,7 +145,6 @@ public class SocketService implements SocketSubject {
   public void notifyListener(String type, String payload) {
     for (MessageListener listener : listeners) {
       listener.update(type, payload);
-      System.out.println("Notifying listeners");
     }
   }
 

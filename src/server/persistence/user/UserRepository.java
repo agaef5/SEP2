@@ -37,6 +37,13 @@ public interface UserRepository {
    */
   User readByEmail(String email)  throws SQLException;
 
+  /**
+   * Updates user balance.
+   *
+   * @param username - user whose balance has to be updated
+   * @param newBalance - new balance worth
+   * @throws SQLException - exception thrown, if the operation is not successful
+   */
   void updateBalance(String username, int newBalance)  throws SQLException;
 
 }

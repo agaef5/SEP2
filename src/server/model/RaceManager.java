@@ -1,5 +1,7 @@
 package server.model;
 
+import server.networking.listener.RaceListenerImpl;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -78,9 +80,10 @@ public class RaceManager implements Runnable {
           Thread.sleep(3000); // small delay to avoid busy waiting
         }
         race.addListener(BettingManager.getInstance());
-        race.run();
+        race.addListener(RaceListenerImpl.getInstance());
+        race.run(); // Run the race
         raceQueue.take();   // Now remove it from the queue
-               // Run the race (still in the queue)
+
 
         // TODO: Add race to the database
 

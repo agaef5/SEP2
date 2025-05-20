@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class implements the {@link RaceRepository} interface and provides methods for interacting with the race data in the database.
- * It handles CRUD operations for races, including creating, reading, updating, and deleting race records.
+ * This class implements the {@link RaceRepository} interface and provides methods for interacting
+ * with the race data in the database. It includes creation, saving, reading, updating, and deletion of races.
  */
 public class RaceRepositoryImpl implements RaceRepository {
     private static RaceRepositoryImpl instance;
@@ -27,23 +27,10 @@ public class RaceRepositoryImpl implements RaceRepository {
     }
 
     /**
-     * Private constructor to prevent direct instantiation.
-     * Registers the PostgreSQL JDBC driver.
+     * Provides a singleton instance of the {@link RaceRepositoryImpl}.
      *
-     * @throws SQLException if a database access error occurs
-     */
-//    private RaceRepositoryImpl() throws SQLException {
-//        DriverManager.registerDriver(new org.postgresql.Driver());
-//    } You don’t need to register the driver manually anymore, because
-//    Recent versions of JDBC automatically load the driver when DriverManager.getConnection(...) is called.
-
-
-    /**
-     * Provides a singleton instance of the {@link RaceRepositoryImpl} class.
-     * Ensures that only one instance of this repository exists.
-     *
-     * @return the singleton instance of {@link RaceRepositoryImpl}
-     * @throws SQLException if a database access error occurs
+     * @return singleton instance
+     * @throws SQLException if connection cannot be established
      */
     public static synchronized RaceRepositoryImpl getInstance() throws SQLException {
         if (instance == null) {
@@ -53,31 +40,27 @@ public class RaceRepositoryImpl implements RaceRepository {
     }
 
     /**
-     * Establishes a connection to the PostgreSQL database.
-     *
-     * @return a {@link Connection} object to interact with the database
-     * @throws SQLException if a database access error occurs
+     * Gets a new connection from the connection provider.
      */
     private Connection getConnection() throws SQLException {
         return connectionProvider.getConnection();
     }
 
     /**
-     * Creates a new race record in the database.
+     * Creates a new Race in the database.
      *
-     * @param name     the name of the race
-     * @param time     the start time of the race
-     * @param raceTrack the race track associated with the race
-     * @return a new {@link Race} object with the generated ID
-     * @throws SQLException if a database access error occurs
+     * @param name the race name
+     * @param time the scheduled time
+     * @param raceTrack the track info
+     * @return created {@link Race} object
+     * @throws SQLException if insert fails or track doesn't exist
      */
     @Override
     public Race create(String name, Timestamp time, RaceTrack raceTrack) throws SQLException {
         try (Connection connection = getConnection()) {
-
+            // Find the raceTrack ID
             String trackQuery = "SELECT id FROM raceTrack WHERE name = ? AND raceLength = ? AND location = ?";
             PreparedStatement trackStatement = connection.prepareStatement(trackQuery);
-
             trackStatement.setString(1, raceTrack.getName());
             trackStatement.setInt(2, raceTrack.getLength());
             trackStatement.setString(3, raceTrack.getLocation());
@@ -90,6 +73,7 @@ public class RaceRepositoryImpl implements RaceRepository {
                 throw new SQLException("RaceTrack not found in database.");
             }
 
+            // Insert new race
             String query = "INSERT INTO race (name, startTime, racetrack_id) VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(
                     query,
@@ -98,6 +82,7 @@ public class RaceRepositoryImpl implements RaceRepository {
             statement.setTimestamp(2, time);
             statement.setInt(3, raceTrackId);
             statement.executeUpdate();
+
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 int generatedId = resultSet.getInt(1);
@@ -108,16 +93,23 @@ public class RaceRepositoryImpl implements RaceRepository {
         }
     }
 
+    /**
+     * Saves a Race instance into the database.
+     *
+     * @param race the {@link Race} object to store
+     * @return the stored {@link Race}, or null if something goes wrong
+     * @throws SQLException on database error
+     */
     @Override
     public Race save(Race race) throws SQLException
     {
         try (Connection connection = getConnection()) {
             RaceTrack raceTrack = race.getRaceTrack();
 
+            // Ensure RaceTrack exists
             String trackQuery = "SELECT id FROM raceTrack WHERE name = ? " +
                     "AND raceLength = ? AND location = ?";
             PreparedStatement trackStatement = connection.prepareStatement(trackQuery);
-
             trackStatement.setString(1, raceTrack.getName());
             trackStatement.setInt(2, raceTrack.getLength());
             trackStatement.setString(3, raceTrack.getLocation());
@@ -130,6 +122,7 @@ public class RaceRepositoryImpl implements RaceRepository {
                 throw new SQLException("RaceTrack not found in database.");
             }
 
+            // Insert race record
             String insertQuery = "INSERT INTO race (name, startTime, racetrack_id) " +
                     "VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(insertQuery, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -175,18 +168,13 @@ public class RaceRepositoryImpl implements RaceRepository {
                 Timestamp startTime = resultSet.getTimestamp("startTime");
 
                 return new RaceDTO(name, startTime, readParticipantsList(id), readRaceTrack(id), RaceState.FINISHED);
-            } else {
-                return null;
             }
+            return null;
         }
     }
 
     /**
-     * Reads races from the database that match the given name.
-     *
-     * @param searchName the name (or part of the name) to search for
-     * @return a list of {@link Race} objects that match the given name
-     * @throws SQLException if a database access error occurs
+     * Reads races matching a given name pattern.
      */
     @Override
     public List<RaceDTO> readByName(String searchName) throws SQLException
@@ -198,9 +186,9 @@ public class RaceRepositoryImpl implements RaceRepository {
                     "FROM race r " +
                     "LEFT JOIN raceTrack rt ON r.race_id = rt.id " +
                     "WHERE r.name LIKE ?";
-
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, "%" + searchName + "%");
+
             ResultSet resultSet = statement.executeQuery();
 
             ArrayList<RaceDTO> result = new ArrayList<>();
@@ -248,7 +236,6 @@ public class RaceRepositoryImpl implements RaceRepository {
                 Timestamp startTime = resultSet.getTimestamp("startTime");
 
                 RaceDTO race = new RaceDTO(name, startTime, readParticipantsList(id), readRaceTrack(id), RaceState.FINISHED);
-
                 result.add(race);
             }
             return result;
@@ -272,7 +259,6 @@ public class RaceRepositoryImpl implements RaceRepository {
                     "LEFT JOIN raceTrack rt ON r.race_id = rt.id " +
                     "LEFT JOIN horse h ON r.horse_id = h.id"+
                     "WHERE r.startTime = ?";
-
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setTimestamp(1,time);
             ResultSet resultSet = statement.executeQuery();
@@ -322,9 +308,6 @@ public class RaceRepositoryImpl implements RaceRepository {
 
     /**
      * Deletes a race from the database.
-     *
-     * @param race the race to delete
-     * @throws SQLException if a database access error occurs
      */
     @Override
     public void delete(Race race) throws SQLException {
@@ -336,7 +319,10 @@ public class RaceRepositoryImpl implements RaceRepository {
         }
     }
 
-    private List<HorseDTO> readParticipantsList(int id) throws SQLException{
+    /**
+     * Reads the list of horse participants for a given race ID.
+     */
+    private List<HorseDTO> readParticipantsList(int id) throws SQLException {
         try (Connection connection = getConnection()) {
                 String horseQuery = "SELECT h.id, h.name, h.speedMin, h.speedMax " +
                         "FROM participant p " +
@@ -362,7 +348,10 @@ public class RaceRepositoryImpl implements RaceRepository {
         }
     }
 
-    private RaceTrackDTO readRaceTrack (int id) throws SQLException{
+    /**
+     * Reads the RaceTrack associated with a given race ID.
+     */
+    private RaceTrackDTO readRaceTrack(int id) throws SQLException {
         try (Connection connection = getConnection()) {
             String query = "SELECT name, raceLength, location " +
                     "FROM raceTrack rt " +

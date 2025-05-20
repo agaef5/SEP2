@@ -3,6 +3,7 @@ package client.ui.util;
 import client.networking.SocketService;
 import client.ui.util.exceptions.InvalidMessageException;
 import com.google.gson.Gson;
+import javafx.scene.control.Alert;
 import shared.Request;
 
 import java.io.IOException;
@@ -92,8 +93,7 @@ public class ErrorHandler {
    * @param message the error message to display
    */
   private static void displayErrorToClient(String message) {
-    // TODO: Implement UI display logic
-    System.out.println(message);  // Placeholder; this would be replaced by actual UI handling code
+    showAlert("Error", message);
   }
 
   /**
@@ -118,5 +118,20 @@ public class ErrorHandler {
   private static boolean isServerError(Exception e) {
     // Server-side errors often relate to network issues or data processing problems
     return e instanceof SQLException || e instanceof IOException || e instanceof InvalidMessageException;
+  }
+
+  /**
+   * Alert dedicated to inform user about error.
+   *
+   * @param title - title of the alert
+   * @param content - content displayed in alert
+   */
+  public static void showAlert(String title, String content)
+  {
+    Alert alert = new Alert(Alert.AlertType.WARNING);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(content);
+    alert.showAndWait();
   }
 }

@@ -2,6 +2,7 @@ package client.ui.userView.bettingPage;
 
 import client.modelManager.ModelManager;
 import client.ui.common.ViewModel;
+import client.ui.util.ErrorHandler;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -101,6 +102,10 @@ public class UserBettingViewVM implements ViewModel {
   // Validates if the current bet selection is valid
   // Updates the betValid property accordingly
   private void validateBet() {
+    if(selectedHorse.isNull().get()) {
+      ErrorHandler.showAlert("No horse selected", "Select horse first!");
+      return;
+    }
     boolean valid = model.validateBet(selectedHorse.get(), betAmount.get()) &&
             !uiLocked.get();
     betValid.set(valid);
@@ -192,7 +197,8 @@ public class UserBettingViewVM implements ViewModel {
   // Starts the countdown timer for the race
   // Updates the countdown text every second until the race starts
   private void startCountdown() {
-    // TODO: Implement actual countdown functionality
+    // TODO: Implement actual "countdown till race starts" functionality
+
     // For now, just set a static message
     countdownText.set("Race will start soon. Your bet has been placed!");
   }

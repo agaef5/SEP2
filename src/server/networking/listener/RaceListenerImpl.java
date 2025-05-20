@@ -1,9 +1,6 @@
 package server.networking.listener;
 
-import server.model.Horse;
-import server.model.HorseList;
-import server.model.Race;
-import server.model.RaceListener;
+import server.model.*;
 import server.networking.Server;
 import server.networking.socketHandling.ClientHandler;
 import server.util.DTOMapper;
@@ -16,7 +13,22 @@ import shared.updates.OnRaceStarted;
 import java.util.List;
 
 public class RaceListenerImpl implements RaceListener {
+    private RaceListenerImpl() { }
 
+    private static volatile RaceListenerImpl instance;
+    /**
+     * Double-checked locking for a thread-safe singleton
+     */
+    public static RaceListenerImpl getInstance() {
+        if (instance == null) {
+            synchronized (RaceListenerImpl.class) {
+                if (instance == null) {
+                    instance = new RaceListenerImpl();
+                }
+            }
+        }
+        return instance;
+    }
 
     @Override
     public void bettingOpen(Race race) {
@@ -38,7 +50,7 @@ public class RaceListenerImpl implements RaceListener {
     {
         OnRaceStarted payload = new OnRaceStarted(race.getName());
         Server.broadcast("onRaceStarted",payload);
-
+        System.out.println("on race started sent");
     }
 
     @Override

@@ -60,9 +60,6 @@ public class RespondValidate
       throw new InvalidMessageException("Invalid payload: payload is null.");
     }
 
-    // Log the decoded payload for debugging purposes
-    System.out.println("Decoded payload: " + decodedPayload);
-
     // Return the Respond object with the decoded payload
     return new Respond(respond.type(), decodedPayload);
   }

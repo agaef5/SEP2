@@ -57,7 +57,10 @@ public class ClientHandler implements Runnable {
         try {
           JsonObject json = gson.fromJson(line, JsonObject.class);
           if (json.has("handler") && json.has("action") && json.has("payload")) {
-            System.out.println(line);
+
+            //Line for debugging purposes:
+            //System.out.println(line);
+
             Request request = gson.fromJson(line, Request.class);
             handleClientRequest(request);
           } else {
@@ -118,6 +121,9 @@ public class ClientHandler implements Runnable {
     send(response);
   }
 
+  /**
+   * Properly close connection with client socket.
+   */
   private void handleClientDisconnect(){
     try {
       System.out.println("Client requested disconnect: " + socket.getInetAddress());
@@ -137,8 +143,9 @@ public class ClientHandler implements Runnable {
    * @return The wrapped {@code Respond} object.
    */
   private Respond wrapResponse(String responseType, Object responsePayload) {
+//   Log if data for response are incomplete - handle it as an error
     if ((responseType == null || responseType.isEmpty()) || responsePayload == null) {
-      // TODO: error handling here
+      ErrorHandler.handleError(new Exception("Cannot wrap a response. Data set is incomplete"), this.getClass().getName());
     }
     return new Respond(responseType, responsePayload);
   }

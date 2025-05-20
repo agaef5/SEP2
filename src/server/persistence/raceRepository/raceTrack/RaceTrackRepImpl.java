@@ -96,6 +96,28 @@ public class RaceTrackRepImpl implements RaceTrackRep {
     }
 
     /**
+     * Retrieves a race track by its id.
+     *
+     * @param id the id to match
+     * @return the matching {@code RaceTrack}, or {@code null} if not found
+     * @throws SQLException if the query fails
+     */
+    public RaceTrack readById(int id) throws SQLException {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM raceTrack WHERE id = ?");
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String name = resultSet.getString("name");
+                int length = resultSet.getInt("racelength");
+                String location = resultSet.getString("location");
+                return new RaceTrack(name, length, location);
+            }
+            return null;
+        }
+    }
+
+    /**
      * Retrieves race tracks that match a given name (case-insensitive).
      *
      * @param name the name or partial name to match

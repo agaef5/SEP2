@@ -6,8 +6,6 @@ import shared.DTO.RaceDTO;
 import shared.DTO.RaceTrackDTO;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 /**

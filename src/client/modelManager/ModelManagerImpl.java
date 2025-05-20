@@ -5,6 +5,7 @@ import client.networking.authentication.AuthenticationClient;
 import client.networking.bet.BetClient;
 import client.networking.horses.HorsesClient;
 import client.networking.race.RaceClient;
+import client.ui.util.ErrorHandler;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.*;
@@ -294,13 +295,11 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     private void handleOnRaceStarted(String payload) {
         OnRaceStarted raceStarted = gson.fromJson(payload, OnRaceStarted.class);
         Platform.runLater(() -> {
-            this.raceStarted.set(true);
-            this.currentRaceName.set(raceStarted.raceName());
-
-            OnRaceStarted respond = gson.fromJson(payload, OnRaceStarted.class);
-//        TODO: check if its correct
-            if (respond.raceName().equals(nextRace.get().name()))
+            if (raceStarted.raceName().equals(nextRace.get().name())) {
+                this.currentRaceName.set(raceStarted.raceName());
+                this.raceStarted.set(true);
                 raceState.set(RaceState.IN_PROGRESS);
+            }
         });
     }
 
@@ -310,13 +309,13 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         currentRaceName.set("");
 
         OnRaceFinished respond = gson.fromJson(payload, OnRaceFinished.class);
-//        TODO: check if its correct
+
         if(respond.raceName().equals(nextRace.get().name()))
             raceState.set(RaceState.FINISHED);
         });
     }
 
-    //TODO
+
     private void handleOnHorseFinished(String payload)
     {
 
@@ -410,7 +409,7 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         }
         else
         {
-            //TODO handle error
+            ErrorHandler.handleError(new Exception("Cannot get user"), this.getClass().getName());
         }
     }
 
@@ -426,7 +425,6 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 public UserDTO getCurrentUser(){
         if(currentUser == null){
             loadCurrentUser();
-//            Thread.sleep(1000);
         }
         return currentUser;
     }
@@ -450,7 +448,7 @@ public UserDTO getCurrentUser(){
         // Check if user has enough balance
         if (amount > userBalance.get()) return false;
 
-        // Eventueel: check if betting is still open
+//        if(!raceState.get().equals(RaceState.NOT_STARTED)) return false;
 
         return true;
     }

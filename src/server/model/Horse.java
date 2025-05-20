@@ -59,7 +59,6 @@ public class Horse {
 
   /**
    * Moves the horse forward by a random step within its speed range.
-   * // TODO: Improve this logic with more sophisticated race mechanics.
    */
   public void move() {
     int step = (int) (Math.random() * (speedMax - speedMin + 1)) + speedMin;

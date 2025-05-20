@@ -17,121 +17,140 @@ import java.sql.SQLException;
 
 /**
  * The {@code AuthServiceImpl} class implements the {@link AuthenticationService} interface
- * and provides functionality for user authentication, including user registration and login.
- * It interacts with the {@link UserRepository} to manage user data and performs validation
- * of the provided credentials during registration and login processes.
+ * and provides functionality for user authentication, registration, and balance management.
+ * It uses {@link UserRepository} to interact with the database and handle user data operations.
  */
-public class AuthServiceImpl implements AuthenticationService
-{
+public class AuthServiceImpl implements AuthenticationService {
+
   /**
-   * Registers a new user based on the provided {@link RegisterRequest}.
-   * Validates the user data, checks if the username already exists, and adds the user
-   * to the {@link UserRepository}.
+   * Registers a new user with the provided information.
+   * Performs validation checks, ensures username and email are unique,
+   * and persists the new user to the database.
    *
-   * @param request The registration request containing username, email, and password.
-   * @return A {@link RegisterRespond} indicating the result of the registration process.
+   * @param request The {@link RegisterRequest} containing username, email, and password.
+   * @return {@link RegisterRespond} with success status or error message.
    */
-  @Override public RegisterRespond registerUser(RegisterRequest request)
-  {
-    // Check if none of the data are null
+  @Override
+  public RegisterRespond registerUser(RegisterRequest request) {
+    // Extract fields
     String username = request.username();
     String email = request.email();
     String password = request.password();
-    if(username.isEmpty() || email.isEmpty() || password.isEmpty()){
+
+    // Validate input fields are not empty
+    if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
       return new RegisterRespond("error", "Register data are empty");
     }
 
-    // Getting UserRepository to work with
     UserRepository userRepository = UserRepositoryImpl.getInstance();
 
     try {
-      // Checking if such username does not exist already
+      // Check if username or email already exists
       if (userRepository.readByUsername(username) != null || userRepository.readByEmail(email) != null) {
         return new RegisterRespond("error", "User with such username already exists");
       }
 
-      // Creating new user and adding to repository
+      // Create and save new user
       User newUser = userRepository.createUser(username, email, password, false);
       if (newUser == null) {
         return new RegisterRespond("error", "Error with creating user");
       }
 
+      // Return success response with user data
       return new RegisterRespond("success", DTOMapper.UserToDTO(newUser));
-    }
-    catch (SQLException sqlException){
+    } catch (SQLException sqlException) {
       return new RegisterRespond("error", "Error with creating user");
     }
   }
 
   /**
-   * Logs in an existing user based on the provided {@link LoginRequest}.
-   * Validates the credentials, checks if the user exists, and compares the
-   * provided password with the stored password.
+   * Logs in a user based on provided credentials (username/email and password).
+   * Looks up the user and verifies password match.
    *
-   * @param request The login request containing the username and password.
-   * @return A {@link LoginRespond} indicating the result of the login process.
+   * @param request The {@link LoginRequest} containing identifier and password.
+   * @return {@link LoginRespond} indicating success or failure.
    */
-  @Override public LoginRespond loginUser(LoginRequest request)
-  {
-    // Check if none of the data are null
+  @Override
+  public LoginRespond loginUser(LoginRequest request) {
     String identifier = request.username();
     String password = request.password();
-    if(identifier.isEmpty() || password.isEmpty()){
+
+    // Validate input fields are not empty
+    if (identifier.isEmpty() || password.isEmpty()) {
       return new LoginRespond("error", "Login data are empty");
     }
 
-    try{
-    // Get UserRepository and pull a list of Users
-    UserRepository userRepository = UserRepositoryImpl.getInstance();
-    User user;
-    if(identifier.contains("@")){
-      user = userRepository.readByEmail(identifier);
-    }else{
-      user = userRepository.readByUsername(identifier);
-    }
-//    if no user is found, return an error
-    if(user == null)
-      return new LoginRespond("error", "Error with getting user credentials");
+    try {
+      UserRepository userRepository = UserRepositoryImpl.getInstance();
 
-//    check if the passwords are matching and return the LoginResponse
-    if(password.equals(user.getPassword())) {
+      // Determine if identifier is email or username
+      User user = identifier.contains("@")
+              ? userRepository.readByEmail(identifier)
+              : userRepository.readByUsername(identifier);
+
+      // User not found
+      if (user == null) {
+        return new LoginRespond("error", "Error with getting user credentials");
+      }
+
+      // Check if password matches
+      if (password.equals(user.getPassword())) {
         return new LoginRespond("success", DTOMapper.UserToDTO(user));
-    } else{
-      return new LoginRespond("error", "Username and password do not match");
-    }
-    }catch (SQLException sqlException){
+      } else {
+        return new LoginRespond("error", "Username and password do not match");
+      }
+
+    } catch (SQLException sqlException) {
       return new LoginRespond("error", "Error with logging in the user");
     }
   }
 
+  /**
+   * Retrieves a user by their identifier (username or email).
+   *
+   * @param userRequest A {@link UserRequest} containing the identifier.
+   * @return A {@link UserResponse} with user data or an error message.
+   */
   @Override
-  public UserResponse getUser(UserRequest userRequest){
+  public UserResponse getUser(UserRequest userRequest) {
     UserRepository userRepository = UserRepositoryImpl.getInstance();
+
     try {
-      User user;
-      if (userRequest.identifier().contains("@")) {
-        user = userRepository.readByEmail(userRequest.identifier());
-      } else {
-        user = userRepository.readByUsername(userRequest.identifier());
-      }
-      if(user != null) {
+      // Determine if identifier is email or username
+      User user = userRequest.identifier().contains("@")
+              ? userRepository.readByEmail(userRequest.identifier())
+              : userRepository.readByUsername(userRequest.identifier());
+
+      if (user != null) {
         return new UserResponse("success", DTOMapper.UserToDTO(user));
-      }else throw new SQLException("User is null");
-    }catch (SQLException sqlException){
+      } else {
+        throw new SQLException("User is null");
+      }
+
+    } catch (SQLException sqlException) {
       return new UserResponse("error", "No such user exists");
     }
   }
 
+  /**
+   * Updates the balance of a user identified by username.
+   *
+   * @param balanceUpdateRequest {@link BalanceUpdateRequest} with username and new balance.
+   * @return {@link BalanceUpdateResponse} with updated user data or error message.
+   */
   @Override
-  public BalanceUpdateResponse updateBalance(BalanceUpdateRequest balanceUpdateRequest){
+  public BalanceUpdateResponse updateBalance(BalanceUpdateRequest balanceUpdateRequest) {
     UserRepository userRepository = UserRepositoryImpl.getInstance();
 
     try {
+      // Update balance in the database
       userRepository.updateBalance(balanceUpdateRequest.name(), balanceUpdateRequest.balance());
-      User user = userRepository.readByUsername(balanceUpdateRequest.name());
-      return new BalanceUpdateResponse("success", DTOMapper.UserToDTO(user));
 
-    }catch (SQLException sqlException){
+      // Fetch updated user
+      User user = userRepository.readByUsername(balanceUpdateRequest.name());
+
+      return new BalanceUpdateResponse("success", DTOMapper.UserToDTO(user));
+    } catch (SQLException sqlException) {
       return new BalanceUpdateResponse("error", "Error with updating balance");
     }
   }

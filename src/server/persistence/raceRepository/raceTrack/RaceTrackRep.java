@@ -29,6 +29,15 @@ public interface RaceTrackRep {
     List<RaceTrack> getAll() throws SQLException;
 
     /**
+     * Retrieves a race track by its id.
+     *
+     * @param id the id to match
+     * @return the matching {@code RaceTrack}, or {@code null} if not found
+     * @throws SQLException if the query fails
+     */
+    RaceTrack readById(int id) throws SQLException;
+
+    /**
      * Retrieves all race tracks that match the given name.
      *
      * @param name the name to search for

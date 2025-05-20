@@ -15,15 +15,4 @@ public class BaseVal
   public static boolean validate(String string){
     return string == null || string.isEmpty();
   }
-
-  /**
-   * Validates if the provided integer is a positive number.
-   *
-   * @param integer The integer to be validated.
-   * @return {@code true} if the integer is greater than zero; {@code false} otherwise.
-   */
-  public static boolean valPosInt(int integer){
-    // validate positive int
-    return integer > 0;
-  }
 }

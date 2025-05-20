@@ -1,5 +1,6 @@
 package server.services.bet;
 
+import client.ui.util.ErrorHandler;
 import server.persistence.horses.HorseRepository;
 import server.persistence.horses.HorseRepositoryImpl;
 import server.persistence.raceRepository.bet.BetRepository;
@@ -12,10 +13,7 @@ import server.model.BettingManager;
 import server.model.Horse;
 import server.model.Race;
 import server.model.User;
-
-
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BetServiceImpl implements BetService {
@@ -72,6 +70,7 @@ public class BetServiceImpl implements BetService {
      * Fetch all bets ever placed by a given user. Wraps SQLExceptions similarly.
      */
     public List<BetDTO> getBetsByUser(String username) {
+//        TODO: implement getting a list of bets for specific user
 //        try {
 //            User user = userRepo.readByUsername(username);
 //            if (user == null) {
@@ -91,8 +90,8 @@ public class BetServiceImpl implements BetService {
         try {
             betRepo.save(bet);
         } catch (SQLException e) {
-            throw new RuntimeException(
-                    "Database error while saving bet for user " + bet.getUser().getUsername(), e);
+            ErrorHandler.handleError(new RuntimeException("Database error while saving bet for user "
+                    + bet.getUser().getUsername(), e), getClass().getName());
         }
     }
 }

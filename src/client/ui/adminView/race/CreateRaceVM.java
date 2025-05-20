@@ -3,7 +3,6 @@ package client.ui.adminView.race;
 import client.modelManager.ModelManager;
 import client.networking.SocketService;
 import client.networking.race.RaceClient;
-import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;

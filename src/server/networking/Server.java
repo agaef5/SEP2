@@ -19,7 +19,6 @@ public class Server {
   // Thread-safe list to store the connected clients.
   private static final List<ClientHandler> clients = new CopyOnWriteArrayList<>();
 
-
   /**
    * Broadcasts a message to all connected clients.
    * <p>
@@ -33,7 +32,8 @@ public class Server {
    */
   public static void broadcast(String type, Object payload) {
     Respond response = new Respond(type, payload);
-//    String json = new Gson().toJson(response);
+
+//    Line for debugging purposes:
     System.out.println("Server sends: " + response.type() + ", payload: " + response.payload());
 
     for (ClientHandler client : clients) {

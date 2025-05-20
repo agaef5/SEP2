@@ -30,6 +30,7 @@ public class UserLandingPageVM implements ViewModel {
         model.getAllRaces();
     }
 
+//    Properties used and bound by Controller
     public StringProperty raceInfoProperty() {
         return raceInfo;
     }
@@ -58,7 +59,6 @@ public class UserLandingPageVM implements ViewModel {
     public void resetNavigation() {
         navigateToBetting.set(false);
     }
-
 
     //Update race information based on the received race list
     private void updateRaceInfo(RaceDTO race) {

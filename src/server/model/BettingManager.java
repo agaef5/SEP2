@@ -1,9 +1,15 @@
 package server.model;
 
+import server.networking.Server;
 import server.persistence.raceRepository.bet.BetRepository;
 import server.persistence.raceRepository.bet.BetRepositoryImpl;
 import server.persistence.user.UserRepository;
 import server.persistence.user.UserRepositoryImpl;
+import server.util.DTOMapper;
+import shared.DTO.HorseDTO;
+import shared.updates.BettingOpenUpdate;
+import shared.updates.OnRaceFinished;
+import shared.updates.OnRaceStarted;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -45,7 +51,9 @@ public class BettingManager implements RaceListener {
         this.currentRace = Objects.requireNonNull(race);
         this.bettingOpen = true;
         openBets.clear();
-        System.out.println("Betting OPEN for race " + race.getName());
+//
+//        BettingOpenUpdate payload = new BettingOpenUpdate(race.getName());
+//        Server.broadcast("bettingOpen", payload);
     }
 
     @Override
@@ -57,7 +65,10 @@ public class BettingManager implements RaceListener {
     public void onRaceStarted(Race race) {
         if (!race.equals(currentRace)) return;
         this.bettingOpen = false;
-        System.out.println("Race " + race.getName() + " started—no more bets!");
+        System.out.println("Race " + race.getName() + "has started — no more bets!");
+
+//        OnRaceStarted payload = new OnRaceStarted(race.getName());
+//        Server.broadcast("onRaceStarted",payload);
     }
 
     @Override
@@ -95,6 +106,10 @@ public class BettingManager implements RaceListener {
         openBets.clear();
         currentRace = null;
         System.out.println("Race " + race.getName() + " settled; manager reset.");
+//
+//        List<HorseDTO> finalPositionsDTO = DTOMapper.horseListToDTO(finalPosition);
+//        OnRaceFinished payload = new OnRaceFinished(race.getName(),finalPositionsDTO);
+//        Server.broadcast("onRaceFinished",payload);
     }
 
     /**
