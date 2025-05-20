@@ -2,8 +2,6 @@ package client.ui.adminView.adminPanel;
 
 
 import client.modelManager.ModelManager;
-import client.networking.SocketService;
-import client.networking.race.RaceClient;
 import client.ui.common.ViewModel;
 import javafx.beans.property.*;
 import shared.DTO.RaceDTO;
