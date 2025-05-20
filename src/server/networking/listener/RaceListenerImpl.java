@@ -8,6 +8,7 @@ import server.networking.Server;
 import server.networking.socketHandling.ClientHandler;
 import server.util.DTOMapper;
 import shared.DTO.HorseDTO;
+import shared.updates.BettingOpenUpdate;
 import shared.updates.OnHorseFinished;
 import shared.updates.OnRaceFinished;
 import shared.updates.OnRaceStarted;
@@ -19,6 +20,8 @@ public class RaceListenerImpl implements RaceListener {
 
     @Override
     public void bettingOpen(Race race) {
+        BettingOpenUpdate payload = new BettingOpenUpdate(race.getName());
+        Server.broadcast("bettingOpen", payload);
 
     }
 

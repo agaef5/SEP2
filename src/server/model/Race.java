@@ -5,6 +5,7 @@ import server.persistence.horses.HorseRepositoryImpl;
 import server.persistence.raceRepository.RaceRepositoryImpl;
 import shared.DTO.RaceState;
 import shared.race.RaceUpdate;
+import shared.updates.HorsePositionsUpdate;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -124,6 +125,12 @@ public class Race implements Runnable {
     }
   }
 
+  public void updateListenersOnBettingOpen(){
+    for(RaceListener listener : listeners){
+      listener.bettingOpen(this);
+    }
+  }
+
   /**
    * Notifies listeners that the race has started.
    */
@@ -132,6 +139,8 @@ public class Race implements Runnable {
       listener.onRaceStarted(this);
     }
   }
+
+
 
   private void notifyHorseFinished(Horse horse, int position)
   {
@@ -144,7 +153,7 @@ public class Race implements Runnable {
   private void broadcastHorsePositions(int[] positions)
   {
     List<Integer> positionsList = Arrays.stream(positions).boxed().toList();
-    RaceUpdate payload = new RaceUpdate(name, positionsList);
+    HorsePositionsUpdate payload = new HorsePositionsUpdate(name, positionsList);
     Server.broadcast("horseMoveUpdate", payload);
   }
 
@@ -165,6 +174,7 @@ public class Race implements Runnable {
   public void run() {
     try {
       dateTime = Timestamp.valueOf(LocalDateTime.now());
+      updateListenersOnBettingOpen();
       System.out.println("Betting window opened");
       Thread.sleep(60000);
       System.out.println("Betting window closed");

@@ -6,7 +6,13 @@ import com.google.gson.JsonElement;
 import server.model.Bet;
 import server.services.bet.BetService;
 import server.services.bet.BetServiceImpl;
+import server.util.DTOMapper;
+import shared.DTO.BetDTO;
+import shared.DTO.BetResponseDTO;
+import shared.DTO.RaceDTO;
+import shared.DTO.UserDTO;
 import shared.bet.CreateBetRequest;
+import shared.bet.CreateBetResponse;
 import shared.bet.GetBetHistoryOfUserRequest;
 
 import java.sql.SQLException;
@@ -41,12 +47,18 @@ public class BetHandler extends BaseRequestHandler {
 
 
     private Object handleCreateBetRequest(CreateBetRequest request) throws SQLException {
-        // username, horseDTO, amount
-        return betService.createBet(
+        // Get the bet from the service
+        Bet bet = betService.createBet(
                 request.username(),
                 request.horseDTO(),
                 request.amount()
         );
+
+        // Convert directly to the response DTO
+        BetResponseDTO responseDTO = DTOMapper.betToResponseDTO(bet);
+
+        // Return the response
+        return new CreateBetResponse(responseDTO);
     }
 
     private Object handleGetBetHistoryOfUser(GetBetHistoryOfUserRequest request)

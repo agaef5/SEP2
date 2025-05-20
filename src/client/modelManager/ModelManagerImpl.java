@@ -29,6 +29,7 @@ import shared.user.UserRequest;
 import shared.user.UserResponse;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ModelManagerImpl implements ModelManager, MessageListener {
 
@@ -72,9 +73,10 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     // —— Game data ——
     private final ObservableList<Integer> horsePositions = FXCollections.observableArrayList();
-    private final IntegerProperty userBalance = new SimpleIntegerProperty(0);
+
     // —— User data ——
     private UserDTO currentUser;
+    private final IntegerProperty userBalance = new SimpleIntegerProperty(0);
 
     public ModelManagerImpl(
             AuthenticationClient authClient,
@@ -315,23 +317,20 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         });
     }
 
-
+    //TODO
     private void handleOnHorseFinished(String payload)
     {
 
     }
 
-    private void handleHorseMove(String payload)
-    {
+    private void handleHorseMove(String payload) {
         // Parse horse positions from payload
         HorsePositionsUpdate update = gson.fromJson(payload, HorsePositionsUpdate.class);
-//        int[] positions = gson.fromJson(update.positions(), int[].class);
 
         // Update property
         Platform.runLater(() -> {
             horsePositions.setAll(update.positions());
         });
-
     }
 
     private void handleGetHorseList(String payload){
