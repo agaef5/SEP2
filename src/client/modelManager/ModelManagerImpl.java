@@ -21,12 +21,14 @@ import shared.loginRegister.LoginRespond;
 import shared.loginRegister.RegisterRequest;
 import shared.loginRegister.RegisterRespond;
 import shared.race.*;
+import shared.updates.HorsePositionsUpdate;
 import shared.updates.OnRaceFinished;
 import shared.updates.OnRaceStarted;
 import shared.user.UserRequest;
 import shared.user.UserResponse;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ModelManagerImpl implements ModelManager, MessageListener {
 
@@ -48,6 +50,8 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
     private final ObservableList<RaceDTO>      raceList     = FXCollections.observableArrayList();
     private final BooleanProperty              createRaceOk = new SimpleBooleanProperty(false);
     private final StringProperty               createRaceMsg= new SimpleStringProperty("");
+    private final ObjectProperty<RaceDTO>      createdRace = new SimpleObjectProperty<>(null);
+
     private final BooleanProperty              raceStarted = new SimpleBooleanProperty(false);
     private final StringProperty               currentRaceName = new SimpleStringProperty("");
     private final ObjectProperty<RaceDTO>      nextRace = new SimpleObjectProperty<RaceDTO>(null);
@@ -87,6 +91,7 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         this.socketService= socketService;
         this.betClient = betClient;
 
+
         // subscribe once for all incoming socket messages
         this.socketService.addListener(this);
     }
@@ -99,9 +104,11 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
     public ObservableList<RaceTrackDTO> getRaceTracksList() { return raceTracks; }
     public ObservableList<RaceDTO>      getRaceList()       { return raceList;   }
-    public ObjectProperty<RaceDTO>     nextRaceProperty()      { return nextRace; }
+    public ObjectProperty<RaceDTO> getNextRace()      { return nextRace; }
     public BooleanProperty    createRaceSuccessProperty() { return createRaceOk; }
     public StringProperty     createRaceMessageProperty() { return createRaceMsg; }
+    public ObjectProperty<RaceDTO> getCreatedRace() { return  createdRace;};
+
     public ObjectProperty<RaceState> getCurrentRaceState() {
         if (nextRace.get() != null)
             return null;
@@ -177,8 +184,9 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
         CreateHorseRequest request = new CreateHorseRequest(name, speedMin, speedMax);
         horsesClient.createHorse(request);
     }
-
-    public void updateHorse(HorseDTO horse){
+    @Override
+    public void updateHorse(int id,String horseName,int speedMin,int speedMax ){
+        HorseDTO horse = new HorseDTO(id,horseName,speedMin,speedMax);
         horsesClient.updateHorse(horse);
     }
 
@@ -207,73 +215,97 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             case "createHorse":      handleCreateHorse(payload);    break;
             case "updateHorse":      handleUpdateHorse(payload);    break;
             case "deleteHorse":      handleDeleteHorse(payload);    break;
-            case "getUser":          handeGetUser(payload);          break;
+            case "getUser":          handleGetUser(payload);          break;
             case "createBet":        handleCreateBet(payload);       break;
         }
     }
 
-
     private void handleLogin(String payload){
         LoginRespond respond = gson.fromJson(payload, LoginRespond.class);
-        if ("success".equals(respond.message())) {
-            loginSuccess.set(true);
-            loginMessage.set("");
-        } else {
-            loginSuccess.set(false);
-            loginMessage.set(respond.payload().toString());
-        }
+        Platform.runLater(() -> {
+            if ("success".equals(respond.message()) && !payload.isEmpty()) {
+                UserDTO userDTO = gson.fromJson(gson.toJson(respond.payload()), UserDTO.class);
+                setCurrentUser(userDTO);
+
+                loginSuccess.set(true);
+                loginMessage.set("");
+            } else {
+                loginSuccess.set(false);
+                loginMessage.set(respond.payload().toString());
+            }
+        });
     }
 
     private void handleRegister(String payload){
         RegisterRespond respond = gson.fromJson(payload, RegisterRespond.class);
-        if ("success".equals(respond.message())) {
-            registerSuccess.set(true);
-            registerMessage.set("");
-        } else {
-            registerSuccess.set(false);
-            registerMessage.set(respond.payload().toString());
-        }
+        Platform.runLater(() -> {
+            if ("success".equals(respond.message())) {
+                UserDTO userDTO = gson.fromJson(gson.toJson(respond.payload()), UserDTO.class);
+                setCurrentUser(userDTO);
+
+                registerSuccess.set(true);
+                registerMessage.set("");
+            } else {
+                registerSuccess.set(false);
+                registerMessage.set(respond.payload().toString());
+            }
+        });
+
     }
 
     private void handleGetRaceTracks(String payload){
         GetRaceTrackResponse respond = gson.fromJson(payload, GetRaceTrackResponse.class);
+        Platform.runLater(() -> {
         raceTracks.setAll(respond.raceTracks());
+        });
     }
 
     private void handleGetRaceList(String payload){
         GetRaceListResponse respond = gson.fromJson(payload, GetRaceListResponse.class);
-        raceList.setAll(respond.races());
-        if (!raceList.isEmpty()) {
-            nextRace.set(raceList.get(0));
-        } else {
-            nextRace.set(null);
-        }
+        Platform.runLater(() -> {
+            raceList.setAll(respond.races());
+
+            if (!raceList.isEmpty()) {
+                nextRace.set(raceList.get(0));
+            } else {
+                nextRace.set(null);
+            }
+        });
     }
 
     private void handleCreateRace(String payload){
         RaceResponse respond = gson.fromJson(payload, RaceResponse.class);
-        if (respond.race() != null) {
-            createRaceOk.set(true);
-            createRaceMsg.set("");
-            getAllRaces();
-        } else {
-            createRaceOk.set(false);
-            createRaceMsg.set("Failed to create race");
-        }
+
+        Platform.runLater(() -> {
+            if (respond.race() != null) {
+                RaceDTO raceDTO = gson.fromJson(gson.toJson(respond.race()), RaceDTO.class);
+                createdRace.set(raceDTO);
+
+                createRaceOk.set(true);
+                createRaceMsg.set("");
+                getAllRaces();
+            } else {
+                createRaceOk.set(false);
+                createRaceMsg.set("Failed to create race");
+            }
+        });
     }
 
     private void handleOnRaceStarted(String payload) {
         OnRaceStarted raceStarted = gson.fromJson(payload, OnRaceStarted.class);
-        this.raceStarted.set(true);
-        this.currentRaceName.set(raceStarted.raceName());
+        Platform.runLater(() -> {
+            this.raceStarted.set(true);
+            this.currentRaceName.set(raceStarted.raceName());
 
-        OnRaceStarted respond = gson.fromJson(payload, OnRaceStarted.class);
+            OnRaceStarted respond = gson.fromJson(payload, OnRaceStarted.class);
 //        TODO: check if its correct
-        if(respond.raceName().equals(nextRace.get().name()))
-            raceState.set(RaceState.IN_PROGRESS);
+            if (respond.raceName().equals(nextRace.get().name()))
+                raceState.set(RaceState.IN_PROGRESS);
+        });
     }
 
     private void handleOnRaceFinished(String payload) {
+        Platform.runLater(() -> {
         raceStarted.set(false);
         currentRaceName.set("");
 
@@ -281,102 +313,105 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 //        TODO: check if its correct
         if(respond.raceName().equals(nextRace.get().name()))
             raceState.set(RaceState.FINISHED);
+        });
     }
 
-
+    //TODO
     private void handleOnHorseFinished(String payload)
     {
 
     }
 
-    private void handleHorseMove(String payload)
-    {
+    private void handleHorseMove(String payload) {
         // Parse horse positions from payload
-        int[] positions = gson.fromJson(payload, int[].class);
+        HorsePositionsUpdate update = gson.fromJson(payload, HorsePositionsUpdate.class);
 
         // Update property
         Platform.runLater(() -> {
-            horsePositions.setAll(Arrays.stream(positions).boxed().toList());
+            horsePositions.setAll(update.positions());
         });
-
     }
 
     private void handleGetHorseList(String payload){
         HorseListResponse respond = gson.fromJson(payload, HorseListResponse.class);
+        Platform.runLater(() -> {
         horseList.setAll(respond.horseList());
+        });
     }
 
     private void handleCreateHorse(String payload){
         CreateHorseResponse respond = gson.fromJson(payload, CreateHorseResponse.class);
-        if (respond.horse() != null) {
+        Platform.runLater(()->{if (respond.horse() != null) {
             createHorseOk.set(true);
             createHorseMsg.set("");
             getAllHorses();
         } else {
             createHorseOk.set(false);
             createHorseMsg.set("Failed to create horse");
-        }
+        }});
+
     }
 
     private void handleUpdateHorse(String payload){
         HorseDTO updated = gson.fromJson(payload, HorseDTO.class);
-        if (updated != null) {
+        Platform.runLater(()->{if (updated != null) {
             updateHorseOk.set(true);
             updateHorseMsg.set("");
             getAllHorses();
         } else {
             updateHorseOk.set(false);
             updateHorseMsg.set("Failed to update horse");
-        }
+        }});
+
     }
 
     private void handleDeleteHorse(String payload){
-        if ("success".equals(payload)) {
+        Platform.runLater(()->{if ("success".equals(payload)) {
             deleteHorseOk.set(true);
             deleteHorseMsg.set("");
             getAllHorses();
         } else {
             deleteHorseOk.set(false);
             deleteHorseMsg.set(payload);
-        }
+        }});
+
     }
 
     private void handleCreateBet(String payload)
     {
         CreateBetResponse response = gson.fromJson(payload, CreateBetResponse.class);
-        if (response.BetDTO() != null)
-        {
-            // Bet was successful
-            loadCurrentUser();
-            betPlaced.set(true);
-        }
-        else
-        {
-            // Bet failed
-            betPlaced.set(false);
-        }
+        Platform.runLater(() ->{
+            if (response.BetDTO() != null)
+            {
+                // Bet was successful
+                loadCurrentUser();
+                betPlaced.set(true);
+            }
+            else
+            {
+                // Bet failed
+                betPlaced.set(false);
+            }
+        } );
+
     }
 
-    private void handeGetUser(String payload)
+    private void handleGetUser(String payload)
     {
         UserResponse userResponse = gson.fromJson(payload, UserResponse.class);
 
         if("succes".equals(userResponse.message()))
         {
             UserDTO userDTO = gson.fromJson(gson.toJson(userResponse.payload()), UserDTO.class);
-            userBalance.set(userDTO.balance());
-            this.currentUser=userDTO;
+            Platform.runLater(() -> {
+                userBalance.set(userDTO.balance());
+                this.currentUser = userDTO;
+            });
         }
         else
         {
             //TODO handle error
         }
-    }
-
-    public void setCurrentUser(UserDTO userDTO)
-    {
-        this.currentUser = userDTO;
-        loadCurrentUser();
     }
 
     public void loadCurrentUser()
@@ -387,6 +422,23 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
             authClient.getUser(request);
         }
     }
+
+public UserDTO getCurrentUser(){
+        if(currentUser == null){
+            loadCurrentUser();
+//            Thread.sleep(1000);
+        }
+        return currentUser;
+    }
+
+        public void setCurrentUser(UserDTO userDTO)
+    {
+        Platform.runLater(() -> {
+                    this.currentUser = userDTO;
+                    userBalance.set(userDTO.balance());
+                });
+        loadCurrentUser();
+    };
 
     public boolean validateBet(HorseDTO horse, int amount) {
         // Check if horse is selected
@@ -402,6 +454,4 @@ public class ModelManagerImpl implements ModelManager, MessageListener {
 
         return true;
     }
-
-
 }

@@ -1,5 +1,6 @@
 package server.persistence.horses;
 
+import client.ui.util.ErrorHandler;
 import server.model.Horse;
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,8 +18,12 @@ public class HorseRepositoryImpl implements HorseRepository {
    * Private constructor for initializing the repository. Registers the PostgreSQL driver.
    * @throws SQLException if an SQL error occurs while registering the driver.
    */
-  private HorseRepositoryImpl() throws SQLException {
-    DriverManager.registerDriver(new org.postgresql.Driver());
+  private HorseRepositoryImpl(){
+    try {
+      DriverManager.registerDriver(new org.postgresql.Driver());
+    }catch (SQLException e){
+      ErrorHandler.handleError(e, "HorseRepositoryImpl");
+    }
   }
 
   /**
@@ -26,7 +31,7 @@ public class HorseRepositoryImpl implements HorseRepository {
    * @return the singleton instance of the repository.
    * @throws SQLException if an SQL error occurs during initialization.
    */
-  public static synchronized HorseRepositoryImpl getInstance() throws SQLException {
+  public static synchronized HorseRepositoryImpl getInstance() {
     if (instance == null) {
       instance = new HorseRepositoryImpl();
     }

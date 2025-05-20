@@ -7,70 +7,89 @@ import client.ui.navigation.MainWindowController;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import shared.DTO.HorseDTO;
 
 public class CreateEditHorseController implements Controller {
   @FXML private ListView<HorseDTO>   listView;
-  @FXML private TextField            nameField;
-  @FXML private TextField            minField;
-  @FXML private TextField            maxField;
-  @FXML private Button               newBtn;
-  @FXML private Button               createBtn;
-  @FXML private Button               updateBtn;
-  @FXML private Button               deleteBtn;
-  @FXML private Label                messageLabel;
+  @FXML private TextField            horseName;
+  @FXML private TextField            speedMin;
+  @FXML private TextField            speedMax;
 
-  private CreateEditHorseVM vm;
-  private MainWindowController window;
+  @FXML private Button               create;
+  @FXML private Button               edit;
+  @FXML private Button               remove;
+
+  private CreateEditHorseVM viewModel;
+  private MainWindowController mainWindowController;
 
   @Override
   public void initialize(ViewModel viewModel) {
-    vm = (CreateEditHorseVM)viewModel;
+    this.viewModel = (CreateEditHorseVM)viewModel;
 
     // — bind the list —
-    listView.setItems(vm.getHorseList());
-    listView.getSelectionModel()
-            .selectedItemProperty()
-            ;
+    listView.setItems(this.viewModel.getHorseList());
+
 
     // — bind the form fields —
-    nameField.textProperty()
-            .bindBidirectional(vm.horseNameProp());
+    Bindings.bindBidirectional(horseName.textProperty(),  this.viewModel.horseNameProp(), new DefaultStringConverter());
     Bindings.bindBidirectional(
-            minField.textProperty(),
-            vm.speedMinProp(),
+            speedMin.textProperty(),
+            this.viewModel.speedMinProp(),
             new NumberStringConverter()
     );
     Bindings.bindBidirectional(
-            maxField.textProperty(),
-            vm.speedMaxProp(),
+            speedMax.textProperty(),
+            this.viewModel.speedMaxProp(),
             new NumberStringConverter()
+    );
+
+    // Configure cell rendering for the horse list
+    listView.setCellFactory(param -> new ListCell<>() {
+      @Override
+      protected void updateItem(HorseDTO horse, boolean empty) {
+        super.updateItem(horse, empty);
+        if (empty || horse == null) {
+          setText(null);
+        } else {
+          setText(horse.name() + " (speed: " + horse.speedMin() + " - " + horse.speedMax() + ")");
+        }
+      }
+    });
+
+
+    // Update the selected horse in the ViewModel when selection changes in the ListView
+    listView.getSelectionModel().selectedItemProperty().addListener(
+            (obs, oldVal, newVal) -> this.viewModel.setSelectedHorse(newVal)
     );
 
     // — bind button enable/disable —
-    newBtn.disableProperty()
-            .bind(vm.creationModeProp());
-    createBtn.disableProperty()
-            .bind(vm.canCreate().not());
-    updateBtn.disableProperty()
-            .bind(vm.canUpdate().not());
-    deleteBtn.disableProperty()
-            .bind(vm.canDelete().not());
+
+    // Bind button disabled states to ViewModel properties
+    Bindings.bindBidirectional(edit.disableProperty(), ((CreateEditHorseVM) viewModel).editButtonDisableProperty());
+    Bindings.bindBidirectional(remove.disableProperty(), ((CreateEditHorseVM) viewModel).removeButtonDisableProperty());
+
+//    create.disableProperty()
+//            .bind(this.viewModel.createButtonDisableProperty());
+//    edit.disableProperty()
+//            .bind(this.viewModel.editButtonDisableProperty());
+//    remove.disableProperty()
+//            .bind(this.viewModel.removeButtonDisableProperty());
 
     // — actions —
-    newBtn.setOnAction(e -> vm.enterCreateMode());
-    createBtn.setOnAction(e -> vm.createHorse());
-    updateBtn.setOnAction(e -> vm.updateHorse());
-    deleteBtn.setOnAction(e -> vm.deleteHorse());
+//    newBtn.setOnAction(e -> this.viewModel.enterCreateMode());
+    create.setOnAction(e -> this.viewModel.setHorseCreationMode());
+    edit.setOnAction(e -> this.viewModel.updateHorse());
+    remove.setOnAction(e -> this.viewModel.removeHorse());
 
     // — status message —
-    messageLabel.textProperty()
-            .bind(vm.messageProp());
+//    messageLabel.textProperty()
+//            .bind(this.viewModel.messageProp());
   }
 
   @Override
   public void setWindowController(MainWindowController mainWindowController) {
-    this.window = mainWindowController;
+    this.mainWindowController = mainWindowController;
   }
 }

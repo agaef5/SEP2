@@ -6,8 +6,11 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import server.model.Race;
 import shared.DTO.HorseDTO;
 import shared.DTO.RaceDTO;
+import shared.DTO.RaceState;
 import shared.updates.OnHorseFinished;
 import shared.updates.OnRaceFinished;
 
@@ -16,8 +19,6 @@ public class UserBettingViewVM implements ViewModel {
   private final ModelManager model;
   private final RaceDTO selectedRace;
   private final IntegerProperty balanceInfo = new SimpleIntegerProperty(0);
-
-
 
   // Observable list containing horses available for betting
   private final ObservableList<HorseDTO> horses = FXCollections.observableArrayList();
@@ -43,6 +44,9 @@ public class UserBettingViewVM implements ViewModel {
   // Property to trigger navigation to the race view
   private final BooleanProperty navigateToGameView = new SimpleBooleanProperty(false);
 
+  // Property to trigger navigation back to user landing page
+  private final BooleanProperty navigateToUserLandingPage = new SimpleBooleanProperty(false);
+
     // Constructor with race parameter
   public UserBettingViewVM(ModelManager model, RaceDTO selectedRace) {
     //saving dependencies
@@ -57,10 +61,12 @@ public class UserBettingViewVM implements ViewModel {
        if (newVal)
        {
          String startedRaceName = model.currentRaceNameProperty().get();
-          if (selectedRace.name().equals(startedRaceName))
+          if (selectedRace.name().equals(startedRaceName) && model.betPlacedProperty().get())
           {
           // It's our race - navigate to GameView
           navigateToGameView.set(true);
+          }else {
+            navigateToUserLandingPage.set(true);
           }
         }
     });
@@ -139,6 +145,11 @@ public class UserBettingViewVM implements ViewModel {
   // Gets the property that indicates when to navigate to the race view
   public BooleanProperty navigateToGameViewProperty() {
     return navigateToGameView;
+  }
+
+  // Gets the property that indicates when to navigate to the landing page
+  public BooleanProperty getNavigateToUserLandingPageProperty() {
+    return navigateToUserLandingPage;
   }
 
   // Gets the selected race

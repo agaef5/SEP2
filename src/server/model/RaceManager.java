@@ -77,6 +77,7 @@ public class RaceManager implements Runnable {
         while ((race = raceQueue.peek()) == null) {
           Thread.sleep(3000); // small delay to avoid busy waiting
         }
+        race.addListener(BettingManager.getInstance());
         race.run();
         raceQueue.take();   // Now remove it from the queue
                // Run the race (still in the queue)

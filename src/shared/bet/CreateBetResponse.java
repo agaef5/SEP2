@@ -1,6 +1,8 @@
 package shared.bet;
 
 import shared.DTO.BetDTO;
+import shared.DTO.BetResponseDTO;
 
-public record CreateBetResponse(BetDTO BetDTO) {
+// Change the type of the wrapped object
+public record CreateBetResponse(BetResponseDTO BetDTO) {
 }

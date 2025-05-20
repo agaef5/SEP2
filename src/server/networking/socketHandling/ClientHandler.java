@@ -21,6 +21,7 @@ public class ClientHandler implements Runnable {
   private final RequestHandler authRequestHandler;
   private final RequestHandler horseRequestHandler;
   private final RequestHandler raceRequestHandler;
+  private final RequestHandler betRequestHandler;
   private BufferedReader in;
   private BufferedWriter out;
 
@@ -36,6 +37,7 @@ public class ClientHandler implements Runnable {
     this.authRequestHandler = new RegisterAndLoginHandler();
     this.horseRequestHandler = new HorseHandler();
     this.raceRequestHandler = new RaceHandler();
+    this.betRequestHandler = new BetHandler();
   }
 
   /**
@@ -94,6 +96,9 @@ public class ClientHandler implements Runnable {
         }
         case "race" -> {
           responsePayload = raceRequestHandler.handle(request.action(), request.payload());
+        }
+        case "bet" -> {
+          responsePayload = betRequestHandler.handle(request.action(), request.payload());
         }
         case "disconnect" -> {
           handleClientDisconnect();

@@ -18,13 +18,14 @@ public class BetRepositoryImpl implements BetRepository
     public BetRepositoryImpl (ConnectionProviderImpl connectionProvider){
         this.connectionProvider = connectionProvider;
     }
-    public static synchronized BetRepositoryImpl getInstance() throws SQLException
+    public static synchronized BetRepositoryImpl getInstance()
     {
         if (instance == null){
             instance = new BetRepositoryImpl(new ConnectionProviderImpl());
         }
         return instance;
     }
+
     private Connection getConnection() throws SQLException {
         return connectionProvider.getConnection();
     }

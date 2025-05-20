@@ -37,10 +37,8 @@ import java.io.IOException;
 public class MainWindowController {
     public StackPane mainPane;
     public HBox adminMenu;
-
-    private Stage stage;
-
     ModelManager modelManager;
+    private Stage stage;
     private boolean isAdminView = false;
     private String username;
 
@@ -119,6 +117,7 @@ public class MainWindowController {
                 controller.initialize(viewModel);
                 mainPane.getChildren().add(newContent);
             } catch (IOException e) {
+                e.printStackTrace();
                 ErrorHandler.handleError(new IllegalArgumentException(e), "Error loading page");
             }
         });
@@ -140,13 +139,9 @@ public class MainWindowController {
         stage.setTitle(race != null ? "Betting - " + race.name() : "Betting");
         loadPage("client/ui/userView/bettingPage/UserBettingView.fxml", race);
     }
-
-//    public void loadBettingPage() {
-//        loadPage("client/ui/userView/bettingPage/UserBettingView.fxml");
-//    }
-
+  
     public void loadGameView(RaceDTO race) {
-        loadPage("client/ui/userView/gameView/gameView.fxml", race);
+        loadPage("client/ui/userView/gameView/GameView.fxml", race);
     }
 
     public void loadAdminPanel() {
@@ -162,33 +157,36 @@ public class MainWindowController {
     }
 
 
-    public void authorizeUser(UserDTO userDTO) {
+    public void authorizeUser() {
         Platform.runLater(() -> {
 
-            modelManager.setCurrentUser(userDTO);
+            UserDTO userDTO = modelManager.getCurrentUser();
 
             if (userDTO.username() != null) setUsername(userDTO.username());
-            if (authenticateAdmin(userDTO)) loadAdminPanel();
+            authenticateAdmin(userDTO);
+            if (isAdminView) loadAdminPanel();
             else loadUserLandingPage();
         });
     }
 
-    public boolean authenticateAdmin(UserDTO userDTO) {
-        return isAdminView = userDTO.isAdmin();
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void authenticateAdmin(UserDTO userDTO) {
+        isAdminView = userDTO.isAdmin();
     }
 
     public String getUsername() {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void shutdown() {
         stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST)
         );
     }
+
+
 }
 
 

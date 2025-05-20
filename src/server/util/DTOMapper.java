@@ -62,6 +62,15 @@ public class DTOMapper
     public static RaceTrack raceTrackfromDTO(RaceTrackDTO dto) {
         return new RaceTrack(dto.name(), dto.length(), dto.location());
     }
+
+    public static BetResponseDTO betToResponseDTO(Bet bet) {
+        return new BetResponseDTO(
+                bet.getRace().getName(),
+                horseToDTO(bet.getHorse()),  // Reuse your existing horseToDTO method
+                bet.getUser().getUsername(),
+                bet.getBetAmount()
+        );
+    }
 }
 
 

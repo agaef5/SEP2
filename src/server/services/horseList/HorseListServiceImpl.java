@@ -17,11 +17,7 @@ public class HorseListServiceImpl implements HorseListService {
   private final HorseRepository horseRepository;
 
     {
-        try {
-            horseRepository = HorseRepositoryImpl.getInstance();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+      horseRepository = HorseRepositoryImpl.getInstance();
     }
 
     @Override

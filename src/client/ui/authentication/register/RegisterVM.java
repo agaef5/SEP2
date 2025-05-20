@@ -28,8 +28,20 @@ public class RegisterVM implements ViewModel
   public RegisterVM(ModelManager modelManager)
   {
     this.modelManager = modelManager;
+
+    disableRegisterButtonProp.bind(usernameProp.isEmpty()
+            .or(emailProp.isEmpty())
+            .or(passwordProp.isEmpty()).or(repeatProp.isEmpty()));
+    messageProp.bind(modelManager.registerMessageProperty());
   }
 
+  public BooleanProperty registerSuccessProperty() {
+    return modelManager.registerSuccessProperty();
+  }
+
+  public StringProperty registerMessageProperty() {
+    return messageProp;
+  }
 
   public void registerUser ()
   {
@@ -53,9 +65,8 @@ public class RegisterVM implements ViewModel
       messageProp.set("Passwords do not match");
       return;
     }
-    RegisterRequest request = new RegisterRequest(emailProp.get(),
+    modelManager.registerUser(emailProp.get(),
             usernameProp.get(), passwordProp.get());
-    authClient.registerUser(request);
   }
 
 
@@ -81,13 +92,6 @@ public class RegisterVM implements ViewModel
   {
     return emailProp;
   }
-
-
-  public StringProperty messagePropriety ()
-  {
-    return messageProp;
-  }
-
 
   public BooleanBinding disableRegisterButtonPropriety() {
     return usernameProp.isEmpty()

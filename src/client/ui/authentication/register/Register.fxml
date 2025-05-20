@@ -63,7 +63,7 @@
             <Font name="Castellar" size="48.0" />
          </font>
       </Text>
-      <Button fx:id="buttonRegister" onAction="#onRegister" layoutX="289.0" layoutY="441.0" mnemonicParsing="false" text="Ready Cowboy?">
+      <Button fx:id="buttonRegister" layoutX="289.0" layoutY="441.0" mnemonicParsing="false" text="Ready Cowboy?">
          <font>
             <Font name="Castellar" size="27.0" />
          </font>

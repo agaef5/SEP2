@@ -1,88 +1,182 @@
 package client.ui.adminView.race;
 
 import client.modelManager.ModelManager;
+import client.networking.SocketService;
+import client.networking.race.RaceClient;
+import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
-import javafx.beans.binding.BooleanBinding;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import javafx.application.Platform;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import shared.DTO.RaceDTO;
 import shared.DTO.RaceTrackDTO;
+import shared.race.*;
 
-public class CreateRaceVM implements ViewModel {
+/**
+ * ViewModel for the Create Race view.
+ * Manages the data and operations related to race creation and displaying the race queue.
+ * Handles communication with the server via RaceClient and processes responses.
+ * Implements MessageListener to receive updates from the server.
+ */
+public class CreateRaceVM implements ViewModel
+{
+  /** Model manager for managing all necessary operations */
+  private final ModelManager modelManager;
 
-  private final ModelManager model;
+  /** Observable property for the race name */
+  private StringProperty raceName = new SimpleStringProperty();
 
-  // — Form fields —
-  private final StringProperty raceName        = new SimpleStringProperty("");
-  private final IntegerProperty horseCount     = new SimpleIntegerProperty(0);
-  private final ObjectProperty<RaceTrackDTO> selectedTrack = new SimpleObjectProperty<>();
-  // — Lists from model —
-  private final ObservableList<RaceTrackDTO> availableTracks;
-  private final ObservableList<RaceDTO>      raceQueue;
-  // — Feedback —
-  private final StringProperty message       = new SimpleStringProperty();
+  /** Observable property for the number of horses in the race */
+  private IntegerProperty horseCount = new SimpleIntegerProperty();
 
-  public CreateRaceVM(ModelManager model) {
-    this.model            = model;
-    this.availableTracks  = model.getRaceTracksList();
-    this.raceQueue        = model.getRaceList();
+  /** Observable property for the selected race track */
+  private ObjectProperty<RaceTrackDTO> selectedRaceTrack = new SimpleObjectProperty<>();
 
-    // Refresh lists on startup
-    model.getRaceTracks();
-    model.getAllRaces();
+  /** Observable list containing all available race tracks */
+  private ObservableList<RaceTrackDTO> availableRaceTracks;
 
-    // Observe server responses for createRace
-    model.createRaceSuccessProperty().addListener((obs, old, ok) -> {
-      if (ok) {
-        clearForm();
-        model.getAllRaces();
-      } else {
-        message.set(model.createRaceMessageProperty().get());
-      }
-    });
+  /** Observable list containing the queue of upcoming races */
+  private ObservableList<RaceDTO> raceQueue;
+
+  private StringProperty messageLabel = new SimpleStringProperty();
+
+  /**
+   * Constructs the ViewModel with necessary dependencies and initializes data.
+   *
+   * @param modelManager {@link ModelManager} for accessing the data
+   */
+  public CreateRaceVM(ModelManager modelManager)
+  {
+    this.modelManager = modelManager;
+    modelManager.getRaceTracksList();
+    modelManager.getRaceList();
+
+    // Request race tracks when the ViewModel is initialized
+    availableRaceTracks =modelManager.getRaceTracksList();
+
+    // Request the race list to initialize the race queue
+    raceQueue = modelManager.getRaceList();
+
+//    Bind message label to ModelManager's
+    messageLabel.bind(modelManager.createRaceMessageProperty());
+
+    // Update the horse count in the ViewModel when the text field changes
+//    modelManager.getCreatedRace().addListener((obs, oldVal, newVal) -> {
+//        setSelectedRace(modelManager.getCreatedRace().get());
+//    });
+
+    modelManager.getRaceTracks();
+    modelManager.getAllHorses();
+    modelManager.getAllRaces();
   }
 
-  // expose only the read-only view
-
-
-  // optional setter so the VM can drive the UI
-  public void setSelectedTrack(RaceTrackDTO t) {
-    selectedTrack.set(t);
+  public String formatRaceTrack(RaceTrackDTO track) {
+    if (track == null) return "";
+    return track.name() + " - " + track.length() + "m";
   }
 
-  // — Property getters for binding —
-  public StringProperty raceNameProperty()         { return raceName; }
-  public IntegerProperty horseCountProperty()      { return horseCount; }
-  public ObjectProperty<RaceTrackDTO> selectedTrackProperty() {
-    return selectedTrack;
-  }
-  public ObservableList<RaceTrackDTO> getAvailableTracks() {
-    return availableTracks;
-  }
-  public ObservableList<RaceDTO> getRaceQueue()    { return raceQueue; }
-  public StringProperty messageProperty()          { return message; }
-
-  // — Validation binding —
-  public BooleanBinding canCreate() {
-    return raceName.isNotEmpty()
-            .and(selectedTrack.isNotNull())
-            .and(horseCount.greaterThan(0));
+  /**
+   * Gets the observable property for the race name.
+   * @return Property containing the race name
+   */
+  public StringProperty raceNameProperty()
+  {
+    return raceName;
   }
 
-  // — Commands —
-  public void createRace() {
-    if (!canCreate().get()) return;
-    model.createRace(
-            raceName.get(),
-            selectedTrack.get(),
-            horseCount.get()
-    );
+  /**
+   * Gets the observable property for the number of horses.
+   * @return Property containing the number of horses in the race
+   */
+  public IntegerProperty horseCountProperty()
+  {
+    return horseCount;
   }
 
-  private void clearForm() {
+  /**
+   * Gets the observable property for the selected race track.
+   * @return Property containing the selected race track
+   */
+  public ObjectProperty<RaceTrackDTO> selectedRaceTrackProperty()
+  {
+    return selectedRaceTrack;
+  }
+
+  /**
+   * Gets the observable list containing all available race tracks.
+   * @return Observable list of all race tracks
+   */
+  public ObservableList<RaceTrackDTO> getAvailableRaceTracks()
+  {
+    return availableRaceTracks;
+  }
+
+  /**
+   * Gets the observable list containing the queue of upcoming races.
+   * @return Observable list of races in the queue
+   */
+  public ObservableList<RaceDTO> getRaceQueue(){
+    return raceQueue;
+  }
+
+  public StringProperty getMessageLabel(){
+    return messageLabel;
+  }
+
+  /**
+   * Validates the input fields for creating a race.
+   * @return true if all required fields are valid, false otherwise
+   */
+  public boolean isValid()
+  {
+    return raceName.get() != null && !raceName.get().isBlank()
+        && selectedRaceTrack.get() != null && horseCount.get() > 0;
+  }
+
+  /**
+   * Creates a new race with the current form values.
+   * Only executes if the input is valid.
+   * Clears the input fields after successful creation.
+   */
+  public void createRace()
+  {
+    if (!isValid())
+    {
+      return;
+    }
+    modelManager.createRace(raceName.get(), selectedRaceTrack.get(), horseCount.get());
+
+    // Clear input fields after creating
     raceName.set("");
     horseCount.set(0);
-    selectedTrack.set(null);
-    message.set("");
+  }
+
+//  /**
+//   * Sets the specified race as the selected race.
+//   * This method is currently a placeholder.
+//   *
+//   * @param newRace The race to select
+//   */
+//  private void setSelectedRace(RaceDTO newRace)
+//  {
+//    raceName.set(newRace.name());
+//    horseCount.set(newRace.horses().size());
+//    selectedRaceTrack.set(newRace.raceTrack());
+//  }
+
+  /**
+   * Updates the available race tracks list with data received from the server.
+   * Updates must be performed on the JavaFX application thread.
+   *
+   * @param response Response object containing the list of race tracks
+   */
+  private void updateAvailableRaceTracks(GetRaceTrackResponse response)
+  {
+    Platform.runLater(()->
+        availableRaceTracks.setAll(response.raceTracks())
+    );
   }
 }

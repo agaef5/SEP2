@@ -10,7 +10,7 @@ import javafx.scene.control.*;
 
 
 public class RegisterController implements Controller {
-  ModelManager modelManager;
+
   @FXML
   private TextField userNameInput;
   @FXML
@@ -23,29 +23,34 @@ public class RegisterController implements Controller {
   private TextField emailInput;
   @FXML
   private Button buttonRegister;
+
   private RegisterVM viewModel;
   private MainWindowController mainWindowController;
+
+  @Override
   public void initialize(ViewModel registerVM) {
     viewModel = (RegisterVM) registerVM;
-
 
     userNameInput.textProperty().bindBidirectional(viewModel.userNamePropriety());
     passwordInput.textProperty().bindBidirectional(viewModel.passwordPropriety());
     repeatPasswordInput.textProperty().bindBidirectional(viewModel.repeatPropriety());
     emailInput.textProperty().bindBidirectional(viewModel.emailPropriety());
 
-
     messageLabel.textProperty()
-            .bindBidirectional(viewModel.messagePropriety());
-    buttonRegister.disableProperty().bind(viewModel.disableRegisterButtonPropriety());
+            .bindBidirectional(viewModel.registerMessageProperty());
 
+    viewModel.registerSuccessProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal) {
+        mainWindowController.authorizeUser();
+      }
+    });
+
+    buttonRegister.disableProperty().bind(viewModel.disableRegisterButtonPropriety());
 
     buttonRegister.setOnAction(e -> {
       viewModel.registerUser();
-      mainWindowController.loadLoginPage();
     });
   }
-
 
   @Override
   public void setWindowController(MainWindowController mainWindowController) {
@@ -53,6 +58,4 @@ public class RegisterController implements Controller {
       this.mainWindowController = mainWindowController;
     }
   }
-
-
 }

@@ -16,9 +16,11 @@ public interface ModelManager {
 
     ObservableList<RaceTrackDTO> getRaceTracksList();
     ObservableList<RaceDTO>      getRaceList();
-    ObjectProperty<RaceDTO> nextRaceProperty();
+    ObjectProperty<RaceDTO> getNextRace();
     BooleanProperty    createRaceSuccessProperty();
     StringProperty     createRaceMessageProperty();
+    ObjectProperty<RaceDTO> getCreatedRace();
+
     public ObjectProperty<RaceState> getCurrentRaceState();
     public ObservableList<HorseDTO> getRaceRank();
     BooleanProperty raceStartedProperty();
@@ -53,13 +55,17 @@ public interface ModelManager {
     // Horse
     void getAllHorses();
     void createHorse(String name, int speedMin, int speedMax);
-    void updateHorse(HorseDTO horse);
+    void updateHorse(int id,String horseName,int speedMin,int speedMax);
     void deleteHorse(HorseDTO horse);
     ObservableList<Integer> getHorsePositions();
+
     //  Game
 
-
     void update(String type, String payload);
+
+    void loadCurrentUser();
+
+    UserDTO getCurrentUser();
 
     void setCurrentUser(UserDTO userDTO);
 }

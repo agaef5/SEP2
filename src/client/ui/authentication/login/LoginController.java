@@ -14,7 +14,6 @@ import javafx.scene.text.Text;
 public class LoginController implements Controller
 {
   @FXML public Button createNewAccountB;
-  ModelManager modelManager;
   @FXML private TextField usernameNameInput;
   @FXML private TextField passwordInput;
   @FXML private Text messageLabel;
@@ -23,16 +22,24 @@ public class LoginController implements Controller
   private MainWindowController mainWindowController;
 
 
-  public void initialize (ViewModel loginVM)
+  public void initialize(ViewModel loginVM)
   {
     this.viewModel = (LoginVM) loginVM;
+
     usernameNameInput.textProperty().bindBidirectional(viewModel.usernameProperty());
     passwordInput.textProperty().bindBidirectional(viewModel.passwordProperty());
     messageLabel.textProperty().bind(viewModel.messageProperty());
+
+    messageLabel.textProperty().bind(viewModel.loginMessageProperty());
+
+    // Listen for login success to trigger navigation
+    viewModel.loginSuccessProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal) {
+        mainWindowController.authorizeUser();
+      }
+    });
+
     buttonLogin.disableProperty().bind(viewModel.disableLoginButtonProperty());
-    createNewAccountB.disableProperty().bindBidirectional(viewModel.createNewUserProperty());
-
-
     buttonLogin.setOnAction(e -> viewModel.loginUser());
     createNewAccountB.setOnAction(e -> mainWindowController.loadRegisterPage());
   }

@@ -9,21 +9,19 @@ import shared.DTO.RaceState;
 
 public class UserLandingPageVM implements ViewModel {
 
-    private ModelManager model;
-
     //Properties
     private final StringProperty raceInfo = new SimpleStringProperty("No upcoming races");
     private final BooleanProperty bettingButtonDisabled = new SimpleBooleanProperty(true);
-
     private final BooleanProperty navigateToBetting = new SimpleBooleanProperty(false);
     private final IntegerProperty balanceInfo = new SimpleIntegerProperty(0);
+    private ModelManager modelManager;
     private RaceDTO selectedRace;
 
     public UserLandingPageVM(ModelManager model) {
-        this.model = model;
+        this.modelManager = model;
 
         // Register as listener
-        model.nextRaceProperty().addListener((obs, oldRace, newRace) ->updateRaceInfo(newRace));
+        model.getNextRace().addListener((obs, oldRace, newRace) ->updateRaceInfo(newRace));
 
         //binding data to balance
         balanceInfo.bind(model.getUserBalance());
@@ -42,7 +40,7 @@ public class UserLandingPageVM implements ViewModel {
         return selectedRace;
     }
     public IntegerProperty balanceInfoProperty() {
-        return balanceInfo;
+        return modelManager.getUserBalance();
     }
 
 
