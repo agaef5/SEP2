@@ -68,9 +68,6 @@ public class CreateRaceController implements Controller
     raceTrack.setItems(this.viewModel.getAvailableRaceTracks());
     viewModel.selectedRaceTrackProperty().bind(raceTrack.getSelectionModel().selectedItemProperty());
 
-    raceTrack.setItems(this.viewModel.getAvailableRaceTracks());
-    viewModel.selectedRaceTrackProperty().bind(raceTrack.getSelectionModel().selectedItemProperty());
-
 // Add this to format how each race track is shown
     raceTrack.setConverter(new StringConverter<>() {
       @Override
