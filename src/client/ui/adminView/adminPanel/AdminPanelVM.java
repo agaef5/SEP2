@@ -6,7 +6,10 @@ import client.ui.common.ViewModel;
 import javafx.beans.property.*;
 import shared.DTO.RaceDTO;
 import shared.DTO.RaceState;
-
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * ViewModel for the Admin Panel view.

@@ -1,7 +1,6 @@
 package client.ui.userView.gameView;
 
 import client.ui.common.Controller;
-import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
 import javafx.animation.AnimationTimer;

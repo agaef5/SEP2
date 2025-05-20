@@ -2,7 +2,6 @@ package client.ui.authentication.register;
 
 
 import client.modelManager.ModelManager;
-import client.ui.common.MessageListener;
 import client.ui.common.Controller;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;

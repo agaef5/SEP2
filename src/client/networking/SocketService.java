@@ -1,10 +1,9 @@
 package client.networking;
 
-import client.ui.common.MessageListener;
+import client.modelManager.MessageListener;
 import client.ui.util.ErrorHandler;
 import client.ui.util.RespondValidate;
 import com.google.gson.Gson;
-import org.junit.platform.commons.function.Try;
 import server.networking.exceptions.InvalidMessageException;
 import shared.Request;
 import shared.Respond;

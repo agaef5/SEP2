@@ -1,6 +1,6 @@
 package client.networking;
 
-import client.ui.common.MessageListener;
+import client.modelManager.MessageListener;
 
 /**
  * The {@code SocketSubject} interface defines the contract for objects that are capable of notifying listeners

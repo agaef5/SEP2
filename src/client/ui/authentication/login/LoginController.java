@@ -2,19 +2,13 @@ package client.ui.authentication.login;
 
 
 import client.modelManager.ModelManager;
-import client.ui.common.MessageListener;
 import client.ui.common.Controller;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
-import client.ui.util.ErrorHandler;
-import com.google.gson.Gson;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import shared.DTO.RaceState;
-import shared.DTO.UserDTO;
-import shared.loginRegister.LoginRespond;
 
 
 public class LoginController implements Controller

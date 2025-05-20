@@ -1,13 +1,6 @@
 package client.ui.navigation;
 
 import client.modelManager.ModelManager;
-import client.networking.SocketService;
-import client.networking.authentication.AuthenticationClient;
-import client.networking.authentication.SocketAuthenticationClient;
-import client.networking.horses.HorsesClient;
-import client.networking.horses.SocketHorsesClient;
-import client.networking.race.RaceClient;
-import client.networking.race.SocketRaceClient;
 import client.ui.adminView.adminPanel.AdminPanelController;
 import client.ui.adminView.adminPanel.AdminPanelVM;
 import client.ui.adminView.horseList.CreateEditHorseController;
@@ -19,7 +12,6 @@ import client.ui.authentication.login.LoginVM;
 import client.ui.authentication.register.RegisterController;
 import client.ui.authentication.register.RegisterVM;
 import client.ui.common.Controller;
-import client.ui.common.MessageListener;
 import client.ui.common.ViewModel;
 import client.ui.userView.bettingPage.UserBettingViewController;
 import client.ui.userView.bettingPage.UserBettingViewVM;
@@ -147,7 +139,7 @@ public class MainWindowController {
         stage.setTitle(race != null ? "Betting - " + race.name() : "Betting");
         loadPage("client/ui/userView/bettingPage/UserBettingView.fxml", race);
     }
-
+  
     public void loadGameView(RaceDTO race) {
         loadPage("client/ui/userView/gameView/GameView.fxml", race);
     }
