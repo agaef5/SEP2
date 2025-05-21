@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * Controller for the race game view.
+ * Responsible for rendering the race animation using JavaFX Canvas and synchronizing with the ViewModel.
+ */
 public class GameViewController implements Controller {
 
     @FXML private Canvas raceCanvas;
@@ -23,20 +27,29 @@ public class GameViewController implements Controller {
 
     private GameViewVM viewModel;
     private MainWindowController mainWindowController;
-    private GraphicsContext gc;
+    private GraphicsContext graphicsContext;
     private AnimationTimer animationTimer;
+
+    // Map horse IDs to their assigned colors for rendering
     private final Map<Integer, Color> horseColors = new HashMap<>();
     private final Random random = new Random();
 
+    // Color palette used to differentiate horses
     private final Color[] colorPalette = {
             Color.RED, Color.BLUE, Color.GREEN, Color.ORANGE,
             Color.PURPLE, Color.BROWN, Color.PINK, Color.CYAN
     };
 
+    /**
+     * Called when the FXML is initialized.
+     * Binds UI components, prepares canvas rendering, and starts the animation loop.
+     *
+     * @param viewModel The ViewModel passed from the main window controller.
+     */
     @Override
     public void initialize(ViewModel viewModel) {
         this.viewModel = (GameViewVM) viewModel;
-        this.gc = raceCanvas.getGraphicsContext2D();
+        this.graphicsContext = raceCanvas.getGraphicsContext2D();
 
         // Initialize the view with the current race data
         setupRaceVisualization();
@@ -51,6 +64,9 @@ public class GameViewController implements Controller {
         animationTimer.start();
     }
 
+    /**
+     * Assigns a unique color to each horse and draws the initial track.
+     */
     private void setupRaceVisualization() {
         // Assign colors to horses
         List<HorseDTO> horses = viewModel.getHorses();
@@ -63,32 +79,40 @@ public class GameViewController implements Controller {
         drawRaceTrack();
     }
 
+    /**
+     * Initializes the animation loop that continuously redraws the race canvas.
+     */
     private void setupAnimationTimer() {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                // Redraw canvas every frame (JavaFX handles frame rate)
                 drawRaceTrack();
             }
         };
     }
 
+    /**
+     * Draws the full race track, horses, and their positions based on ViewModel state.
+     */
     private void drawRaceTrack() {
         double canvasWidth = raceCanvas.getWidth();
         double canvasHeight = raceCanvas.getHeight();
         int trackLength = viewModel.getTrackLength();
+
         List<HorseDTO> horses = viewModel.getHorses();
         Map<Integer, Integer> horsePositions = viewModel.getHorsePositions();
 
         // Clear canvas
-        gc.clearRect(0, 0, canvasWidth, canvasHeight);
+        graphicsContext.clearRect(0, 0, canvasWidth, canvasHeight);
 
         // Draw background
-        gc.setFill(Color.LIGHTGRAY);
-        gc.fillRect(0, 0, canvasWidth, canvasHeight);
+        graphicsContext.setFill(Color.LIGHTGRAY);
+        graphicsContext.fillRect(0, 0, canvasWidth, canvasHeight);
 
         // Draw finish line
-        gc.setFill(Color.BLACK);
-        gc.fillRect(canvasWidth - 5, 0, 2, canvasHeight);
+        graphicsContext.setFill(Color.BLACK);
+        graphicsContext.fillRect(canvasWidth - 5, 0, 2, canvasHeight);
 
         // Calculate lane height
         double laneHeight = canvasHeight / Math.max(1, horses.size());
@@ -99,28 +123,33 @@ public class GameViewController implements Controller {
             double y = i * laneHeight;
 
             // Draw lane separators
-            gc.setStroke(Color.WHITE);
-            gc.setLineWidth(1);
-            gc.strokeLine(0, y, canvasWidth, y);
+            graphicsContext.setStroke(Color.WHITE);
+            graphicsContext.setLineWidth(1);
+            graphicsContext.strokeLine(0, y, canvasWidth, y);
 
             // Draw lane background
-            gc.setFill(Color.web("#f0f0f0"));
-            gc.fillRect(0, y, canvasWidth, laneHeight);
+            graphicsContext.setFill(Color.web("#f0f0f0"));
+            graphicsContext.fillRect(0, y, canvasWidth, laneHeight);
 
             // Get horse position
             int position = horsePositions.getOrDefault(horse.id(), 0);
             double xPos = (position / (double) trackLength) * (canvasWidth - 50);
 
             // Draw horse
-            gc.setFill(horseColors.get(horse.id()));
-            gc.fillOval(xPos, y + 5, 40, laneHeight - 10);
+            graphicsContext.setFill(horseColors.get(horse.id()));
+            graphicsContext.fillOval(xPos, y + 5, 40, laneHeight - 10);
 
             // Draw horse name
-            gc.setFill(Color.BLACK);
-            gc.fillText(horse.name(), xPos + 10, y + laneHeight / 2 + 5);
+            graphicsContext.setFill(Color.BLACK);
+            graphicsContext.fillText(horse.name(), xPos + 10, y + laneHeight / 2 + 5);
         }
     }
 
+    /**
+     * Sets the main window controller, used for navigation or shutdown if needed later.
+     *
+     * @param mainWindowController Reference to the main window controller.
+     */
     @Override
     public void setWindowController(MainWindowController mainWindowController) {
         this.mainWindowController = mainWindowController;

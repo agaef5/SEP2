@@ -74,10 +74,17 @@ public class User
   this.password = password;
  };
 
+ /**
+  * Gets user balance.
+  * @return {@link Balance} of the user
+  */
  public Balance getBalance() {
   return balance;
  }
 
+ /**
+  * @return a flag determining if user is an admin or not
+  */
  public boolean isAdmin(){
   return isAdmin;
  }

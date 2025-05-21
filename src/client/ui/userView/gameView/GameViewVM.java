@@ -18,6 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * ViewModel for the GameView (race progress screen).
+ * Manages state and data updates related to the selected race and its horse positions.
+ */
 public class GameViewVM implements ViewModel{
 
     private ModelManager model;
@@ -27,6 +31,13 @@ public class GameViewVM implements ViewModel{
     private final ObservableList<HorseDTO> horses = FXCollections.observableArrayList();
     private final Map<Integer, Integer> horsePositions = new HashMap<>();
 
+
+    /**
+     * Constructs a GameViewVM.
+     *
+     * @param model The model manager handling backend communication and state.
+     * @param selectedRace The selected race for which this ViewModel tracks progress.
+     */
     public GameViewVM(ModelManager model, RaceDTO selectedRace) {
         this.model = model;
         this.selectedRace = selectedRace;
@@ -57,15 +68,17 @@ public class GameViewVM implements ViewModel{
     public StringProperty statusTextProperty() {
         return statusText;
     }
-
     public List<HorseDTO> getHorses() {
         return horses;
     }
-
     public Map<Integer, Integer> getHorsePositions() {
         return horsePositions;
     }
 
+    /**
+     * @return The length of the track for this race.
+     *         Returns 500 by default if the track is not defined.
+     */
     public int getTrackLength() {
         if (selectedRace != null && selectedRace.raceTrack() != null) {
             return selectedRace.raceTrack().length();
@@ -73,6 +86,12 @@ public class GameViewVM implements ViewModel{
         return 500; // Default length if not specified
     }
 
+    /**
+     * Updates horse positions from the shared position list.
+     * Runs on the JavaFX application thread to ensure thread safety with UI updates.
+     *
+     * @param change The change in the observable list of horse positions.
+     */
     private void handlePositionUpdate(ListChangeListener.Change<? extends Integer> change) {
         Platform.runLater(() -> {
             List<Integer> positions = model.getHorsePositions();

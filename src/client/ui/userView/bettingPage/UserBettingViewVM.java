@@ -56,7 +56,7 @@ public class UserBettingViewVM implements ViewModel {
     horses.setAll(selectedRace.horses());     //initialise horses
     balanceInfo.bind(model.getUserBalance()); //bind balance
 
-    //register listener for race updates
+    // Listen for race start events
     model.raceStartedProperty().addListener((obs, oldVal, newVal) ->
     {
        if (newVal)
@@ -64,14 +64,16 @@ public class UserBettingViewVM implements ViewModel {
          String startedRaceName = model.currentRaceNameProperty().get();
           if (selectedRace.name().equals(startedRaceName) && model.betPlacedProperty().get())
           {
-          // It's our race - navigate to GameView
+            // User's race has started and they placed a bet → navigate to race view
           navigateToGameView.set(true);
           }else {
+            // Different race started or no bet placed → go back to landing page
             navigateToUserLandingPage.set(true);
           }
         }
     });
 
+    // Listen for confirmation that a bet was placed
     model.betPlacedProperty().addListener((obs, oldVal, newVal) -> {
       if (newVal) {
         // Bet was successful

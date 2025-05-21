@@ -83,6 +83,12 @@ public class RegisterAndLoginHandler extends BaseRequestHandler {
     return authService.registerUser(registerRequest);
   }
 
+  /**
+   * Handles teh request to update user's balance
+   *
+   * @param balanceUpdateRequest
+   * @return
+   */
   private BalanceUpdateResponse handleBalanceUpdate(BalanceUpdateRequest balanceUpdateRequest) {
     return authService.updateBalance(balanceUpdateRequest);
   }

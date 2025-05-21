@@ -1,5 +1,6 @@
 package server.model;
 
+import client.ui.util.ErrorHandler;
 import server.networking.Server;
 import server.persistence.horses.HorseRepositoryImpl;
 import server.persistence.raceRepository.RaceRepositoryImpl;
@@ -173,60 +174,87 @@ public class Race implements Runnable {
   @Override
   public void run() {
     try {
+      // Set race start time to now
       dateTime = Timestamp.valueOf(LocalDateTime.now());
+
+      // Notify listeners that betting is now open
       updateListenersOnBettingOpen();
       System.out.println("Betting window opened");
+
+      // Simulate a 60-second betting window
       Thread.sleep(60000);
       System.out.println("Betting window closed");
+
     } catch (InterruptedException e) {
+      // Stop race if thread is interrupted
       e.printStackTrace();
       return;
     }
 
+    // Set status to IN_PROGRESS and notify listeners
     status = RaceState.IN_PROGRESS;
     System.out.println("Race " + name + " Started!");
     updateListenersOnRaceStarted();
 
+    // Initializing variables - to keep track of horses that crossed the finish line
     List<Horse> horses = horseList.getList();
     int trackLength = raceTrack.getLength();
     Set<Horse> finished = new HashSet<>();
 
+    // Main loop: update horse positions until all finish
     while (finished.size() < horses.size()) {
       StringBuilder horsePositionsText = new StringBuilder();
       int[] positions = new int[horses.size()];
+
       for (int i = 0; i < horses.size(); i++) {
         Horse horse = horses.get(i);
+
+        // Move horse if not finished yet
         if (!finished.contains(horse)) {
           horse.move();
         }
+
+        // Collect positions for UI update
         horsePositionsText.append("\n").append(horse.getName()).append(": ").append(horse.getPosition());
         positions[i] = horse.getPosition();
       }
-//      System.out.println("Horse positions in race " + name + ": " + Arrays.toString(positions));
+
+      // Print positions to console for logging
       System.out.println("\nHorse positions in race " + name + ": " + horsePositionsText);
 
+      // Send updated positions to clients
       broadcastHorsePositions(positions);
 
+      // Check if any horses have finished the race
       for (int i = 0; i < horses.size(); i++) {
         Horse horse = horses.get(i);
+
         if (!finished.contains(horse) && horse.getPosition() >= trackLength) {
-          finished.add(horse);
-          finalpositionlist.addToList(horse);
+          finished.add(horse); // Mark horse as finished
+          finalpositionlist.addToList(horse); // Add to final placement
+
           System.out.println("Horse " + horse.getName() + " finished in place " + finished.size());
+
+          // Notify listeners of this horse's finish
           notifyHorseFinished(horse, finished.size());
         }
       }
 
       try {
+        // Delay next update for realism (2 seconds per "tick")
         Thread.sleep(2000);
       } catch (InterruptedException e) {
+        // Stop if thread is interrupted
         e.printStackTrace();
         break;
       }
     }
 
+    // Race is finished
     status = RaceState.FINISHED;
     System.out.println("Race " + name + " finished");
+
+    // Notify listeners and persist race results
     notifyRaceFinished();
     persistAndPrintResults();
   }
@@ -240,12 +268,12 @@ public class Race implements Runnable {
       RaceRepositoryImpl.getInstance().save(this);
       System.out.println("Race " + name + " saved");
     } catch (SQLException e) {
-      e.printStackTrace();
+      ErrorHandler.handleError(e, getClass().getName());
     }
     printFinalResults();
   }
 
-      /**
+  /**
    * Prints the final standings, marking the winner with a chequered flag.
    */
   private void printFinalResults() {

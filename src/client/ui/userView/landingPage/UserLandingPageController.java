@@ -9,6 +9,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import shared.DTO.RaceDTO;
 
+
+/**
+ * Controller for the user landing page FXML view.
+ * Handles UI interactions and binds UI elements to the corresponding ViewModel properties.
+ */
 public class UserLandingPageController implements Controller {
 
     @FXML private Label raceLabel;
@@ -19,8 +24,16 @@ public class UserLandingPageController implements Controller {
     private UserLandingPageVM viewModel;
     private MainWindowController mainWindowController;
 
+    /**
+     * Default constructor.
+     */
     public UserLandingPageController() {}
 
+    /**
+     * Initializes the controller and binds UI components to the ViewModel properties.
+     *
+     * @param userLandingPageVM The associated {@link ViewModel} instance.
+     */
     @Override
     public void initialize(ViewModel userLandingPageVM) {
         this.viewModel = (UserLandingPageVM) userLandingPageVM;
@@ -28,7 +41,6 @@ public class UserLandingPageController implements Controller {
         // Bind properties to UI components
         raceLabel.textProperty().bind(viewModel.raceInfoProperty());
         balance.textProperty().bind(viewModel.balanceInfoProperty().asString("$%d"));
-
 
         // Bind the disabled property of the enterBettingStage button to the ViewModel property
         enterBettingStage.disableProperty().bind(viewModel.bettingButtonDisabledProperty());
@@ -49,6 +61,11 @@ public class UserLandingPageController implements Controller {
         });
     }
 
+    /**
+     * Sets the main window controller used for navigation.
+     *
+     * @param mainWindowController The main window controller to be used for navigation.
+     */
     @Override
     public void setWindowController(MainWindowController mainWindowController) {
         if(mainWindowController != null){
@@ -56,10 +73,17 @@ public class UserLandingPageController implements Controller {
         }
     }
 
+    /**
+     * Handles the action when the betting button is clicked.
+     * Triggers the navigation flag in the ViewModel.
+     */
     public void handleButtonClick() {
         viewModel.enterBettingStage();
     }
 
+    /**
+     * Handles the quit button click by shutting down the application.
+     */
     public void handleQuitButton() {
         mainWindowController.shutdown();
     }

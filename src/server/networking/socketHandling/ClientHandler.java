@@ -25,7 +25,6 @@ public class ClientHandler implements Runnable {
   private BufferedReader in;
   private BufferedWriter out;
 
-
   /**
    * Constructor to initialize the {@code ClientHandler} with the client socket.
    * Sets up request handlers for authentication, horse-related actions, and race-related actions.

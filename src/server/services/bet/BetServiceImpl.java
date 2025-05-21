@@ -19,15 +19,20 @@ import java.util.List;
 public class BetServiceImpl implements BetService {
     private static volatile BetServiceImpl instance;
 
-    private final UserRepository userRepo        = UserRepositoryImpl.getInstance();
-    private final HorseRepository horseRepo       = HorseRepositoryImpl.getInstance();
-    private final BetRepository betRepo         = BetRepositoryImpl.getInstance();
-    private final BettingManager    bettingManager  = BettingManager.getInstance();
+    private final UserRepository userRepo = UserRepositoryImpl.getInstance();
+    private final HorseRepository horseRepo = HorseRepositoryImpl.getInstance();
+    private final BetRepository betRepo = BetRepositoryImpl.getInstance();
+    private final BettingManager bettingManager = BettingManager.getInstance();
 
     private BetServiceImpl() { /* singleton */ }
 
+    /**
+     * Method to get an instance of BetServiceImpl, since it is a singleton.
+     * @return BetServiceImpl instance
+     */
     public static BetServiceImpl getInstance() {
         if (instance == null) {
+//            double check with lock
             synchronized (BetServiceImpl.class) {
                 if (instance == null) {
                     instance = new BetServiceImpl();

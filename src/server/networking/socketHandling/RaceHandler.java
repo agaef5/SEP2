@@ -76,7 +76,6 @@ public class RaceHandler extends BaseRequestHandler {
   }
 
 
-
   /**
    * Handles the request to retrieve a list of all races.
    *

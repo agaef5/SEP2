@@ -61,6 +61,7 @@ public class RaceServiceImpl implements RacesService {
   public List<RaceDTO> getRaceList() {
     List<Race> raceList = RaceManager.getInstance().getAllRaces();
     List<RaceDTO> dtoList = new ArrayList<>();
+
     for (Race race : raceList) {
       dtoList.add(toDTO(race));
     }

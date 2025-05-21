@@ -10,8 +10,6 @@ public class RaceTest {
         RaceTrack raceTrack = new RaceTrack("testRaceTrack",5000,"TestLocation");
 
 
-
-
         // Create a race object (you may need to add race track info, etc.)
         Race race = null;
         try {

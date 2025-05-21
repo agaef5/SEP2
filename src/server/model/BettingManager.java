@@ -1,5 +1,6 @@
 package server.model;
 
+import client.ui.util.ErrorHandler;
 import server.networking.Server;
 import server.persistence.raceRepository.bet.BetRepository;
 import server.persistence.raceRepository.bet.BetRepositoryImpl;
@@ -22,7 +23,7 @@ public class BettingManager implements RaceListener {
     private static volatile BettingManager instance;
 
     // use the singleton repositories directly
-//    private final BetRepository betRepository  = BetRepositoryImpl.getInstance();
+    private final BetRepository betRepository  = BetRepositoryImpl.getInstance();
     private final UserRepository userRepository = UserRepositoryImpl.getInstance();
 
     private final List<Bet>        openBets       = new ArrayList<>();
@@ -51,9 +52,6 @@ public class BettingManager implements RaceListener {
         this.currentRace = Objects.requireNonNull(race);
         this.bettingOpen = true;
         openBets.clear();
-//
-//        BettingOpenUpdate payload = new BettingOpenUpdate(race.getName());
-//        Server.broadcast("bettingOpen", payload);
     }
 
     @Override
@@ -66,9 +64,6 @@ public class BettingManager implements RaceListener {
         if (!race.equals(currentRace)) return;
         this.bettingOpen = false;
         System.out.println("Race " + race.getName() + "has started — no more bets!");
-
-//        OnRaceStarted payload = new OnRaceStarted(race.getName());
-//        Server.broadcast("onRaceStarted",payload);
     }
 
     @Override
@@ -95,21 +90,17 @@ public class BettingManager implements RaceListener {
                 }
             }
 
-//            try {
-//                betRepository.save(bet);
-//            } catch (SQLException e) {
-//                throw new RuntimeException(
-//                        "Failed to save bet for user " + bet.getUser().getUsername(), e);
-//            }
+            try {
+                betRepository.save(bet);
+            } catch (SQLException e) {
+                ErrorHandler.handleError(new RuntimeException(
+                        "Failed to save bet for user " + bet.getUser().getUsername(), e), getClass().getName());
+            }
         }
 
         openBets.clear();
         currentRace = null;
         System.out.println("Race " + race.getName() + " settled; manager reset.");
-//
-//        List<HorseDTO> finalPositionsDTO = DTOMapper.horseListToDTO(finalPosition);
-//        OnRaceFinished payload = new OnRaceFinished(race.getName(),finalPositionsDTO);
-//        Server.broadcast("onRaceFinished",payload);
     }
 
     /**
@@ -133,12 +124,13 @@ public class BettingManager implements RaceListener {
         Bet bet = new Bet(currentRace, horse, user, amount);
         openBets.add(bet);
 
-//        try {
-//            betRepository.save(bet);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(
-//                    "Failed to save new bet for user " + user.getUsername(), e);
-//        }
+        try {
+            betRepository.save(bet);
+        } catch (SQLException e) {
+            ErrorHandler.handleError(new RuntimeException(
+                    "Failed to save bet for user " + bet.getUser().getUsername(), e), getClass().getName());
+        }
+
         return bet;
     }
 

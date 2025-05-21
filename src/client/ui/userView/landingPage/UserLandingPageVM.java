@@ -7,6 +7,10 @@ import javafx.beans.property.*;
 import shared.DTO.RaceDTO;
 import shared.DTO.RaceState;
 
+/**
+ * ViewModel for the user landing page.
+ * Handles the interaction logic and exposes properties to the controller for data binding.
+ */
 public class UserLandingPageVM implements ViewModel {
 
     //Properties
@@ -17,6 +21,12 @@ public class UserLandingPageVM implements ViewModel {
     private ModelManager modelManager;
     private RaceDTO selectedRace;
 
+    /**
+     * Constructor for the UserLandingPageVM.
+     * Initializes listeners and binds user balance.
+     *
+     * @param model the ModelManager handling data logic
+     */
     public UserLandingPageVM(ModelManager model) {
         this.modelManager = model;
 
@@ -44,7 +54,6 @@ public class UserLandingPageVM implements ViewModel {
         return modelManager.getUserBalance();
     }
 
-
     // Get property indicating if navigation to betting stage is requested
     public BooleanProperty navigateToBettingProperty() {
         return navigateToBetting;
@@ -60,7 +69,13 @@ public class UserLandingPageVM implements ViewModel {
         navigateToBetting.set(false);
     }
 
-    //Update race information based on the received race list
+
+    /**
+     * Updates the race information based on the provided race.
+     * Updates the view properties on the JavaFX Application Thread.
+     *
+     * @param race the RaceDTO to update with
+     */
     private void updateRaceInfo(RaceDTO race) {
         Platform.runLater(() -> {
             if (race != null) {
@@ -84,6 +99,7 @@ public class UserLandingPageVM implements ViewModel {
                     raceInfo.set("The last race has finished. Waiting for the next race...");
                 }
             } else {
+                // Handle case when no race is available
                 raceInfo.set("No upcoming races");
                 selectedRace = null;
                 bettingButtonDisabled.set(true); // Disable button when no races are available

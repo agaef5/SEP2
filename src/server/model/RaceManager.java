@@ -1,7 +1,10 @@
 package server.model;
 
+import client.ui.util.ErrorHandler;
 import server.networking.listener.RaceListenerImpl;
+import server.persistence.raceRepository.RaceRepositoryImpl;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -83,9 +86,6 @@ public class RaceManager implements Runnable {
         race.addListener(RaceListenerImpl.getInstance());
         race.run(); // Run the race
         raceQueue.take();   // Now remove it from the queue
-
-
-        // TODO: Add race to the database
 
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
