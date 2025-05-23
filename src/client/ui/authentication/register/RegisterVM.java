@@ -21,7 +21,6 @@ public class RegisterVM implements ViewModel
   private StringProperty messageProp = new SimpleStringProperty();
   private BooleanProperty disableRegisterButtonProp = new SimpleBooleanProperty(
           false);
-  private AuthenticationClient authClient;
   private ModelManager modelManager;
 
 
@@ -33,14 +32,6 @@ public class RegisterVM implements ViewModel
             .or(emailProp.isEmpty())
             .or(passwordProp.isEmpty()).or(repeatProp.isEmpty()));
     messageProp.bind(modelManager.registerMessageProperty());
-  }
-
-  public BooleanProperty registerSuccessProperty() {
-    return modelManager.registerSuccessProperty();
-  }
-
-  public StringProperty registerMessageProperty() {
-    return messageProp;
   }
 
   public void registerUser ()
@@ -69,6 +60,13 @@ public class RegisterVM implements ViewModel
             usernameProp.get(), passwordProp.get());
   }
 
+  public BooleanProperty registerSuccessProperty() {
+    return modelManager.registerSuccessProperty();
+  }
+
+  public StringProperty registerMessageProperty() {
+    return messageProp;
+  }
 
   public StringProperty passwordPropriety ()
   {

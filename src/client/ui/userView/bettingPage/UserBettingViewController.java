@@ -3,6 +3,7 @@ package client.ui.userView.bettingPage;
 import client.ui.common.Controller;
 import client.ui.common.ViewModel;
 import client.ui.navigation.MainWindowController;
+import client.ui.util.ErrorHandler;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -179,7 +180,7 @@ public class UserBettingViewController implements Controller {
   }
 
   private void navigateToUserLandingPage(){
-    showAlert("No bet placed", "No bet was placed and race has " +
+    ErrorHandler.showAlert("No bet placed", "No bet was placed and race has " +
             "already started.Too late to place a bet.");
     mainWindowController.loadUserLandingPage();
   }
@@ -206,21 +207,5 @@ public class UserBettingViewController implements Controller {
         return 0;
       }
     }
-  }
-
-  /**
-   * Displays an alert dialog with the specified title and content.
-   * Used for showing validation errors and other notifications.
-   *
-   * @param title The title of the alert dialog
-   * @param content The content message to display in the alert
-   */
-  private void showAlert(String title, String content)
-  {
-    Alert alert = new Alert(Alert.AlertType.WARNING);
-    alert.setTitle(title);
-    alert.setHeaderText(null);
-    alert.setContentText(content);
-    alert.showAndWait();
   }
 }

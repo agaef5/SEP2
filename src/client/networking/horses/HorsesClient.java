@@ -18,28 +18,28 @@ public interface HorsesClient {
   /**
    * Sends a request to retrieve a specific horse based on the provided request.
    *
-   * @param racerRequest the request containing information to identify the horse
+   * @param horseRequest the request containing information to identify the horse
    */
-  void getHorse(HorseRequest racerRequest);
+  void getHorse(HorseRequest horseRequest);
 
   /**
    * Sends a request to delete the specified horse.
    *
-   * @param selectedRacer the horse to be deleted
+   * @param horseDTO the horse to be deleted
    */
-  void deleteHorse(HorseDTO selectedRacer);
+  void deleteHorse(HorseDTO horseDTO);
 
   /**
    * Sends a request to update the specified horse.
    *
-   * @param selectedRacer the horse to be updated
+   * @param horseDTO the horse to be updated
    */
-  void updateHorse(HorseDTO selectedRacer);
+  void updateHorse(HorseDTO horseDTO);
 
   /**
    * Sends a request to create a new horse using the provided information.
    *
-   * @param createRacerRequest the request containing data for the new horse
+   * @param createHorseRequest the request containing data for the new horse
    */
-  void createHorse(CreateHorseRequest createRacerRequest);
+  void createHorse(CreateHorseRequest createHorseRequest);
 }

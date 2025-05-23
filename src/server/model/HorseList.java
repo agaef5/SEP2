@@ -13,15 +13,6 @@ public class HorseList
   private final Integer capacity;
 
   /**
-   * Constructs a {@code HorseList} with no capacity limit.
-   */
-  public HorseList()
-  {
-    this.horses = new ArrayList<Horse>();
-    this.capacity = null;
-  }
-
-  /**
    * Constructs a {@code HorseList} with a specified capacity.
    *
    * @param capacity the maximum number of horses the list can hold

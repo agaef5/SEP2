@@ -24,6 +24,9 @@ public class CreateEditHorseController implements Controller {
   private CreateEditHorseVM viewModel;
   private MainWindowController mainWindowController;
 
+  public CreateEditHorseController(){};
+  
+
   @Override
   public void initialize(ViewModel viewModel) {
     this.viewModel = (CreateEditHorseVM)viewModel;

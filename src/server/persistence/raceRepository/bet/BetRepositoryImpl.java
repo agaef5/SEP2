@@ -104,88 +104,13 @@
         };
 
         /**
-         * Reads a bet by the username of the user.
-         *
-         * @param username the username to search by
-         * @return a BetDTO if found
-         * @throws SQLException if a database error occurs
-         */
-        @Override
-        public BetDTO readByUsername(String username) throws SQLException
-        {
-            return null;
-        }
-
-        /**
-         * Reads a bet by race name.
-         *
-         * @param raceName the name of the race
-         * @return a BetDTO if found
-         * @throws SQLException if a database error occurs
-         */
-        @Override
-        public BetDTO readByRace(String raceName) throws SQLException
-        {
-            return null;
-        }
-
-        /**
-         * Reads bets by their status (e.g., active/inactive).
-         *
-         * @param status the status of the bet
-         * @return a BetDTO if found
-         * @throws SQLException if a database error occurs
-         */
-        @Override
-        public BetDTO readByStatus(boolean status) throws SQLException
-        {
-            return null;
-        }
-
-        /**
-         * Reads bets by the name of the race track.
-         *
-         * @param rtName the name of the racetrack
-         * @return a BetDTO if found
-         * @throws SQLException if a database error occurs
-         */
-        @Override
-        public BetDTO readByRaceTrack(String rtName) throws SQLException
-        {
-            return null;
-        }
-
-        /**
-         * Updates the given bet in the database.
-         *
-         * @param bet the Bet to update
-         * @throws SQLException if a database error occurs
-         */
-        @Override
-        public void updateBet(Bet bet) throws SQLException
-        {
-
-        }
-
-        /**
-         * Deletes the given bet from the database.
-         *
-         * @param bet the Bet to delete
-         * @throws SQLException if a database error occurs
-         */
-        @Override
-        public void deleteBet(Bet bet) throws SQLException
-        {
-
-        }
-
-        /**
          * Reads the horse participating in a race by race ID.
          *
          * @param race_id the race ID
          * @return the Horse participating in the race
          * @throws SQLException if a database error occurs
          */
+
         private Horse readHorses (int race_id) throws SQLException{
             try (Connection connection = getConnection())
             {

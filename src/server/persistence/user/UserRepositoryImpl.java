@@ -17,10 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class UserRepositoryImpl implements UserRepository {
 
-  private static final Lock lock = new ReentrantLock();
   private static UserRepositoryImpl instance;
-  private ArrayList<User> users;
-
 
   /**
    * Private constructor initializes the in-memory list of users.
@@ -38,7 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
    */
   public static UserRepository getInstance() {
     if (instance == null) {
-      synchronized (lock) {
+      synchronized (UserRepositoryImpl.class) {
         if (instance == null) {
           try{
             instance = new UserRepositoryImpl();

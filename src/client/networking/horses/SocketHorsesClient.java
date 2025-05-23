@@ -69,11 +69,11 @@ public class SocketHorsesClient implements HorsesClient {
   /**
    * Sends a request to update the information of an existing horse.
    *
-   * @param selectedHorse the horse with updated data
+   * @param horseDTO the horse with updated data
    */
   @Override
-  public void updateHorse(HorseDTO selectedHorse) {
-    JsonElement payload = gson.toJsonTree(selectedHorse);
+  public void updateHorse(HorseDTO horseDTO) {
+    JsonElement payload = gson.toJsonTree(horseDTO);
     Request request = new Request("horse", "updateHorse", payload);
     socketService.sendRequest(request);
   }
@@ -81,26 +81,12 @@ public class SocketHorsesClient implements HorsesClient {
   /**
    * Sends a request to delete the specified horse from the system.
    *
-   * @param selectedHorse the horse to be deleted
+   * @param horseDTO the horse to be deleted
    */
   @Override
-  public void deleteHorse(HorseDTO selectedHorse) {
-    JsonElement payload = gson.toJsonTree(selectedHorse);
+  public void deleteHorse(HorseDTO horseDTO) {
+    JsonElement payload = gson.toJsonTree(horseDTO);
     Request request = new Request("horse", "deleteHorse", payload);
     socketService.sendRequest(request);
   }
-
-  // Uncomment to add listeners for messages if necessary
-  /*
-  @Override
-  public void addListener(MessageListener listener) {
-    listeners.add(listener);
-  }
-
-  private void handleMessage(Object message) {
-    for (MessageListener listener : listeners) {
-      listener.update(message);
-    }
-  }
-  */
 }

@@ -152,30 +152,4 @@ public class CreateRaceVM implements ViewModel
     raceName.set("");
     horseCount.set(0);
   }
-
-//  /**
-//   * Sets the specified race as the selected race.
-//   * This method is currently a placeholder.
-//   *
-//   * @param newRace The race to select
-//   */
-//  private void setSelectedRace(RaceDTO newRace)
-//  {
-//    raceName.set(newRace.name());
-//    horseCount.set(newRace.horses().size());
-//    selectedRaceTrack.set(newRace.raceTrack());
-//  }
-
-  /**
-   * Updates the available race tracks list with data received from the server.
-   * Updates must be performed on the JavaFX application thread.
-   *
-   * @param response Response object containing the list of race tracks
-   */
-  private void updateAvailableRaceTracks(GetRaceTrackResponse response)
-  {
-    Platform.runLater(()->
-        availableRaceTracks.setAll(response.raceTracks())
-    );
-  }
 }

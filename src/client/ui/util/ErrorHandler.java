@@ -49,6 +49,21 @@ public class ErrorHandler {
   }
 
   /**
+   * Alert dedicated to inform user about error.
+   *
+   * @param title - title of the alert
+   * @param content - content displayed in alert
+   */
+  public static void showAlert(String title, String content)
+  {
+    Alert alert = new Alert(Alert.AlertType.WARNING);
+    alert.setTitle(title);
+    alert.setHeaderText(null);
+    alert.setContentText(content);
+    alert.showAndWait();
+  }
+
+  /**
    * Handles client-side errors such as validation or input errors.
    * Displays a generic error message to the client.
    *
@@ -120,18 +135,4 @@ public class ErrorHandler {
     return e instanceof SQLException || e instanceof IOException || e instanceof InvalidMessageException;
   }
 
-  /**
-   * Alert dedicated to inform user about error.
-   *
-   * @param title - title of the alert
-   * @param content - content displayed in alert
-   */
-  public static void showAlert(String title, String content)
-  {
-    Alert alert = new Alert(Alert.AlertType.WARNING);
-    alert.setTitle(title);
-    alert.setHeaderText(null);
-    alert.setContentText(content);
-    alert.showAndWait();
-  }
 }

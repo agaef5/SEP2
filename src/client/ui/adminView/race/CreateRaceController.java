@@ -81,7 +81,6 @@ public class CreateRaceController implements Controller
       }
     });
 
-
     // Configure the race queue ListView with data from the ViewModel
     raceQueueList.setItems(viewModel.getRaceQueue());
     raceQueueList.setCellFactory(param -> new ListCell<>() {
@@ -136,23 +135,7 @@ public class CreateRaceController implements Controller
       viewModel.createRace();
     }
     else {
-      showAlert("Incorrect input", "Make sure all the fields are filled.");
+      ErrorHandler.showAlert("Incorrect input", "Make sure all the fields are filled.");
     }
-  }
-
-  /**
-   * Displays an alert dialog with the specified title and content.
-   * Used for showing validation errors and other notifications.
-   *
-   * @param title The title of the alert dialog
-   * @param content The content message to display in the alert
-   */
-  private void showAlert(String title, String content)
-  {
-    Alert alert = new Alert(Alert.AlertType.WARNING);
-    alert.setTitle(title);
-    alert.setHeaderText(null);
-    alert.setContentText(content);
-    alert.showAndWait();
   }
 }

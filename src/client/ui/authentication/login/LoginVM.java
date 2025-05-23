@@ -14,7 +14,6 @@ public class LoginVM implements ViewModel
     private final StringProperty messageProp = new SimpleStringProperty();
     private final BooleanProperty disableLoginButtonProp = new SimpleBooleanProperty(
             false);
-    private final BooleanProperty createNewUser = new SimpleBooleanProperty(true);
 
     public LoginVM (ModelManager modelManager)
     {
@@ -22,14 +21,6 @@ public class LoginVM implements ViewModel
         disableLoginButtonProp.bind(
                 usernameProp.isEmpty().or(passwordProp.isEmpty())
         );
-    }
-
-    public BooleanProperty loginSuccessProperty() {
-        return modelManager.loginSuccessProperty();
-    }
-
-    public StringProperty loginMessageProperty() {
-        return modelManager.loginMessageProperty();
     }
 
     public void loginUser(){
@@ -63,6 +54,16 @@ public class LoginVM implements ViewModel
 
     public StringProperty messageProperty() {
         return messageProp;
+    }
+
+
+    public BooleanProperty loginSuccessProperty() {
+        return modelManager.loginSuccessProperty();
+    }
+
+
+    public StringProperty loginMessageProperty() {
+        return modelManager.loginMessageProperty();
     }
 
 

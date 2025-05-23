@@ -26,7 +26,6 @@ public class DTOMapper
         return finalPositionDTOs;
     }
 
-    //-----------From DTO-----------//
     public static BetResponseDTO betToResponseDTO(Bet bet) {
         return new BetResponseDTO(
                 bet.getRace().getName(),

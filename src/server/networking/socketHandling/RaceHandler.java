@@ -23,7 +23,6 @@ import java.util.List;
  */
 public class RaceHandler extends BaseRequestHandler {
   private final RacesService racesService;
-  private final Gson gson = new Gson();
 
   /**
    * Constructor to initialize the {@code RaceHandler} with a {@code RacesService}.

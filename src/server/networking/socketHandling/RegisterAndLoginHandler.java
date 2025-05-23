@@ -20,7 +20,6 @@ import shared.user.UserResponse;
  */
 public class RegisterAndLoginHandler extends BaseRequestHandler {
   private final AuthenticationService authService;
-  private final Gson gson = new Gson();
 
   /**
    * Constructor to initialize the {@code RegisterAndLoginHandler} with an

@@ -18,8 +18,8 @@ public class AdminPanelController implements Controller
 
   private AdminPanelVM viewModel;
   private MainWindowController mainWindowController;
-  public AdminPanelController(){};
 
+  public AdminPanelController(){};
 
   @Override
   public void initialize(ViewModel viewModel)

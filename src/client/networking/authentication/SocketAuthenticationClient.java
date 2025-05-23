@@ -51,12 +51,14 @@ public class SocketAuthenticationClient implements AuthenticationClient {
     socketService.sendRequest(request);
   }
 
+  @Override
   public void getUser(UserRequest userRequest){
     JsonElement payload = gson.toJsonTree(userRequest);
     Request request = new Request("auth", "getUser", payload);
     socketService.sendRequest(request);
   }
 
+  @Override
   public void updateBalance(BalanceUpdateRequest balanceUpdateRequest){
     JsonElement payload = gson.toJsonTree(balanceUpdateRequest);
     Request request = new Request("auth", "updateBalance", payload);

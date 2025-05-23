@@ -65,14 +65,6 @@ public interface RaceRepository {
     Race readByTime(Timestamp time) throws SQLException;
 
     /**
-     * Retrieves a race based on its status.
-     *
-     * @param status the status of the race (e.g., "completed", "scheduled")
-     * @return the {@link Race} object that matches the given status, or {@code null} if not found
-     * @throws SQLException if there is an error during the database operation
-     */
-
-    /**
      * Updates an existing race in the repository.
      *
      * @param race the {@link Race} object with updated details

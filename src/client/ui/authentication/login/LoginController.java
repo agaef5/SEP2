@@ -13,11 +13,11 @@ import javafx.scene.text.Text;
 
 public class LoginController implements Controller
 {
-  @FXML public Button createNewAccountB;
   @FXML private TextField usernameNameInput;
   @FXML private TextField passwordInput;
   @FXML private Text messageLabel;
   @FXML private Button buttonLogin;
+  @FXML public Button createNewAccountB;
   private LoginVM viewModel;
   private MainWindowController mainWindowController;
 

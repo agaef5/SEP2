@@ -141,8 +141,6 @@ public class Race implements Runnable {
     }
   }
 
-
-
   private void notifyHorseFinished(Horse horse, int position)
   {
     for (RaceListener listener: listeners)

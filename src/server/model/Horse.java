@@ -55,8 +55,6 @@ public class Horse {
   /** @return the current position of the horse in the race */
   public int getPosition() { return position; }
 
-
-
   /**
    * Moves the horse forward by a random step within its speed range.
    */
@@ -96,15 +94,5 @@ public class Horse {
         speedMax == horse.speedMax &&
         position == horse.position &&
         Objects.equals(name, horse.name);
-  }
-
-  /** @return true if the horse is currently in a race */
-  public boolean isInRace() {
-    return inRace;
-  }
-
-  /** @param inRace set whether the horse is in a race */
-  public void setInRace(boolean inRace) {
-    this.inRace = inRace;
   }
 }

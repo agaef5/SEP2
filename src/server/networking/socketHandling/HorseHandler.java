@@ -16,7 +16,6 @@ import shared.horse.*;
  */
 public class HorseHandler extends BaseRequestHandler {
   private final HorseListService horseListService;
-  private final Gson gson = new Gson();
 
   /**
    * Constructor to initialize the {@code HorseHandler} with a {@code HorseListService}.

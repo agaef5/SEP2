@@ -2,6 +2,7 @@ package client.networking.authentication;
 
 import shared.loginRegister.LoginRequest;
 import shared.loginRegister.RegisterRequest;
+import shared.user.BalanceUpdateRequest;
 import shared.user.UserRequest;
 
 /**
@@ -28,4 +29,6 @@ public interface AuthenticationClient
   void loginUser(LoginRequest loginRequest);
 
   void getUser(UserRequest userRequest);
+
+  void updateBalance(BalanceUpdateRequest balanceUpdateRequest);
 }
