@@ -137,6 +137,7 @@ public class MainWindowController {
 
     public void loadBettingPage(RaceDTO race) {
         stage.setTitle(race != null ? "Betting - " + race.name() : "Betting");
+        stage.setHeight(600);
         loadPage("client/ui/userView/bettingPage/UserBettingView.fxml", race);
     }
   

@@ -10,11 +10,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="400.0" prefHeight="638.0" prefWidth="506.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.userView.bettingPage.UserBettingViewController">
+<AnchorPane minHeight="400.0" prefHeight="511.0" prefWidth="523.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ui.userView.bettingPage.UserBettingViewController">
     <children>
-        <Pane prefHeight="401.0" prefWidth="523.0">
+        <Pane prefHeight="310.0" prefWidth="523.0">
          <children>
-            <TableView fx:id="horseTableView" layoutX="14.0" layoutY="21.0" prefHeight="357.0" prefWidth="481.0">
+            <TableView fx:id="horseTableView" layoutX="21.0" layoutY="14.0" prefHeight="294.0" prefWidth="482.0">
               <columns>
                 <TableColumn fx:id="nameColumn" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="Name" />
                 <TableColumn fx:id="minSpeedColumn" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" text="min Speed" />
@@ -23,16 +23,16 @@
             </TableView>
          </children>
         </Pane>
-      <Button fx:id="plusButton" layoutX="354.0" layoutY="457.0" mnemonicParsing="false" text="+" />
-      <Button fx:id="minusButton" layoutX="139.0" layoutY="457.0" mnemonicParsing="false" text="-" />
-      <TextField fx:id="betAmount" layoutX="187.0" layoutY="457.0" promptText="Bet amount" />
-      <Label fx:id="balance" alignment="CENTER" contentDisplay="CENTER" layoutX="207.0" layoutY="411.0" prefHeight="17.0" prefWidth="122.0" text="balance_placeholder" textAlignment="CENTER" />
-      <Label fx:id="countDownLabel" layoutX="215.0" layoutY="593.0" text="Countdown timer" />
-      <Button fx:id="placeBetButton" layoutX="194.0" layoutY="517.0" mnemonicParsing="false" text="Place bet">
+      <Button fx:id="plusButton" layoutX="357.0" layoutY="357.0" mnemonicParsing="false" text="+" />
+      <Button fx:id="minusButton" layoutX="142.0" layoutY="357.0" mnemonicParsing="false" text="-" />
+      <TextField fx:id="betAmount" layoutX="190.0" layoutY="357.0" promptText="Bet amount" />
+      <Label fx:id="balance" alignment="CENTER" contentDisplay="CENTER" layoutX="210.0" layoutY="321.0" prefHeight="17.0" prefWidth="122.0" text="balance_placeholder" textAlignment="CENTER" />
+      <Label fx:id="countDownLabel" layoutX="218.0" layoutY="484.0" text="Countdown timer" />
+      <Button fx:id="placeBetButton" layoutX="197.0" layoutY="407.0" mnemonicParsing="false" text="Place bet">
          <font>
             <Font size="25.0" />
          </font>
       </Button>
-      <Text layoutX="152.0" layoutY="424.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BALANCE" />
+      <Text layoutX="155.0" layoutY="334.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BALANCE" />
     </children>
 </AnchorPane>
