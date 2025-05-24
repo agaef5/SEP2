@@ -68,7 +68,7 @@ public class UserRepositoryImpl implements UserRepository {
   public User createUser(String username, String email, String password, boolean isAdmin) throws SQLException{
     try (Connection connection = getConnection()) {
 //      Create query and change it with parameters
-      String query = "INSERT INTO Game_user (username, password_hash, email, isAdmin, balance) VALUES (?, ?, ?, ?, ?)";
+      String query = "INSERT INTO game_user (username, password_hash, email, isAdmin, balance) VALUES (?, ?, ?, ?, ?)";
       PreparedStatement statement = connection.prepareStatement(query);
 
       statement.setString(1, username);

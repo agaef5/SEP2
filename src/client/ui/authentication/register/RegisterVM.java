@@ -31,7 +31,7 @@ public class RegisterVM implements ViewModel
     disableRegisterButtonProp.bind(usernameProp.isEmpty()
             .or(emailProp.isEmpty())
             .or(passwordProp.isEmpty()).or(repeatProp.isEmpty()));
-    messageProp.bind(modelManager.registerMessageProperty());
+    messageProp.bindBidirectional(modelManager.registerMessageProperty());
   }
 
   public void registerUser ()
@@ -56,8 +56,13 @@ public class RegisterVM implements ViewModel
       messageProp.set("Passwords do not match");
       return;
     }
-    modelManager.registerUser(emailProp.get(),
-            usernameProp.get(), passwordProp.get());
+    if (usernameProp.get().length() > 10 )
+    {
+      messageProp.set("Username can maximum be 10 characters long.");
+      return;
+    }
+    modelManager.registerUser(usernameProp.get(),
+            emailProp.get(), passwordProp.get());
   }
 
   public BooleanProperty registerSuccessProperty() {
