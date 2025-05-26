@@ -439,7 +439,7 @@ class CreateRaceVMTest {
 
     //CREATE RACE TESTS
     @Test
-    void createRace_Zero_InvalidData_DoesNotCallModelManager() {
+    void createRace_InvalidData_DoesNotCallModelManager() {
         // Arrange (invalid - no data set)
 
         // Act
@@ -450,7 +450,7 @@ class CreateRaceVMTest {
     }
 
     @Test
-    void createRace_One_ValidData_CreatesRaceAndClearsFields() {
+    void createRace_ValidData_CreatesRaceAndClearsFields() {
         // Arrange
         String raceName = "Test Race";
         int horseCount = 1;
@@ -468,7 +468,7 @@ class CreateRaceVMTest {
     }
 
     @Test
-    void createRace_Boundary_MinimumValidHorseCount_CreatesRace() {
+    void createRace_MinimumValidHorseCount_CreatesRace() {
         // Arrange
         createRaceVM.raceNameProperty().set("Minimum Race");
         createRaceVM.selectedRaceTrackProperty().set(testRaceTrack);
@@ -482,7 +482,7 @@ class CreateRaceVMTest {
     }
 
     @Test
-    void createRace_Boundary_ZeroHorseCount_DoesNotCreateRace() {
+    void createRace_ZeroHorseCount_DoesNotCreateRace() {
         // Arrange
         createRaceVM.raceNameProperty().set("Invalid Race");
         createRaceVM.selectedRaceTrackProperty().set(testRaceTrack);
@@ -496,7 +496,7 @@ class CreateRaceVMTest {
     }
 
     @Test
-    void createRace_Exercise_MultipleConsecutiveCalls_WorkCorrectly() {
+    void createRace_MultipleConsecutiveCalls_WorkCorrectly() {
         // Arrange & Act & Assert - First race
         createRaceVM.raceNameProperty().set("First Race");
         createRaceVM.selectedRaceTrackProperty().set(testRaceTrack);
@@ -517,7 +517,7 @@ class CreateRaceVMTest {
     }
 
     @Test
-    void createRace_Simple_EmptyRaceName_DoesNotCreateRace() {
+    void createRace_EmptyRaceName_DoesNotCreateRace() {
         // Arrange
         createRaceVM.raceNameProperty().set("");
         createRaceVM.selectedRaceTrackProperty().set(testRaceTrack);

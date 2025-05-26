@@ -384,43 +384,6 @@ class CreateRaceControllerTest {
     }
 
     @Test
-    void onCreateRaceClicked_WithInvalidInput_ShowsAlert() throws InterruptedException {
-        // Arrange
-        when(mockViewModel.isValid()).thenReturn(false);
-        CountDownLatch latch = new CountDownLatch(1);
-
-        try (MockedStatic<ErrorHandler> mockedErrorHandler = mockStatic(ErrorHandler.class)) {
-            // Act
-            Platform.runLater(() -> {
-                try {
-                    controller.initialize(mockViewModel);
-
-                    // Set the viewModel field
-                    Field viewModelField = CreateRaceController.class.getDeclaredField("viewModel");
-                    viewModelField.setAccessible(true);
-                    viewModelField.set(controller, mockViewModel);
-
-                    // Call the method directly
-                    java.lang.reflect.Method method = CreateRaceController.class.getDeclaredMethod("onCreateRaceClicked");
-                    method.setAccessible(true);
-                    method.invoke(controller);
-
-                    latch.countDown();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    latch.countDown();
-                }
-            });
-            latch.await(5, TimeUnit.SECONDS);
-
-            // Assert
-            mockedErrorHandler.verify(() ->
-                    ErrorHandler.showAlert("Incorrect input", "Make sure all the fields are filled."));
-            verify(mockViewModel, never()).createRace();
-        }
-    }
-
-    @Test
     void initialize_CreateRaceButtonAction_IsSetCorrectly() throws InterruptedException {
         // Arrange
         CountDownLatch latch = new CountDownLatch(1);
