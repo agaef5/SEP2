@@ -2,6 +2,7 @@ package Client.ui.adminView.race;
 
 import client.modelManager.ModelManager;
 import client.ui.adminView.race.CreateRaceVM;
+import client.ui.util.ErrorHandler;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -10,6 +11,7 @@ import javafx.collections.ObservableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import shared.DTO.RaceDTO;
 import shared.DTO.RaceTrackDTO;
@@ -482,17 +484,21 @@ class CreateRaceVMTest {
     }
 
     @Test
-    void createRace_ZeroHorseCount_DoesNotCreateRace() {
-        // Arrange
-        createRaceVM.raceNameProperty().set("Invalid Race");
-        createRaceVM.selectedRaceTrackProperty().set(testRaceTrack);
-        createRaceVM.horseCountProperty().set(0);
+    void createRace_ZeroHorseCount_ShowsErrorAndDoesNotCreate() {
+        try (MockedStatic<ErrorHandler> mockedErrorHandler = mockStatic(ErrorHandler.class)) {
+            // Arrange
+            createRaceVM.raceNameProperty().set("Valid Race");
+            createRaceVM.selectedRaceTrackProperty().set(testRaceTrack);
+            createRaceVM.horseCountProperty().set(0);
 
-        // Act
-        createRaceVM.createRace();
+            // Act
+            createRaceVM.createRace();
 
-        // Assert
-        verify(mockModelManager, never()).createRace(any(), any(), any());
+            // Assert - Test complete error handling
+            mockedErrorHandler.verify(() ->
+                    ErrorHandler.displayErrorToClient("Please fill all required fields"));
+            verify(mockModelManager, never()).createRace(any(), any(), any());
+        }
     }
 
     @Test
@@ -517,19 +523,40 @@ class CreateRaceVMTest {
     }
 
     @Test
-    void createRace_EmptyRaceName_DoesNotCreateRace() {
-        // Arrange
-        createRaceVM.raceNameProperty().set("");
-        createRaceVM.selectedRaceTrackProperty().set(testRaceTrack);
-        createRaceVM.horseCountProperty().set(5);
+    void createRace_EmptyRaceName_ShowsErrorAndDoesNotCreate() {
+        try (MockedStatic<ErrorHandler> mockedErrorHandler = mockStatic(ErrorHandler.class)) {
+            // Arrange
+            createRaceVM.raceNameProperty().set("");
+            createRaceVM.selectedRaceTrackProperty().set(testRaceTrack);
+            createRaceVM.horseCountProperty().set(5);
 
-        // Act
-        createRaceVM.createRace();
+            // Act
+            createRaceVM.createRace();
 
-        // Assert
-        verify(mockModelManager, never()).createRace(any(), any(), any());
+            // Assert - Test BOTH behaviors
+            mockedErrorHandler.verify(() ->
+                    ErrorHandler.displayErrorToClient("Please fill all required fields"));
+            verify(mockModelManager, never()).createRace(any(), any(), any());
+        }
     }
 
+    @Test
+    void createRace_NoRaceTrackSelected_ShowsErrorAndDoesNotCreate() {
+        try (MockedStatic<ErrorHandler> mockedErrorHandler = mockStatic(ErrorHandler.class)) {
+            // Arrange
+            createRaceVM.raceNameProperty().set("Valid Race");
+            createRaceVM.selectedRaceTrackProperty().set(null); // ← No track selected
+            createRaceVM.horseCountProperty().set(5);
+
+            // Act
+            createRaceVM.createRace();
+
+            // Assert
+            mockedErrorHandler.verify(() ->
+                    ErrorHandler.displayErrorToClient("Please fill all required fields"));
+            verify(mockModelManager, never()).createRace(any(), any(), any());
+        }
+    }
 
     //CONSTRUCTOR TESTS
     @Test

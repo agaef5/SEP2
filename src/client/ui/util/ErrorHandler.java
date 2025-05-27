@@ -107,7 +107,7 @@ public class ErrorHandler {
    *
    * @param message the error message to display
    */
-  private static void displayErrorToClient(String message) {
+  public static void displayErrorToClient(String message) {
     showAlert("Error", message);
   }
 
