@@ -10,8 +10,8 @@ import shared.user.BalanceUpdateRequest;
 import shared.user.UserRequest;
 
 /**
- * Implementation of {@link AuthenticationClient} that sends authentication-related requests
- * (login and registration) over a socket connection using {@link SocketService}.
+ * Implementation of AuthenticationClient that sends authentication-related requests
+ * (login and registration) over a socket connection using SocketService.
  */
 public class SocketAuthenticationClient implements AuthenticationClient {
 
@@ -19,7 +19,7 @@ public class SocketAuthenticationClient implements AuthenticationClient {
   private Gson gson = new Gson();
 
   /**
-   * Constructs a {@code SocketAuthenticationClient} with the specified socket service.
+   * Constructs a SocketAuthenticationClient with the specified socket service.
    *
    * @param socketService the socket service used to send requests
    */
@@ -51,6 +51,11 @@ public class SocketAuthenticationClient implements AuthenticationClient {
     socketService.sendRequest(request);
   }
 
+  /**
+   * Sends a user information request to the server.
+   *
+   * @param userRequest the request object containing user identifier data
+   */
   @Override
   public void getUser(UserRequest userRequest){
     JsonElement payload = gson.toJsonTree(userRequest);
@@ -58,6 +63,11 @@ public class SocketAuthenticationClient implements AuthenticationClient {
     socketService.sendRequest(request);
   }
 
+  /**
+   * Sends a request to update the user's balance on the server.
+   *
+   * @param balanceUpdateRequest the request containing updated balance data
+   */
   @Override
   public void updateBalance(BalanceUpdateRequest balanceUpdateRequest){
     JsonElement payload = gson.toJsonTree(balanceUpdateRequest);

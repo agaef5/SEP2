@@ -4,17 +4,25 @@ import client.ui.navigation.MainWindowController;
 import javafx.event.ActionEvent;
 
 /**
- * The {@code Controller} interface defines the contract for UI controllers that manage navigation
- * between different pages in an application. Implementing this interface allows controllers to change
- * pages or views within the UI by invoking the {@code changePage} method.
- * <p>
- * This is typically used in applications with multiple views where the controller is responsible
- * for managing transitions between them.
+ * Interface for UI controllers that support initialization and view navigation.
+ *
+ * Controllers implementing this interface can be initialized with a ViewModel
+ * and connected to the main window controller to enable view switching.
  */
-public interface Controller
-{
+public interface Controller {
 
+  /**
+   * Initializes the controller with the provided ViewModel.
+   *
+   * @param viewModel the ViewModel used to bind data and handle logic
+   */
   void initialize(ViewModel viewModel);
 
+  /**
+   * Sets the reference to the main window controller.
+   * Used to control view changes within the application.
+   *
+   * @param mainWindowController the main window controller instance
+   */
   void setWindowController(MainWindowController mainWindowController);
 }

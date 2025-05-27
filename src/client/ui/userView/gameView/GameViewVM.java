@@ -10,9 +10,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import shared.DTO.HorseDTO;
 import shared.DTO.RaceDTO;
-import shared.updates.OnHorseFinished;
-import shared.updates.OnRaceFinished;
-import shared.updates.OnRaceStarted;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,41 +17,42 @@ import java.util.Map;
 
 /**
  * ViewModel for the GameView (race progress screen).
- * Manages state and data updates related to the selected race and its horse positions.
+ *
+ * Manages the horses, their positions, and status messages for a running race.
+ * Binds to model properties and listens to race and horse position updates.
  */
-public class GameViewVM implements ViewModel{
+public class GameViewVM implements ViewModel {
 
-    private ModelManager model;
+    private final ModelManager model;
     private final RaceDTO selectedRace;
 
     private final StringProperty statusText = new SimpleStringProperty("Race will start soon...");
     private final ObservableList<HorseDTO> horses = FXCollections.observableArrayList();
     private final Map<Integer, Integer> horsePositions = new HashMap<>();
 
-
     /**
      * Constructs a GameViewVM.
      *
-     * @param model The model manager handling backend communication and state.
-     * @param selectedRace The selected race for which this ViewModel tracks progress.
+     * @param model         the shared ModelManager that provides data and communication
+     * @param selectedRace  the race this ViewModel is managing and visualizing
      */
     public GameViewVM(ModelManager model, RaceDTO selectedRace) {
         this.model = model;
         this.selectedRace = selectedRace;
 
-        // Initialize horses from race data
+        // Load horses from race data
         if (selectedRace != null && selectedRace.horses() != null) {
             horses.addAll(selectedRace.horses());
-            // Initialize all horses at position 0
+
             for (HorseDTO horse : horses) {
-                horsePositions.put(horse.id(), 0);
+                horsePositions.put(horse.id(), 0); // Start at position 0
             }
         }
 
-        // Listen to horse positions updates
+        // Update horse positions based on model updates
         model.getHorsePositions().addListener((ListChangeListener<Integer>) this::handlePositionUpdate);
 
-        // Listen to race started property
+        // Update status text when the race starts
         model.raceStartedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 String raceName = model.currentRaceNameProperty().get();
@@ -65,32 +63,43 @@ public class GameViewVM implements ViewModel{
         });
     }
 
+    /**
+     * @return Property containing race status text (e.g. countdown or "Race started").
+     */
     public StringProperty statusTextProperty() {
         return statusText;
     }
+
+    /**
+     * @return List of horses participating in this race.
+     */
     public List<HorseDTO> getHorses() {
         return horses;
     }
+
+    /**
+     * @return A map of horse IDs to their current positions on the track.
+     */
     public Map<Integer, Integer> getHorsePositions() {
         return horsePositions;
     }
 
     /**
      * @return The length of the track for this race.
-     *         Returns 500 by default if the track is not defined.
+     * Returns 500 by default if track length is not defined.
      */
     public int getTrackLength() {
         if (selectedRace != null && selectedRace.raceTrack() != null) {
             return selectedRace.raceTrack().length();
         }
-        return 500; // Default length if not specified
+        return 500;
     }
 
     /**
-     * Updates horse positions from the shared position list.
-     * Runs on the JavaFX application thread to ensure thread safety with UI updates.
+     * Updates local horse position map with values from the model.
+     * This method ensures all updates happen on the JavaFX thread.
      *
-     * @param change The change in the observable list of horse positions.
+     * @param change the change event from the observed horse position list
      */
     private void handlePositionUpdate(ListChangeListener.Change<? extends Integer> change) {
         Platform.runLater(() -> {
@@ -101,6 +110,4 @@ public class GameViewVM implements ViewModel{
             }
         });
     }
-
-
 }

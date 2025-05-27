@@ -19,11 +19,12 @@ import java.sql.SQLException;
 
 /**
  * Controller for the Create Race view.
+ *
  * Manages user interactions for creating new races and displaying the race queue.
  * Connects UI components to the corresponding ViewModel.
  */
-public class CreateRaceController implements Controller
-{
+public class CreateRaceController implements Controller {
+
   /** Text field for entering the number of horses in the race */
   @FXML private TextField nrOfHorses;
 
@@ -39,36 +40,36 @@ public class CreateRaceController implements Controller
   /** ListView displaying the queue of upcoming races */
   @FXML private ListView<RaceDTO> raceQueueList;
 
-  /** Label to display messages*/
+  /** Label to display messages */
   @FXML private Label messageLabel;
 
   /** ViewModel that provides data and operations for this view */
   private CreateRaceVM viewModel;
 
-  /** Controller that allows to control changing the view inside the main window*/
+  /** Controller that allows switching views inside the main window */
   private MainWindowController mainWindowController;
 
   /**
    * Default empty constructor required by FXML loader.
    */
-  public CreateRaceController(){};
+  public CreateRaceController() {}
 
   /**
    * Initializes the controller with the provided ViewModel.
    * Sets up bindings between UI components and ViewModel properties,
    * configures cell rendering for the race queue list, and attaches event handlers.
    *
-   * @param createRaceVM The ViewModel that provides data and operations for this view
+   * @param createRaceVM the ViewModel that provides data and operations for this view
    */
-  public void initialize(ViewModel createRaceVM)
-  {
+  @Override
+  public void initialize(ViewModel createRaceVM) {
     viewModel = (CreateRaceVM) createRaceVM;
 
     // Bind the choice box to the available racetracks in the ViewModel
     raceTrack.setItems(this.viewModel.getAvailableRaceTracks());
     viewModel.selectedRaceTrackProperty().bind(raceTrack.getSelectionModel().selectedItemProperty());
 
-// Add this to format how each race track is shown
+    // Format how each race track is shown in the dropdown
     raceTrack.setConverter(new StringConverter<>() {
       @Override
       public String toString(RaceTrackDTO track) {
@@ -107,34 +108,34 @@ public class CreateRaceController implements Controller
     // Bind the race name text field to the ViewModel property
     raceName.textProperty().bindBidirectional(this.viewModel.raceNameProperty());
 
+    // Bind the message label
     messageLabel.textProperty().bind(viewModel.getMessageLabel());
 
+    // Set the action for the Create Race button
     createRace.setOnAction(event -> {
-            onCreateRaceClicked();
+      onCreateRaceClicked();
     });
   }
 
   /**
-   * Allows to change tabs inside the main window within the tab
+   * Allows switching tabs inside the main window.
    *
-   * @param mainWindowController - the main window controller that changes tabs
+   * @param mainWindowController the main window controller that changes views
    */
   @Override
   public void setWindowController(MainWindowController mainWindowController) {
-    if(mainWindowController != null)
+    if (mainWindowController != null)
       this.mainWindowController = mainWindowController;
   }
 
   /**
    * Handles the Create Race button click event.
-   * Validates input and creates a new race if valid, otherwise shows an alert.
+   * Validates input and creates a new race if valid; otherwise shows an alert.
    */
-  @FXML private void onCreateRaceClicked()
-  {
-    if(viewModel.isValid()){
+  @FXML private void onCreateRaceClicked() {
+    if (viewModel.isValid()) {
       viewModel.createRace();
-    }
-    else {
+    } else {
       ErrorHandler.showAlert("Incorrect input", "Make sure all the fields are filled.");
     }
   }

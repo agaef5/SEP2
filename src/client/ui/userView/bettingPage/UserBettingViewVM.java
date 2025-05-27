@@ -7,76 +7,58 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import server.model.Race;
 import shared.DTO.HorseDTO;
 import shared.DTO.RaceDTO;
 import shared.DTO.RaceState;
 import shared.updates.OnHorseFinished;
 import shared.updates.OnRaceFinished;
 
+/**
+ * ViewModel for the User Betting View.
+ *
+ * Handles the logic related to selecting a horse, entering a bet, validating input,
+ * listening to race start events, and updating the UI state accordingly.
+ */
 public class UserBettingViewVM implements ViewModel {
 
   private final ModelManager model;
   private final RaceDTO selectedRace;
   private final IntegerProperty balanceInfo = new SimpleIntegerProperty(0);
-
-  // Observable list containing horses available for betting
   private final ObservableList<HorseDTO> horses = FXCollections.observableArrayList();
-
-  // The currently selected horse
   private final ObjectProperty<HorseDTO> selectedHorse = new SimpleObjectProperty<>();
-
-  // The amount of money to bet
   private final IntegerProperty betAmount = new SimpleIntegerProperty(0);
-
-    // The countdown timer for race start
   private final StringProperty countdownText = new SimpleStringProperty("Race starting soon");
-
-  // Status message for user feedback
   private final StringProperty statusMessage = new SimpleStringProperty("");
-
-  // Property to indicate if a bet is valid
   private final BooleanProperty betValid = new SimpleBooleanProperty(false);
-
-  // Property to indicate if betting UI is locked (after placing a bet)
   private final BooleanProperty uiLocked = new SimpleBooleanProperty(false);
-
-  // Property to trigger navigation to the race view
   private final BooleanProperty navigateToGameView = new SimpleBooleanProperty(false);
-
-  // Property to trigger navigation back to user landing page
   private final BooleanProperty navigateToUserLandingPage = new SimpleBooleanProperty(false);
 
-    // Constructor with race parameter
+  /**
+   * Constructs the ViewModel with references to the model and selected race.
+   *
+   * @param model         the shared ModelManager
+   * @param selectedRace  the race selected for betting
+   */
   public UserBettingViewVM(ModelManager model, RaceDTO selectedRace) {
-    //saving dependencies
     this.model = model;
     this.selectedRace = selectedRace;
-    horses.setAll(selectedRace.horses());     //initialise horses
-    balanceInfo.bind(model.getUserBalance()); //bind balance
+    horses.setAll(selectedRace.horses());
+    balanceInfo.bind(model.getUserBalance());
 
-    // Listen for race start events
-    model.raceStartedProperty().addListener((obs, oldVal, newVal) ->
-    {
-       if (newVal)
-       {
-         String startedRaceName = model.currentRaceNameProperty().get();
-          if (selectedRace.name().equals(startedRaceName) && model.betPlacedProperty().get())
-          {
-            // User's race has started and they placed a bet → navigate to race view
+    model.raceStartedProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal) {
+        String startedRaceName = model.currentRaceNameProperty().get();
+        if (selectedRace.name().equals(startedRaceName) && model.betPlacedProperty().get()) {
           navigateToGameView.set(true);
-          }else {
-            // Different race started or no bet placed → go back to landing page
-            navigateToUserLandingPage.set(true);
-          }
+        } else {
+          navigateToUserLandingPage.set(true);
         }
+      }
     });
 
-    // Listen for confirmation that a bet was placed
     model.betPlacedProperty().addListener((obs, oldVal, newVal) -> {
       if (newVal) {
-        // Bet was successful
         statusMessage.set("Bet placed successfully!");
         uiLocked.set(true);
         startCountdown();
@@ -84,99 +66,98 @@ public class UserBettingViewVM implements ViewModel {
     });
 
     setupValidation();
-    if (!horses.isEmpty())
-    {
+    if (!horses.isEmpty()) {
       selectedHorse.set(horses.get(0));
     }
   }
 
-  public IntegerProperty balanceInfoProperty()
-  {
+  /** @return property for current user balance */
+  public IntegerProperty balanceInfoProperty() {
     return balanceInfo;
   }
 
-  //local listeners on UI level, only listen to UI changes.
+  /** Sets up listeners to validate bet on user input */
   private void setupValidation() {
     selectedHorse.addListener((obs, oldVal, newVal) -> validateBet());
     betAmount.addListener((obs, oldVal, newVal) -> validateBet());
   }
 
-  // Validates if the current bet selection is valid
-  // Updates the betValid property accordingly
+  /**
+   * Validates whether a bet is currently valid.
+   * Updates the betValid property based on model checks and UI lock state.
+   */
   private void validateBet() {
-    if(selectedHorse.isNull().get()) {
+    if (selectedHorse.isNull().get()) {
       ErrorHandler.showAlert("No horse selected", "Select horse first!");
       return;
     }
-    boolean valid = model.validateBet(selectedHorse.get(), betAmount.get()) &&
-            !uiLocked.get();
+    boolean valid = model.validateBet(selectedHorse.get(), betAmount.get()) && !uiLocked.get();
     betValid.set(valid);
   }
 
-
-  // Gets the observable list containing available horses
+  /** @return list of horses available for betting */
   public ObservableList<HorseDTO> getHorses() {
     return horses;
   }
 
-  // Gets the selected horse property
+  /** @return the currently selected horse property */
   public ObjectProperty<HorseDTO> selectedHorseProperty() {
     return selectedHorse;
   }
 
-  // Gets the bet amount property
+  /** @return the property representing the user's bet amount */
   public IntegerProperty betAmountProperty() {
     return betAmount;
   }
 
-  // Gets the countdown text property
+  /** @return the countdown text to display before the race */
   public StringProperty countdownTextProperty() {
     return countdownText;
   }
 
-  // Gets the status message property
+  /** @return the property for feedback or status messages */
   public StringProperty statusMessageProperty() {
     return statusMessage;
   }
 
-  // Gets the bet valid property
+  /** @return whether the current bet is valid */
   public BooleanProperty betValidProperty() {
     return betValid;
   }
 
-  // Gets the UI locked property
+  /** @return whether the betting UI is currently locked */
   public BooleanProperty uiLockedProperty() {
     return uiLocked;
   }
 
-  // Gets the property that indicates when to navigate to the race view
+  /** @return property for triggering navigation to the game view */
   public BooleanProperty navigateToGameViewProperty() {
     return navigateToGameView;
   }
 
-  // Gets the property that indicates when to navigate to the landing page
+  /** @return property for triggering navigation back to user landing page */
   public BooleanProperty getNavigateToUserLandingPageProperty() {
     return navigateToUserLandingPage;
   }
 
-  // Gets the selected race
+  /** @return the selected race associated with this view */
   public RaceDTO getSelectedRace() {
     return selectedRace;
   }
 
-  // Resets the navigation property after navigation has been handled
+  /** Resets the game view navigation trigger after it's been used */
   public void resetGameViewNavigation() {
     navigateToGameView.set(false);
   }
 
-  // Increases the bet amount by 100
+  /** Increases the current bet by 100, if allowed */
   public void increaseBet() {
     if (!uiLocked.get()) {
       betAmount.set(betAmount.get() + 100);
     }
   }
 
-  // Decreases the bet amount by 100, but not below 0
+  /** Decreases the current bet by 100, to a minimum of 0 */
   public void decreaseBet() {
     if (!uiLocked.get()) {
       int newAmount = Math.max(0, betAmount.get() - 100);
@@ -184,25 +165,27 @@ public class UserBettingViewVM implements ViewModel {
     }
   }
 
+  /**
+   * Sends the bet to the model if valid.
+   *
+   * @return true if the bet was sent, false if invalid or UI locked
+   */
   public boolean placeBet() {
     if (!betValid.get() || uiLocked.get()) {
       statusMessage.set("Invalid bet: Please select a horse and valid amount");
       return false;
     }
 
-    // Send bet via ModelManager (no username needed)
     model.createBet(selectedHorse.get(), betAmount.get());
-
     return true;
   }
 
-  // Starts the countdown timer for the race
-  // Updates the countdown text every second until the race starts
+  /**
+   * Starts the countdown text after a bet is placed.
+   * Currently placeholder implementation.
+   */
   private void startCountdown() {
-    // TODO: Implement actual "countdown till race starts" functionality
-
-    // For now, just set a static message
+    // TODO: Implement actual countdown logic
     countdownText.set("Race will start soon. Your bet has been placed!");
   }
-
-  }
+}

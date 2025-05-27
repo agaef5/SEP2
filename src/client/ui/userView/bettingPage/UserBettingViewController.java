@@ -17,110 +17,73 @@ import shared.DTO.RaceDTO;
 
 /**
  * Controller for the User Betting View.
- * Manages user interactions for placing bets on horses.
+ *
+ * Manages user interactions for viewing horse details and placing bets.
+ * Binds UI components to the ViewModel and listens for transitions to the game or landing pages.
  */
 public class UserBettingViewController implements Controller {
 
-  /** TableView displaying all available horses */
   @FXML private TableView<HorseDTO> horseTableView;
-
-  /** Column for horse names */
   @FXML private TableColumn<HorseDTO, String> nameColumn;
-
-  /** Column for minimum speed values */
   @FXML private TableColumn<HorseDTO, Integer> minSpeedColumn;
-
-  /** Column for maximum speed values */
   @FXML private TableColumn<HorseDTO, Integer> maxSpeedColumn;
-
-  /** Button to increase bet amount */
   @FXML private Button plusButton;
-
-  /** Button to decrease bet amount */
   @FXML private Button minusButton;
-
-  /** Text field for entering bet amount */
   @FXML private TextField betAmount;
-
-  /** Label displaying user's balance */
   @FXML private Label balance;
-
-  /** Label displaying countdown to race start */
   @FXML private Label countDownLabel;
-
-  /** Button to place a bet */
   @FXML private Button placeBetButton;
 
-  /** ViewModel that provides data and operations for this view */
   private UserBettingViewVM viewModel;
-
   private MainWindowController mainWindowController;
 
-  /**
-   * Default empty constructor required by FXML loader.
-   */
+  /** Default constructor required by FXML */
   public UserBettingViewController() {}
 
   /**
-   * Initializes the controller with the provided ViewModel.
-   * Sets up bindings between UI components and ViewModel properties,
-   * configures cell factories for the table view, and attaches event handlers.
+   * Initializes the controller with bindings and event setup.
    *
-   * @param userBettingVM The ViewModel that provides data and operations for this view
+   * @param userBettingVM the ViewModel handling business logic and state
    */
   @Override
   public void initialize(ViewModel userBettingVM) {
     this.viewModel = (UserBettingViewVM) userBettingVM;
 
-    // Add debug statement
-    System.out.println("Initializing UserBettingViewController");
+    // Setup table columns
+    nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().name()));
+    minSpeedColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().speedMin()).asObject());
+    maxSpeedColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().speedMax()).asObject());
 
-    // Configure table columns
-    nameColumn.setCellValueFactory(cellData ->
-            new SimpleStringProperty(cellData.getValue().name()));
-    minSpeedColumn.setCellValueFactory(cellData ->
-            new SimpleIntegerProperty(cellData.getValue().speedMin()).asObject());
-    maxSpeedColumn.setCellValueFactory(cellData ->
-            new SimpleIntegerProperty(cellData.getValue().speedMax()).asObject());
-
-    // Bind table data to ViewModel
     horseTableView.setItems(viewModel.getHorses());
-
-    // Add debug listener to track changes in the horses list
     viewModel.getHorses().addListener((ListChangeListener<HorseDTO>) change -> {
       System.out.println("Horses list changed. New size: " + viewModel.getHorses().size());
     });
 
-    // Bind selected horse to ViewModel
+    // Bind selected horse
     horseTableView.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldVal, newVal) -> viewModel.selectedHorseProperty().set(newVal)
     );
 
-    // Bind text properties
+    // Bind balance and countdown
     balance.textProperty().bind(viewModel.balanceInfoProperty().asString("$%d"));
     countDownLabel.textProperty().bind(viewModel.countdownTextProperty());
 
-    // Bidirectional binding for bet amount
-    Bindings.bindBidirectional(betAmount.textProperty(), viewModel.betAmountProperty(),
-            new IntegerStringConverter());
+    // Bind bet input
+    Bindings.bindBidirectional(betAmount.textProperty(), viewModel.betAmountProperty(), new IntegerStringConverter());
 
-    // Set up button actions
+    // Button actions
     plusButton.setOnAction(e -> viewModel.increaseBet());
     minusButton.setOnAction(e -> viewModel.decreaseBet());
     placeBetButton.setOnAction(e -> handlePlaceBet());
 
-    // Bind disabled properties based on UI locked state
+    // Lock UI if betting not allowed
     horseTableView.disableProperty().bind(viewModel.uiLockedProperty());
     betAmount.disableProperty().bind(viewModel.uiLockedProperty());
     plusButton.disableProperty().bind(viewModel.uiLockedProperty());
     minusButton.disableProperty().bind(viewModel.uiLockedProperty());
+    placeBetButton.disableProperty().bind(viewModel.betValidProperty().not().or(viewModel.uiLockedProperty()));
 
-    // Place bet button is disabled when bet is invalid OR UI is locked
-    placeBetButton.disableProperty().bind(
-            viewModel.betValidProperty().not().or(viewModel.uiLockedProperty())
-    );
-
-    // Add listener for auto-navigation to game view
+    // Handle navigation to game view when race starts
     viewModel.navigateToGameViewProperty().addListener((obs, oldVal, newVal) -> {
       if (newVal) {
         navigateToGameView();
@@ -128,6 +91,7 @@ public class UserBettingViewController implements Controller {
       }
     });
 
+    // Handle fallback navigation if user missed betting
     viewModel.getNavigateToUserLandingPageProperty().addListener((obs, oldVal, newVal) -> {
       if (newVal) {
         navigateToUserLandingPage();
@@ -135,18 +99,44 @@ public class UserBettingViewController implements Controller {
       }
     });
 
-    // Add window close handler to cleanup resources
+    // Setup cleanup on window close
     setupWindowCloseHandler();
   }
 
   /**
-   * Sets up a handler to clean up resources when the window is closed.
+   * Handles placing a bet when the button is clicked.
+   */
+  private void handlePlaceBet() {
+    boolean success = viewModel.placeBet();
+    if (success) {
+      // UI locks automatically in ViewModel
+    }
+  }
+
+  /**
+   * Navigates to the game view for the currently selected race.
+   */
+  private void navigateToGameView() {
+    RaceDTO selectedRace = viewModel.getSelectedRace();
+    if (selectedRace != null) {
+      mainWindowController.loadGameView(selectedRace);
+    }
+  }
+
+  /**
+   * Navigates back to the user landing page if betting window expired.
+   */
+  private void navigateToUserLandingPage() {
+    ErrorHandler.showAlert("No bet placed", "No bet was placed and race has already started. Too late to place a bet.");
+    mainWindowController.loadUserLandingPage();
+  }
+
+  /**
+   * Sets up a handler to navigate back on window close.
    */
   private void setupWindowCloseHandler() {
-    // We need to wait until the scene is set
     betAmount.sceneProperty().addListener((obs, oldScene, newScene) -> {
       if (newScene != null) {
-        // Get the window and add a close request handler
         Window window = newScene.getWindow();
         if (window != null) {
           window.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, event -> {
@@ -158,40 +148,19 @@ public class UserBettingViewController implements Controller {
   }
 
   /**
-   * Handles the place bet button click event.
-   * Delegates to the ViewModel to process the bet.
+   * Sets the main window controller to allow navigation from this view.
+   *
+   * @param mainWindowController the main app controller
    */
-  private void handlePlaceBet() {
-    boolean success = viewModel.placeBet();
-    if (success) {
-      // The UI will be locked by the ViewModel
-      // No need to clear fields as they'll be reset when the race ends
-    }
-  }
-
-  /**
-   * Handles navigation to the game view when the race starts.
-   */
-  private void navigateToGameView() {
-    RaceDTO selectedRace = viewModel.getSelectedRace();
-    if (selectedRace != null) {
-      mainWindowController.loadGameView(selectedRace);
-    }
-  }
-
-  private void navigateToUserLandingPage(){
-    ErrorHandler.showAlert("No bet placed", "No bet was placed and race has " +
-            "already started.Too late to place a bet.");
-    mainWindowController.loadUserLandingPage();
-  }
-
   @Override
   public void setWindowController(MainWindowController mainWindowController) {
-    if(mainWindowController != null) this.mainWindowController = mainWindowController;
+    if (mainWindowController != null) {
+      this.mainWindowController = mainWindowController;
+    }
   }
 
   /**
-   * Custom converter for binding between Integer property and String text field.
+   * Converter for two-way binding between Integer properties and TextField.
    */
   private static class IntegerStringConverter extends javafx.util.StringConverter<Number> {
     @Override

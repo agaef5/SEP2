@@ -7,13 +7,12 @@ import shared.user.UserRequest;
 
 /**
  * Interface for handling user authentication-related operations.
- * <p>
- * This interface defines methods for registering and logging in users.
- * Implementations of this interface are responsible for sending the
- * appropriate requests to the server via a network layer.
+ *
+ * Defines methods for registering users, logging in, and performing
+ * user-related queries such as fetching user data and updating balances.
  */
-public interface AuthenticationClient
-{
+public interface AuthenticationClient {
+
   /**
    * Sends a request to register a new user.
    *
@@ -28,7 +27,17 @@ public interface AuthenticationClient
    */
   void loginUser(LoginRequest loginRequest);
 
+  /**
+   * Sends a request to retrieve user information based on a username.
+   *
+   * @param userRequest the request object containing the username
+   */
   void getUser(UserRequest userRequest);
 
+  /**
+   * Sends a request to update the balance of a user.
+   *
+   * @param balanceUpdateRequest the request containing balance update details
+   */
   void updateBalance(BalanceUpdateRequest balanceUpdateRequest);
 }

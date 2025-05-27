@@ -1,30 +1,35 @@
 package client.ui.adminView.adminPanel;
 
-
 import client.modelManager.ModelManager;
 import client.ui.common.ViewModel;
 import javafx.beans.property.*;
 import shared.DTO.RaceDTO;
 import shared.DTO.RaceState;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 /**
  * ViewModel for the Admin Panel view.
- * Handles business logic and data processing for displaying upcoming race information.
- * Implements MessageListener to receive updates from the server.
+ *
+ * Manages business logic related to upcoming races,
+ * provides race info as a property, and listens for changes in race data.
  */
-public class AdminPanelVM implements ViewModel //implements ViewModel, MessageListener
-{
-  // Controls whether buttons are enabled
-  private final ObjectProperty<RaceDTO> nextRace = new SimpleObjectProperty<RaceDTO>(null);
+public class AdminPanelVM implements ViewModel { // implements ViewModel, MessageListener
+
+  /** Holds the next upcoming race received from the model */
+  private final ObjectProperty<RaceDTO> nextRace = new SimpleObjectProperty<>(null);
+
+  /** Text property bound to the label in the UI displaying race info */
   private final StringProperty raceInfoText = new SimpleStringProperty("Info on coming race");
-  private ModelManager modelManager;
 
+  /** Reference to the ModelManager used to fetch race data */
+  private final ModelManager modelManager;
 
-  public AdminPanelVM(ModelManager modelManager){
+  /**
+   * Constructs the AdminPanelVM with the given model manager.
+   * Binds to the next race and sets up a listener to update display text when race changes.
+   *
+   * @param modelManager the model manager for accessing shared data
+   */
+  public AdminPanelVM(ModelManager modelManager) {
     this.modelManager = modelManager;
 
     nextRace.bind(modelManager.getNextRace());
@@ -38,20 +43,31 @@ public class AdminPanelVM implements ViewModel //implements ViewModel, MessageLi
     refreshRaceList();
   }
 
-  public StringProperty raceInfoTextProperty() { return raceInfoText; }
+  /**
+   * Property accessor for the race information text.
+   *
+   * @return the race info StringProperty
+   */
+  public StringProperty raceInfoTextProperty() {
+    return raceInfoText;
+  }
 
-
-  public void updateRaceInfoText(boolean hasUpcomingRace){
-    if (hasUpcomingRace){
+  /**
+   * Updates the race info text shown in the UI based on the current upcoming race.
+   *
+   * @param hasUpcomingRace true if a race is queued or in progress; false otherwise
+   */
+  public void updateRaceInfoText(boolean hasUpcomingRace) {
+    if (hasUpcomingRace) {
       String textToDisplay = "";
       RaceDTO race = nextRace.get();
-      if(race.raceState().equals(RaceState.NOT_STARTED))
+      if (race.raceState().equals(RaceState.NOT_STARTED))
         textToDisplay += "Upcoming race:\n";
-      else if (race.raceState().equals(RaceState.IN_PROGRESS)) {
+      else if (race.raceState().equals(RaceState.IN_PROGRESS))
         textToDisplay += "Ongoing race:\n";
-      }
-      textToDisplay += race.name() +"\n"
-              + race.raceTrack().name() + ", " + race.raceTrack().location();
+
+      textToDisplay += race.name() + "\n" +
+              race.raceTrack().name() + ", " + race.raceTrack().location();
 
       raceInfoText.set(textToDisplay);
     } else {
@@ -61,10 +77,9 @@ public class AdminPanelVM implements ViewModel //implements ViewModel, MessageLi
 
   /**
    * Requests the current race list from the server.
-   * This will trigger an update via the MessageListener when the response is received.
+   * Triggers updates to the bound nextRace property.
    */
-  private void refreshRaceList()
-  {
+  private void refreshRaceList() {
     modelManager.getRaceList();
   }
 }
